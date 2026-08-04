@@ -65,9 +65,10 @@ Trois conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
 | `.get()` → `None` | colonne absente lève ; verdict conditionné à l'appariement | `compare_density_cost.py` |
 | jackknife | méthode rejetée, rejet écrit dans le code avec sa raison | `measure_gf2_scaling.py` |
 | profondeur fixe | densité modélisée au lieu d'être neutralisée | `SPARSE_DENSE_COST_EXPERIMENT.md` |
-| synchroniseur | portée divulguée dans la docstring, + CI qui exécute depuis un checkout | `sync_test_counts.py`, `.github/workflows/clean-clone.yml` |
+| synchroniseur | portée divulguée dans la docstring, + exécution depuis un checkout | `sync_test_counts.py`, intégration continue |
 
-La divulgation et la CI sont **deux contrôles indépendants**, pas l'un le
-remplaçant de l'autre. La CI n'élargit pas ce que le synchroniseur promet ;
-elle ajoute une promesse distincte. Retirer la divulgation parce que la CI
-existe reproduirait exactement le schéma décrit ici.
+La divulgation et l'exécution depuis un checkout sont **deux contrôles
+indépendants**, pas l'un le remplaçant de l'autre. Le second n'élargit pas ce
+que le synchroniseur promet ; il ajoute une promesse distincte. Retirer la
+divulgation parce que la CI existe reproduirait exactement le schéma décrit
+ici.

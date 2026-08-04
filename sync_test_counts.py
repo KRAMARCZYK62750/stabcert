@@ -12,9 +12,9 @@ clean clone because artifacts they read were untracked, and this script had
 faithfully synchronised a number reachable only locally. It was not wrong; it
 was asked for less than was assumed of it.
 
-The clone-and-run guarantee belongs to CI (``.github/workflows/clean-clone.yml``),
-which checks out only tracked content. That job and this script are
-independent controls: CI does not make this promise wider, it adds another
+The clone-and-run guarantee belongs elsewhere: a job that runs the suite from
+a checkout, which contains only tracked content. That job and this script are
+independent controls -- it does not make this promise wider, it adds another
 one. Keep both.
 """
 from __future__ import annotations
