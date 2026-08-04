@@ -1,0 +1,9 @@
+logical_pauli,input_label,choi_reference_operator,output_label_Aprime_E,pair_symplectic,input_gram_row,output_gram_row
+X1,+XX____,+XX____,+ZYXZ,1,01000000,01000000
+Z1,+Y_X___,-Y_X___,-Z_Z_,,10000000,10000000
+X2,+_X_X__,+_X_X__,+ZY__,1,00010000,00010000
+Z2,+YYX___,+YYX___,+_XZ_,,00100000,00100000
+X3,+____X_,+____X_,+Z___,1,00000100,00000100
+Z3,+____Z_,+____Z_,+XZXZ,,00001000,00001000
+X4,+__XX_X,+__XX_X,-__ZY,1,00000001,00000001
+Z4,+X_ZX__,+X_ZX__,+___Z,,00000010,00000010
