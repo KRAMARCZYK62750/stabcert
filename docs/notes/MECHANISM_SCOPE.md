@@ -3,12 +3,12 @@
 **Date :** 4 août 2026.
 
 Le danger ne vient pas des mécanismes qui échouent. Il vient de ce qu'on leur
-prête en plus de ce qu'ils promettent. Quatre instances du même schéma sont
-apparues en une seule journée de travail sur ce dépôt, dans quatre domaines
-sans rapport entre eux. Elles sont consignées ici parce que le schéma est plus
+prête en plus de ce qu'ils promettent. Six instances du même schéma sont
+apparues en une seule journée de travail sur ce dépôt, dans des domaines sans
+rapport entre eux. Elles sont consignées ici parce que le schéma est plus
 utile que chacun des cas.
 
-## Les quatre
+## Les six
 
 **Le `.get()` qui rendait `None`.** `compare_density_cost.py` contrôlait que
 les deux bras partageaient le même rang de support. Les CSV du bras dense
@@ -38,10 +38,33 @@ clone propre, parce que des artefacts qu'ils lisent n'étaient pas suivis. Ce
 qu'on lui prêtait : « le chiffre publié est correct ». Ce qu'il faisait : « le
 chiffre publié correspond à ma machine ».
 
-## Ce que les quatre ont en commun
+**Le statut de sortie lu à travers un tube.** Deux fois dans la même journée.
+`pytest -q | tee out.txt` dans la CI : sans `pipefail`, le pipeline rend le
+statut de `tee`, donc une suite en échec produisait un badge vert. Et
+`sync_test_counts.py --check | tail -4 ; echo $?` dans une vérification
+manuelle : le `$?` était celui de `tail`. Ce qu'on lui prêtait : « la commande
+a réussi ». Ce qu'il disait : « la dernière commande du pipeline a réussi ».
+
+> **Un statut de sortie lu à travers un tube n'est pas celui de la commande qui
+> compte.** C'est la dernière du pipeline qui répond.
+
+La formulation vaut mieux que « ajouter `pipefail` », qui ne donne que le
+correctif d'un cas. Le cas grave n'était pas la CI mais la vérification
+manuelle : elle a certifié comme correct un chemin qui sortait en erreur, et
+c'est cette fausse confirmation qui a laissé la CI rouge une soirée.
+
+**Deux générateurs pour un fichier.**
+`CHANNEL_CERTIFIED_IMPLEMENTATION.md` est réémis en entier par le runner de
+campagne. Une correction manuelle y avait été appliquée le matin — un compteur
+de tests périmé — et la régénération du soir l'a effacée, faisant échouer le
+contrôle de compteurs. Ce qu'on lui prêtait : « le fichier porte ce que j'y
+ai écrit ». Ce qu'il faisait : « le fichier porte ce que le générateur émet ».
+Toute édition manuelle d'un fichier généré est temporaire par construction.
+
+## Ce que les six ont en commun
 
 Aucun n'est un bug. Chacun fait exactement ce qui est écrit dans son code. Dans
-les quatre cas l'écart est entre la portée réelle et la portée supposée, et il
+les six cas l'écart est entre la portée réelle et la portée supposée, et il
 est invisible tant que les deux coïncident par accident.
 
 Trois conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
@@ -66,6 +89,8 @@ Trois conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
 | jackknife | méthode rejetée, rejet écrit dans le code avec sa raison | `measure_gf2_scaling.py` |
 | profondeur fixe | densité modélisée au lieu d'être neutralisée | `SPARSE_DENSE_COST_EXPERIMENT.md` |
 | synchroniseur | portée divulguée dans la docstring, + exécution depuis un checkout | `sync_test_counts.py`, intégration continue |
+| statut à travers un tube | `set -o pipefail` en CI ; ne plus lire `$?` derrière un tube | `.github/workflows/clean-clone.yml` |
+| deux générateurs, un fichier | le fichier généré retiré de `DOCUMENTS`, avec la raison | `sync_test_counts.py` |
 
 La divulgation et l'exécution depuis un checkout sont **deux contrôles
 indépendants**, pas l'un le remplaçant de l'autre. Le second n'élargit pas ce

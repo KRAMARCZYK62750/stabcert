@@ -232,8 +232,12 @@ def write_outputs(timeline, state_rows, metadata) -> None:
         "{support_rank} | {elapsed_seconds:.4f} |".format(**row)
         for row in timeline
     )
+    # The escaping is done outside the f-string: a backslash inside an
+    # expression part is a SyntaxError before Python 3.12, and requires-python
+    # declares 3.10.
+    escaped_pipe = "\\|"
     state_lines = "\n".join(
-        f"| {str(row['input_state']).replace('|', '\\|')} | {row['certified_fidelity']} | "
+        f"| {str(row['input_state']).replace('|', escaped_pipe)} | {row['certified_fidelity']} | "
         f"{row['contains_complex_relative_phase']} | {row['dense_state_constructed']} |"
         for row in state_rows
     )

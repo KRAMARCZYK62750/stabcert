@@ -69,6 +69,16 @@ def test_certified_closure_is_declared(entry: str) -> None:
 
 
 def test_closure_declaration_has_no_unreachable_module() -> None:
+    """Do not delete this as redundant: it is the only test in this file that
+    catches the second direction.
+
+    Verified by mutation, not by reading. Making a closure module import the
+    parametric lineage fails six of the eight tests here; removing a module
+    from the reachable set while leaving it declared fails exactly this one.
+    Without it the invariant becomes one-sided -- new modules would still be
+    kept out, but the declaration could quietly rot into a wish list -- and
+    nothing would signal the loss.
+    """
     reachable = set().union(*(_closure(entry) for entry in ENTRY_POINTS))
     assert reachable == CERTIFIED_CLOSURE
 

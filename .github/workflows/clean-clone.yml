@@ -42,7 +42,12 @@ jobs:
         run: python -m pip install --quiet -e '.[test,sabre,pytket]'
 
       - name: suite with every backend
-        run: python -m pytest -q | tee pytest-full.txt
+        # Without pipefail the pipeline reports tee's status, so a failing suite
+        # would be masked here and only surface at the count check below.
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pytest -q | tee pytest-full.txt
 
       # Check the documented counts against the run that just happened here,
       # not against results/test_suite_count.json -- that file records a

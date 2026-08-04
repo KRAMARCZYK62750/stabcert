@@ -30,7 +30,10 @@ import sys
 PROJECT_ROOT = Path(__file__).resolve().parent
 COUNT_PATH = PROJECT_ROOT / "results" / "test_suite_count.json"
 DOCUMENTS = (
-    "docs/notes/CHANNEL_CERTIFIED_IMPLEMENTATION.md",
+    # CHANNEL_CERTIFIED_IMPLEMENTATION.md is deliberately absent: it is emitted
+    # whole by run_channel_certified_adversarial_validation.py, so a span placed
+    # there survives only until the next campaign run. Two generators must not
+    # own one file. Its subject is the campaign, not the suite.
     "docs/notes/FICHE_CHANNEL_CERTIFIED_ORELIA.md",
     "docs/notes/NOTE_CERTIFICATION_ROUTEURS_TIERS.md",
     "docs/notes/NOTE_JALON_SABRE_ORELIA.md",
