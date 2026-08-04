@@ -37,7 +37,7 @@ from hayden_preskill_toy.recovery_serialization import (
 ROOT = Path(__file__).resolve().parent
 DEFAULT_RESULTS = ROOT / "results" / "verifier_adversarial_validation.csv"
 DEFAULT_SUMMARY = ROOT / "results" / "verifier_adversarial_summary.csv"
-DEFAULT_REPORT = ROOT / "VERIFIER_ADVERSARIAL_VALIDATION.md"
+DEFAULT_REPORT = ROOT / "docs" / "notes" / "VERIFIER_ADVERSARIAL_VALIDATION.md"
 
 
 def _sha256(path: Path) -> str:

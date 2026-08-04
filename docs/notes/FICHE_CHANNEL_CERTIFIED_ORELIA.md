@@ -54,7 +54,9 @@ transformation agissant uniquement sur l'environnement rejeté.
 - suite automatique après régressions SABRE et pytket : <!-- TEST_COUNT:BEGIN fmt="**{passed}/{passed} tests passants**" -->**124/124 tests passants**<!-- TEST_COUNT:END --> ;
 - fixtures immuables validées : `A=1`, `A=8`, `A=12` ;
 - artefacts adversariaux invalides : **1 300/1 300 rejetés** ;
-- représentations valides équivalentes : **700/700 acceptées** ;
+- représentations valides équivalentes : **800/800 acceptées** ;
+- dont `outside_support_only` : **100/100 acceptées** — la famille qui sépare
+  la comparaison sur le sous-espace de code de celle du canal total ;
 - faux acceptés observés : **0** ;
 - faux rejetés observés : **0** ;
 - exceptions non contrôlées pendant la campagne : **0**.
@@ -71,7 +73,7 @@ code qui réalise cette procédure ; aucun corpus fini ne prouve l'absence d'un
 défaut d'implémentation. Les deux énoncés portent sur des objets différents et
 ne se contredisent pas.
 
-Les nombres 1 300 / 700 sont ceux de la campagne
+Les nombres 1 300 / 800 sont ceux de la campagne
 `orelia.channel-certified-adversarial-campaign/v1` (3 août 2026). Une seconde
 campagne, `orelia.verifier-adversarial-campaign/v1` (même date, 10 000
 invalides et 1 000 valides), porte sur le vérificateur v1 et figure dans

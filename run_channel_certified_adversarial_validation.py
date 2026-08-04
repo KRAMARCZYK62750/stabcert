@@ -36,7 +36,7 @@ FORMAT_VERSION = "orelia.channel-certified-adversarial-campaign/v1"
 ROOT = Path(__file__).resolve().parent
 DEFAULT_RESULTS = ROOT / "results" / "channel_certified_adversarial.csv"
 DEFAULT_SUMMARY = ROOT / "results" / "channel_certified_adversarial_summary.csv"
-DEFAULT_REPORT = ROOT / "CHANNEL_CERTIFIED_IMPLEMENTATION.md"
+DEFAULT_REPORT = ROOT / "docs" / "notes" / "CHANNEL_CERTIFIED_IMPLEMENTATION.md"
 
 INVALID_DEFINITIONS = (
     ("semantic_hash", "semantic_hash", "semantic_problem_hash"),
@@ -62,6 +62,10 @@ VALID_DEFINITIONS = (
     ("external_environment_gauge", "logical_routed_mismatch"),
     ("external_identity_rewrite", "nondeterministic_route_identity"),
     ("uncertified_swap_claim", "resource_accounting"),
+    # The only family that distinguishes comparison on the code subspace from
+    # comparison of the total channel: accepted by the first, rejected by the
+    # second. Without it the campaign counts are silent on which is implemented.
+    ("outside_support_only", "outside_support_only"),
 )
 
 
@@ -83,6 +87,7 @@ def _case(context, category: str, source_category: str, index: int, expected_val
         "tau_equivalent_basis",
         "circuit_environment_gauge",
         "circuit_identity_rewrite",
+        "outside_support_only",
     }:
         return build_valid_case(context, source_category, index)
     if category == "observable_resource":
@@ -198,6 +203,13 @@ def _markdown(metadata, summary):
         f"- faux rejetés : `{metadata['false_rejects']}` ;",
         f"- durée : `{metadata['elapsed_seconds']}` s.",
         "",
+        "> **Deux campagnes distinctes coexistent dans ce dépôt.** Celle-ci —",
+        "> `orelia.channel-certified-adversarial-campaign/v1` — porte sur la politique",
+        "> `channel-certified`. La campagne `orelia.verifier-adversarial-campaign/v1`",
+        "> (10 000 invalides et 1 000 valides) porte sur le vérificateur v1 et figure",
+        "> dans `VERIFIER_ADVERSARIAL_VALIDATION.md`. Les chiffres ne se contredisent",
+        "> pas : ils mesurent deux objets différents.",
+        "",
         "## Résultats adversariaux",
         "",
         "| Catégorie | Valide attendu | Cas | Acceptés | Rejetés | Faux acceptés | Faux rejetés | Premier contrôle correct |",
@@ -210,6 +222,22 @@ def _markdown(metadata, summary):
     lines.extend([
         "",
         "Les réécritures identitaires et les jauges de Stinespring sur l'environnement sont acceptées lorsqu'elles préservent le canal réduit. Les canaux faux, arêtes interdites, ressources observables falsifiées et ordres finaux faux sont rejetés.",
+        "",
+        "### Ce que `outside_support_only` établit",
+        "",
+        "Cette famille préfixe le circuit par un élément du groupe stabilisateur de",
+        "`tau_X`. Tout état du sous-espace de code en est un vecteur propre `+1` :",
+        "l'action y est donc inchangée, alors que l'unitaire total diffère.",
+        "",
+        "C'est la seule famille de la campagne qui sépare deux spécifications :",
+        "",
+        "- comparaison du canal **sur le sous-espace de code** — ces artefacts doivent",
+        "  être acceptés, et ils le sont ;",
+        "- comparaison du **canal total** — ces mêmes artefacts devraient être rejetés.",
+        "",
+        "Sans elle, aucun chiffre de cette campagne ne dit laquelle des deux est",
+        "implémentée. Le README affirme `on the specified input subspace` ; cette",
+        "ligne du tableau est ce qui le teste.",
         "",
         "## Ressources certifiées",
         "",

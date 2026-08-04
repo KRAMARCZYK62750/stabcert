@@ -101,8 +101,11 @@ stabcert verify tests/fixtures/recovery_v1/a1.problem.json \
 ## Status
 
 Early release. The verification core is covered by a test suite and an
-adversarial campaign (1300 invalid artifacts rejected, 700 valid
-representations accepted, no false accepts or rejects).
+adversarial campaign (1300 invalid artifacts rejected, 800 valid
+representations accepted, no false accepts or rejects). One of those valid
+families differs from the reference only outside the code subspace, which is
+what distinguishes comparison on that subspace from comparison of the total
+channel.
 
 Resource figures reported by the tool are measured, not certified: SWAP
 attribution does not participate in any verdict.

@@ -8,7 +8,7 @@ Cette campagne qualifie localement le vérificateur v1 sur des cas dérivés de 
 > `orelia.verifier-adversarial-campaign/v1`, 3 août 2026, 10 000 artefacts
 > corrompus et 1 000 représentations valides — porte sur le vérificateur v1.
 > La campagne `orelia.channel-certified-adversarial-campaign/v1`, même date,
-> 1 300 invalides et 700 valides, porte sur la politique `channel-certified`
+> 1 300 invalides et 800 valides, porte sur la politique `channel-certified`
 > et est documentée dans `CHANNEL_CERTIFIED_IMPLEMENTATION.md`. Les chiffres
 > ne se contredisent pas : ils mesurent deux objets différents.
 

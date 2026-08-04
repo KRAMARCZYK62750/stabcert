@@ -74,6 +74,11 @@ VALID_CATEGORY_COUNTS: tuple[tuple[str, int], ...] = (
     ("tau_equivalent_basis", 250),
     ("circuit_environment_gauge", 250),
     ("circuit_identity_rewrite", 250),
+    # outside_support_only is deliberately absent: this tuple drives the
+    # verifier campaign, whose published counts are 10000/1000. The family
+    # discriminates the channel-certified specification and is enrolled by
+    # run_channel_certified_adversarial_validation.py, which sources builders
+    # through build_valid_case rather than through this tuple.
 )
 
 
@@ -387,6 +392,44 @@ def _valid_circuit_rewrite(ctx: CampaignContext, index: int, *, environment_gaug
     return _with_rerouted_logical(ctx, tuple(logical), compiler_declared_valid=True)
 
 
+def _outside_support_only(ctx: CampaignContext, index: int) -> RecoveryArtifact:
+    """A circuit differing from the reference only outside supp(tau_X).
+
+    Prefixing the circuit with an element of the stabilizer group of tau_X
+    leaves its action on the code subspace unchanged -- every state there is a
+    +1 eigenstate -- while changing the total unitary.  A verifier comparing
+    the channel on the code subspace must accept; one comparing the total
+    channel must reject.  Without this family nothing in the campaign
+    distinguishes the two specifications, and the counts are silent on which
+    one is implemented.
+    """
+    generators = [pauli_spec_to_stim(item) for item in ctx.artifact.tau_support.signed_generators]
+    if not generators:
+        raise AssertionError("campaign fixture has no tau support generator")
+    usable = min(len(generators), 10)
+    mask = (index % ((1 << usable) - 1)) + 1
+    element = stim.PauliString("+" + "_" * len(generators[0]))
+    for position in range(usable):
+        if (mask >> position) & 1:
+            element *= generators[position]
+    body = str(element)[-len(element) :]
+    prefix: list[GateSpec] = []
+    for wire, letter in zip(ctx.problem.accessible_partition, body):
+        # X and Z generate the Pauli up to a global phase, which a channel drops.
+        if letter in ("X", "Y"):
+            prefix.append(GateSpec("X", (wire,)))
+        if letter in ("Z", "Y"):
+            prefix.append(GateSpec("Z", (wire,)))
+    if not prefix:
+        raise AssertionError("independent generators cannot multiply to the identity")
+    logical = (
+        *prefix,
+        *ctx.artifact.logical_circuit.gates,
+        *_identity_suffix(ctx.problem.accessible_partition, "outside-support", index),
+    )
+    return _with_rerouted_logical(ctx, logical, compiler_declared_valid=True)
+
+
 def _topology_claim(ctx: CampaignContext, index: int) -> RecoveryArtifact:
     selected = {
         edge for offset, edge in enumerate(ctx.non_edges) if ((index + 1) >> offset) & 1
@@ -583,6 +626,8 @@ def build_valid_case(ctx: CampaignContext, category: str, index: int) -> Adversa
         artifact = _valid_circuit_rewrite(ctx, index, environment_gauge=True)
     elif category == "circuit_identity_rewrite":
         artifact = _valid_circuit_rewrite(ctx, index, environment_gauge=False)
+    elif category == "outside_support_only":
+        artifact = _outside_support_only(ctx, index)
     else:
         raise KeyError(category)
     return AdversarialCase(

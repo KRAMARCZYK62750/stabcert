@@ -24,7 +24,7 @@ from hayden_preskill_toy.recovery_verify import verify_recovery
 ROOT = Path(__file__).resolve().parent
 FIXTURES = ROOT / "tests" / "fixtures" / "recovery_v1"
 RESULTS = ROOT / "results"
-REPORT = ROOT / "SABRE_CHANNEL_CERTIFIED_INTEGRATION.md"
+REPORT = ROOT / "docs" / "notes" / "SABRE_CHANNEL_CERTIFIED_INTEGRATION.md"
 
 
 def _failed(report) -> list[str]:

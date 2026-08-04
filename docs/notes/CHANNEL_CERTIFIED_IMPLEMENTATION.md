@@ -7,18 +7,17 @@ Statut : **VALIDÉ**.
 Le vérificateur reconstruit la cible Petz depuis `RecoveryProblem`, compare les sous-groupes stabilisateurs signés des Choi réduits et ne reconstruit pas la route ORELIA attendue dans cette politique.
 
 - cas invalides : `1300` ;
-- représentations valides : `700` ;
+- représentations valides : `800` ;
 - faux acceptés : `0` ;
 - faux rejetés : `0` ;
-- durée : `163.064756500` s ;
-- suite automatique complète : <!-- TEST_COUNT:BEGIN fmt="`{passed}/{passed}` tests passants" -->`124/124` tests passants<!-- TEST_COUNT:END -->.
+- durée : `176.246987167` s.
 
-> Ces chiffres sont ceux de la campagne
-> `orelia.channel-certified-adversarial-campaign/v1` (3 août 2026), qui porte
-> sur la politique `channel-certified`. Elle est distincte de la campagne
-> `orelia.verifier-adversarial-campaign/v1` (même date, 10 000 invalides et
-> 1 000 valides) documentée dans `VERIFIER_ADVERSARIAL_VALIDATION.md`, qui
-> porte sur le vérificateur v1.
+> **Deux campagnes distinctes coexistent dans ce dépôt.** Celle-ci —
+> `orelia.channel-certified-adversarial-campaign/v1` — porte sur la politique
+> `channel-certified`. La campagne `orelia.verifier-adversarial-campaign/v1`
+> (10 000 invalides et 1 000 valides) porte sur le vérificateur v1 et figure
+> dans `VERIFIER_ADVERSARIAL_VALIDATION.md`. Les chiffres ne se contredisent
+> pas : ils mesurent deux objets différents.
 
 ## Résultats adversariaux
 
@@ -44,10 +43,25 @@ Le vérificateur reconstruit la cible Petz depuis `RecoveryProblem`, compare les
 | external_environment_gauge | True | 100 | 100 | 0 | 0 | 0 | 100 |
 | external_identity_rewrite | True | 100 | 100 | 0 | 0 | 0 | 100 |
 | uncertified_swap_claim | True | 100 | 100 | 0 | 0 | 0 | 100 |
+| outside_support_only | True | 100 | 100 | 0 | 0 | 0 | 100 |
 
 Les réécritures identitaires et les jauges de Stinespring sur l'environnement sont acceptées lorsqu'elles préservent le canal réduit. Les canaux faux, arêtes interdites, ressources observables falsifiées et ordres finaux faux sont rejetés.
 
-Les fixtures immuables `A=1`, `A=8` et `A=12` passent dans les deux politiques. Une route textuellement différente et une jauge d'environnement différente sont refusées par `reproducible-route` mais acceptées par `channel-certified` lorsque leur Choi réduit reste identique.
+### Ce que `outside_support_only` établit
+
+Cette famille préfixe le circuit par un élément du groupe stabilisateur de
+`tau_X`. Tout état du sous-espace de code en est un vecteur propre `+1` :
+l'action y est donc inchangée, alors que l'unitaire total diffère.
+
+C'est la seule famille de la campagne qui sépare deux spécifications :
+
+- comparaison du canal **sur le sous-espace de code** — ces artefacts doivent
+  être acceptés, et ils le sont ;
+- comparaison du **canal total** — ces mêmes artefacts devraient être rejetés.
+
+Sans elle, aucun chiffre de cette campagne ne dit laquelle des deux est
+implémentée. Le README affirme `on the specified input subspace` ; cette
+ligne du tableau est ce qui le teste.
 
 ## Ressources certifiées
 
