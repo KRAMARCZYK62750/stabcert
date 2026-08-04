@@ -62,6 +62,15 @@ transformation agissant uniquement sur l'environnement rejeté.
 Cette qualification est locale au corpus documenté. Elle ne constitue pas une
 garantie générale de sécurité ni une preuve formelle d'absence de défaut.
 
+**Ce que cette réserve qualifie, et ce qu'elle ne qualifie pas.** Elle porte
+sur l'implémentation, pas sur la procédure de décision. La correction de
+celle-ci est un théorème : deux canaux stabilisateurs sont égaux sur le
+sous-espace de code si et seulement si leurs formes canoniques signées
+coïncident — c'est ce qu'affirme le README. La campagne adversariale teste le
+code qui réalise cette procédure ; aucun corpus fini ne prouve l'absence d'un
+défaut d'implémentation. Les deux énoncés portent sur des objets différents et
+ne se contredisent pas.
+
 Les nombres 1 300 / 700 sont ceux de la campagne
 `orelia.channel-certified-adversarial-campaign/v1` (3 août 2026). Une seconde
 campagne, `orelia.verifier-adversarial-campaign/v1` (même date, 10 000

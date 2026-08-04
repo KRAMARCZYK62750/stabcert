@@ -55,6 +55,15 @@ EXACTNESS_TOLERANCE = 1e-9
 # n**2 eliminations, each a Gaussian elimination costing ~n**3 row operations,
 # each row operation touching ~n bits.  The measurement tests these, it does
 # not assume them; observed local exponents sit above and decrease with n.
+#
+# What a "confirmed" verdict is an exponent OF.  These are exponents of this
+# family as parameterized -- depth-6 scrambler, t = A + 4 -- whose generator
+# density is not constant along n but drifts as roughly n**-0.24.  A confirmed
+# exponent is therefore b + c*delta, mixing the degree at fixed density with
+# the cost of that drift, not the fixed-density degree.  The joint regression
+# in ``compare_density_cost.py`` separates them and finds a density elasticity
+# of about 1.4, so the two quantities genuinely differ.  Confirmation stands;
+# its object is the family, not the algorithm in the abstract.
 STRUCTURAL_PREDICTION = {
     "affine_systems_solved": 2,
     "row_xors": 5,
@@ -62,13 +71,47 @@ STRUCTURAL_PREDICTION = {
 }
 
 
-def measure(message_sizes: range) -> list[dict[str, object]]:
+def _scrambler_connects_all(layout: SystemLayout, gates) -> bool:
+    """A scrambler that leaves a qubit isolated makes the instance degenerate."""
+    adjacency = {qubit: set() for qubit in layout.scrambled}
+    for gate in gates:
+        if gate.name == "CNOT" and gate.b is not None:
+            adjacency[gate.a].add(gate.b)
+            adjacency[gate.b].add(gate.a)
+    reached = {layout.scrambled[0]}
+    pending = [layout.scrambled[0]]
+    while pending:
+        for neighbour in adjacency[pending.pop()] - reached:
+            reached.add(neighbour)
+            pending.append(neighbour)
+    return len(reached) == len(layout.scrambled)
+
+
+def _density(artifact) -> dict[str, float]:
+    """Pauli weight of the derived tau support, the operational density metric."""
+    weights = [
+        sum(letter != "I" for letter in spec.operators)
+        for spec in artifact.tau_support.signed_generators
+    ]
+    width = len(artifact.logical_circuit.qubit_order)
+    return {
+        "tau_generator_count": len(weights),
+        "mean_generator_weight": float(np.mean(weights)) if weights else 0.0,
+        "max_generator_weight": max(weights, default=0),
+        "mean_generator_density": float(np.mean(weights)) / width if weights else 0.0,
+    }
+
+
+def measure(message_sizes: range, scramble_depth: int = SCRAMBLE_DEPTH) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for message in message_sizes:
         layout = SystemLayout(n_message=message, n_black_hole=4)
         scrambler = random_stabilizer_scrambler(
-            layout, np.random.default_rng(SEED), SCRAMBLE_DEPTH
+            layout, np.random.default_rng(SEED), scramble_depth
         )
+        if not _scrambler_connects_all(layout, scrambler):
+            print(f"A={message}: scrambler leaves an isolated qubit; instance skipped")
+            continue
         emission = message + layout.n_black_hole
         problem = hayden_preskill_to_recovery_problem(
             layout,
@@ -91,6 +134,10 @@ def measure(message_sizes: range) -> list[dict[str, object]]:
                 "message_qubits": message,
                 "emission_time": emission,
                 "accessible_width": len(problem.accessible_partition),
+                "scramble_depth": scramble_depth,
+                "logical_qubits": artifact.tau_support.logical_qubits,
+                "support_rank": artifact.tau_support.support_rank,
+                **_density(artifact),
                 **{name: getattr(stats, name) for name in COUNTERS},
                 "verify_seconds": elapsed,
             }
@@ -185,6 +232,12 @@ def evaluate_prediction(summary: dict[str, object]) -> dict[str, object]:
     verdicts: dict[str, object] = {
         "registered": "2026-08-04, before reading the n=21..30 sweep",
         "calibrator": "affine_systems_solved (exact degree 2)",
+        "exponent_of": (
+            "this family as parameterized (depth-6 scrambler, t = A + 4), whose "
+            "generator density drifts as about n**-0.24 rather than staying "
+            "constant; a confirmed exponent is b + c*delta, not the degree at "
+            "fixed density. See docs/notes/GF2_SCALING_RESULT.md."
+        ),
         "finite_size_bias": bias,
         "tolerance": tolerance,
     }
@@ -209,6 +262,15 @@ def evaluate_prediction(summary: dict[str, object]) -> dict[str, object]:
     return verdicts
 
 
+def _coerce(value: str):
+    for cast in (int, float):
+        try:
+            return cast(value)
+        except ValueError:
+            continue
+    return value
+
+
 def _rows_from_csv(paths: list[str]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for path in paths:
@@ -216,7 +278,7 @@ def _rows_from_csv(paths: list[str]) -> list[dict[str, object]]:
             for row in csv.DictReader(handle):
                 rows.append(
                     {
-                        key: float(value) if key == "verify_seconds" else int(value)
+                        key: _coerce(value)
                         for key, value in row.items()
                     }
                 )
@@ -228,6 +290,7 @@ def main() -> int:
     parser.add_argument("--min-message", type=int, default=1)
     parser.add_argument("--max-message", type=int, default=12)
     parser.add_argument("--output", default="results/gf2_scaling.csv")
+    parser.add_argument("--scramble-depth", type=int, default=SCRAMBLE_DEPTH)
     parser.add_argument(
         "--analyse",
         nargs="+",
@@ -239,8 +302,16 @@ def main() -> int:
     rows = (
         _rows_from_csv(arguments.analyse)
         if arguments.analyse
-        else measure(range(arguments.min_message, arguments.max_message + 1))
+        else measure(
+            range(arguments.min_message, arguments.max_message + 1),
+            arguments.scramble_depth,
+        )
     )
+    if not rows:
+        raise SystemExit(
+            "no instance survived: at this scrambler depth every layout was "
+            "discarded as disconnected; raise --scramble-depth"
+        )
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
@@ -252,7 +323,7 @@ def main() -> int:
         "format_version": "orelia.gf2-scaling/v1",
         "architecture": ARCHITECTURE,
         "seed": SEED,
-        "scramble_depth": SCRAMBLE_DEPTH,
+        "scramble_depth": arguments.scramble_depth,
         "policy": VerificationPolicy.CHANNEL_CERTIFIED.value,
         "instances": len(rows),
         "accessible_width_range": [rows[0]["accessible_width"], rows[-1]["accessible_width"]],

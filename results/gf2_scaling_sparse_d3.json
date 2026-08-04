@@ -1,0 +1,86 @@
+{
+  "accessible_width_range": [
+    9,
+    30
+  ],
+  "architecture": "chain",
+  "counters": {
+    "affine_systems_solved": {
+      "exact_polynomial_coefficients": [
+        28.0,
+        -232.0,
+        598.0
+      ],
+      "exact_polynomial_degree": 2,
+      "log_log_exponent_all_points": 2.608082689788022,
+      "log_log_exponent_last_step": 2.3117511811795937,
+      "log_log_exponent_lower_window": 2.7862673785133025,
+      "log_log_exponent_upper_half": 2.384348050032236,
+      "structural_prediction": 2
+    },
+    "pivots": {
+      "log_log_exponent_all_points": 4.743696994903949,
+      "log_log_exponent_last_step": 4.405346766722305,
+      "log_log_exponent_lower_window": 4.952547794107065,
+      "log_log_exponent_upper_half": 4.491847140235316
+    },
+    "rank_reductions": {
+      "log_log_exponent_all_points": 3.574279864053696,
+      "log_log_exponent_last_step": 3.3289099485041493,
+      "log_log_exponent_lower_window": 3.7458911289119006,
+      "log_log_exponent_upper_half": 3.3826180743770604
+    },
+    "row_xors": {
+      "log_log_exponent_all_points": 5.078931181766451,
+      "log_log_exponent_last_step": 6.949088133230822,
+      "log_log_exponent_lower_window": 5.624993486694663,
+      "log_log_exponent_upper_half": 4.161035674331745,
+      "structural_prediction": 5
+    },
+    "scalar_bit_xors": {
+      "log_log_exponent_all_points": 6.424960331947519,
+      "log_log_exponent_last_step": 8.038283038761081,
+      "log_log_exponent_lower_window": 7.019522647226641,
+      "log_log_exponent_upper_half": 5.403651712520776,
+      "structural_prediction": 6
+    },
+    "verify_seconds": {
+      "log_log_exponent_all_points": 4.614119935162793,
+      "log_log_exponent_last_step": 5.246292197339827,
+      "log_log_exponent_lower_window": 4.635401113482529,
+      "log_log_exponent_upper_half": 4.68088632420296
+    }
+  },
+  "format_version": "orelia.gf2-scaling/v1",
+  "instances": 22,
+  "policy": "channel-certified",
+  "prediction_verdict": {
+    "affine_systems_solved": {
+      "excess": 0.3843480500322358,
+      "observed_upper_half": 2.384348050032236,
+      "target": 2,
+      "trend": -0.4019193284810667,
+      "verdict": "confirmed"
+    },
+    "calibrator": "affine_systems_solved (exact degree 2)",
+    "finite_size_bias": 0.3843480500322358,
+    "registered": "2026-08-04, before reading the n=21..30 sweep",
+    "row_xors": {
+      "excess": -0.8389643256682549,
+      "observed_upper_half": 4.161035674331745,
+      "target": 5,
+      "trend": -1.463957812362918,
+      "verdict": "confirmed"
+    },
+    "scalar_bit_xors": {
+      "excess": -0.5963482874792243,
+      "observed_upper_half": 5.403651712520776,
+      "target": 6,
+      "trend": -1.6158709347058657,
+      "verdict": "confirmed"
+    },
+    "tolerance": 0.3843480500322358
+  },
+  "scramble_depth": 3,
+  "seed": 20260802
+}

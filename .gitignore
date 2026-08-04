@@ -64,3 +64,8 @@ results/*
 !results/stabilizer_diagnostics.csv
 !results/stabilizer_petz_stinespring_resources.csv
 !results/test_suite_count.json
+!results/gf2_scaling_dense_d6.csv
+!results/gf2_scaling_dense_d6.json
+!results/gf2_scaling_sparse_d3.csv
+!results/gf2_scaling_sparse_d3.json
+!results/density_cost_comparison.json

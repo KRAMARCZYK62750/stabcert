@@ -107,6 +107,22 @@ representations accepted, no false accepts or rejects).
 Resource figures reported by the tool are measured, not certified: SWAP
 attribution does not participate in any verdict.
 
+## Development
+
+Test counts quoted in `docs/notes/` are generated, never written by hand.
+They live in `TEST_COUNT` spans and are rewritten from the suite's own
+output:
+
+```bash
+python sync_test_counts.py                     # re-run the suite, update counts
+python sync_test_counts.py --no-run --check    # verify only, non-zero on drift
+```
+
+The first form refuses to touch documentation unless the suite is green — a
+synchroniser that writes a number while tests fail would produce
+documentation that is consistent and wrong. Editing a count by hand breaks
+the invariant silently.
+
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE).

@@ -63,6 +63,7 @@
       "verdict": "confirmed"
     },
     "calibrator": "affine_systems_solved (exact degree 2)",
+    "exponent_of": "this family as parameterized (depth-6 scrambler, t = A + 4), whose generator density drifts as about n**-0.24 rather than staying constant; a confirmed exponent is b + c*delta, not the degree at fixed density. See docs/notes/GF2_SCALING_RESULT.md.",
     "finite_size_bias": 0.28960797435454255,
     "registered": "2026-08-04, before reading the n=21..30 sweep",
     "row_xors": {

@@ -1,0 +1,103 @@
+{
+  "density_contrast_drift_exponent": 0.5818093082126291,
+  "density_contrast_first": 1.2592592592592593,
+  "density_contrast_last": 2.4545454545454546,
+  "density_dense_mean": 0.4620551083966143,
+  "density_sparse_mean": 0.25024703624565414,
+  "finite_size_bias": 0.3843480500322358,
+  "forbidden_reading": "density does not change the degree",
+  "format_version": "orelia.density-cost-comparison/v1",
+  "identical_elimination_structure_at": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "joint_regression": {
+    "calibrator_control": {
+      "degree_at_fixed_density_b": 2.6111037163820705,
+      "density_elasticity_c": 0.005710329097835586,
+      "max_abs_log_residual": 0.1044511632757974,
+      "per_arm": {
+        "dense": {
+          "density_drift_delta": -0.23814131544939224,
+          "model_implied_exponent": 2.609743851099063,
+          "observed_exponent": 2.608082689788022
+        },
+        "sparse": {
+          "density_drift_delta": -0.8199506236620213,
+          "model_implied_exponent": 2.606421528476985,
+          "observed_exponent": 2.608082689788022
+        }
+      }
+    },
+    "row_xors": {
+      "degree_at_fixed_density_b": 6.312686790501216,
+      "density_elasticity_c": 1.4102602877012684,
+      "max_abs_log_residual": 0.4080605604637988,
+      "per_arm": {
+        "dense": {
+          "density_drift_delta": -0.23814131544939224,
+          "model_implied_exponent": 5.976845550461998,
+          "observed_exponent": 6.054257356770326
+        },
+        "sparse": {
+          "density_drift_delta": -0.8199506236620213,
+          "model_implied_exponent": 5.156342988074779,
+          "observed_exponent": 5.078931181766451
+        }
+      }
+    }
+  },
+  "matched_widths": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "meaning": "the density contrast itself scales with n, so rho conflates a degree effect with a widening gap; rho is not readable as registered",
+  "pairing_valid": true,
+  "protocol": "docs/notes/SPARSE_DENSE_COST_EXPERIMENT.md",
+  "ratio_first": 1.7212356979405035,
+  "ratio_last": 4.281485912084781,
+  "rho": 0.9753261750038771,
+  "support_rank_mismatch_at": [],
+  "tolerance": 0.3843480500322358,
+  "verdict": "contrast_not_constant"
+}
