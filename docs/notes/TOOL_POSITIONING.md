@@ -28,6 +28,23 @@ prix d'un effort de spécification et de preuve. Ce n'est pas une procédure de
 décision, et ça ne cherche pas à l'être : c'est le compromis assumé de la
 vérification déductive, qui achète la généralité par du travail humain.
 
+**Base de cette description.** Je n'ai pas exécuté Qbricks. Ce qui précède
+vient de deux lectures de leur documentation publique — dépôt GitHub et site du
+projet — et l'affirmation sur l'entrée est formulée pour être recontrôlable :
+
+> le flux documenté est d'écrire son programme dans le DSL Qbricks ; nous
+> n'avons trouvé **aucun chemin d'import documenté** pour un circuit produit
+> ailleurs, la prise en charge OQASM étant présentée comme une génération de
+> sortie.
+
+« Aucun chemin documenté » se vérifie en ouvrant la même documentation. « Il
+n'y a pas d'import » demanderait de les croire. La première formulation est
+donc préférable, et pas seulement plus prudente.
+
+Si un chemin d'import existe sans être documenté, cette phrase appelle une
+correction, pas un démenti : le différenciateur ci-dessous ne repose pas sur le
+format d'entrée de Qbricks mais sur celui de StabCert.
+
 **Il n'y a pas de comparaison chiffrée honnête à construire.** Ré-exprimer une
 fixture StabCert comme programme Qbricks mesurerait l'effort de preuve requis ;
 faire tourner StabCert sur un circuit Qbricks mesurerait autre chose encore. Les
@@ -93,6 +110,23 @@ toute formulation qui le masquerait serait fausse.
 ## Ce que cette note ne fait pas
 
 Elle ne classe pas les outils, n'affirme aucune supériorité, et ne rapporte
-aucune mesure d'un outil tiers qui n'ait pas été exécutée. Les seules
-différences retenues sont celles qu'un auteur de l'outil concerné
-reconnaîtrait comme des descriptions exactes de ce qu'il a conçu.
+aucune mesure d'un outil tiers qui n'ait pas été exécutée. **Aucun des deux
+outils décrits ici n'a été exécuté** : les descriptions viennent de leur
+documentation publique, et chaque section le dit.
+
+Cette divulgation doit rester **symétrique**. Une première version signalait la
+non-exécution de QCEC et taisait celle de Qbricks, créant une hiérarchie de
+preuve qui n'existait pas. Un lecteur ne peut pas jauger une affirmation dont
+il ignore la base, et le silence sur l'une laisse supposer qu'elle est mieux
+fondée que l'autre. L'asymétrie était plus grave que l'affirmation.
+
+Deux règles en découlent, applicables au-delà de cette note :
+
+1. Ne retenir que les différences qu'un auteur de l'outil concerné
+   reconnaîtrait comme des descriptions exactes de ce qu'il a conçu.
+2. **Proportionner la profondeur de vérification au poids que l'affirmation
+   porte.** Une affirmation qui soutient le positionnement mérite un test ;
+   une affirmation d'appoint mérite une source et une divulgation. Monter une
+   chaîne d'outils complète pour consolider une phrase secondaire est du temps
+   pris au travail principal — mais taire qu'une phrase n'est pas testée ne
+   coûte rien et fausse tout.
