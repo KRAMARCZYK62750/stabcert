@@ -1,0 +1,52 @@
+name: clean clone
+
+# Runs the suite against tracked content only. A checkout contains exactly what
+# a reader gets by cloning, so a test reading an untracked artifact fails here
+# and passes locally -- which is the failure this job exists to catch.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Lowest supported version and a current one. requires-python is >=3.10,
+        # so the lower bound is a claim the project makes and should be tested.
+        python-version: ["3.10", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Core dependencies only: numpy and stim. The SABRE and pytket modules
+      # skip themselves when their backend is absent, so this run proves the
+      # suite is green without any optional compiler installed.
+      - name: install core
+        run: python -m pip install --quiet --upgrade pip && python -m pip install --quiet -e '.[test]'
+
+      - name: suite without optional backends
+        run: python -m pytest -q
+
+      # Full install: the count quoted in the documentation is the one obtained
+      # with every backend present.
+      - name: install optional backends
+        run: python -m pip install --quiet -e '.[test,sabre,pytket]'
+
+      - name: suite with every backend
+        run: python -m pytest -q | tee pytest-full.txt
+
+      # Check the documented counts against the run that just happened here,
+      # not against results/test_suite_count.json -- that file records a
+      # contributor's local run, which is precisely the thing this job does not
+      # trust. --report reuses the output above instead of running a third time.
+      - name: documented test counts match this run
+        run: python sync_test_counts.py --report pytest-full.txt --check
