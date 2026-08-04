@@ -90,3 +90,5 @@ results/*
 !results/routing_geometry_multiseed_summary.csv
 !results/routing_geometry_paired_reductions.csv
 !results/stabilizer_validation_regression.csv
+!results/petz_logical_action_seed20260802_layers6_t2.csv
+!results/petz_logical_action_seed4000_layers3_t2.csv
