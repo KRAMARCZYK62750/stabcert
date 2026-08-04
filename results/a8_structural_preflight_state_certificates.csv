@@ -1,0 +1,5 @@
+test_kind,input_state,primary_binary_symbol,primary_decimal_value,visual_label_only,contains_complex_relative_phase,preservation_certified,certified_fidelity,certification_method,dense_state_constructed
+basis_demo,|10101101>,10101101,173,😀,False,True,1.0,corollary_of_signed_reduced_choi_identity,False
+superposition_ghz,(|00000000>+|11111111>)/sqrt(2),,,,False,True,1.0,corollary_of_signed_reduced_choi_identity,False
+superposition_phase_i,(|00000001>+i|11111110>)/sqrt(2),,,,True,True,1.0,corollary_of_signed_reduced_choi_identity,False
+uniform_complex_phase,((|0>+i|1>)/sqrt(2))^tensor8,,,,True,True,1.0,corollary_of_signed_reduced_choi_identity,False

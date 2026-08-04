@@ -14,7 +14,10 @@ phase-smoke/
 scaling-smoke/
 smoke-results/
 
-# results/ : seuls les fichiers cités comme preuve dans README.md ou docs/notes/
+# results/ : deux critères d'inclusion, et il faut les deux —
+#   (1) cité comme preuve dans README.md ou docs/notes/ ;
+#   (2) requis par un test, sinon la suite échoue sur un clone propre.
+# Le critère (1) seul a été appliqué d'abord : 20 tests échouaient au clone.
 results/*
 !results/a9_a12_structural_preflights.csv
 !results/a9_a12_structural_timelines.csv
@@ -69,3 +72,21 @@ results/*
 !results/gf2_scaling_sparse_d3.csv
 !results/gf2_scaling_sparse_d3.json
 !results/density_cost_comparison.json
+!results/a5_structural_retry_resources.csv
+!results/a6_structural_preflight_resources.csv
+!results/a6_structural_preflight_timeline.csv
+!results/a7_structural_preflight_resources.csv
+!results/a7_structural_preflight_timeline.csv
+!results/a8_structural_preflight_resources.csv
+!results/a8_structural_preflight_state_certificates.csv
+!results/a8_structural_preflight_timeline.csv
+!results/dense_free_chain_regression.csv
+!results/dense_free_pipeline_a7_resources.csv
+!results/geometry_routing_comparison.csv
+!results/routing_a12_interactions.csv
+!results/routing_geometry_audit.csv
+!results/routing_geometry_multiseed.csv
+!results/routing_geometry_multiseed_depths.png
+!results/routing_geometry_multiseed_summary.csv
+!results/routing_geometry_paired_reductions.csv
+!results/stabilizer_validation_regression.csv
