@@ -1,5 +1,22 @@
 #!/usr/bin/env python3
-"""Regenerate the automatic-suite test counts quoted in the documentation."""
+"""Regenerate the automatic-suite test counts quoted in the documentation.
+
+What this guarantees, exactly: that the ``TEST_COUNT`` spans in the documents
+listed below match the suite **as it runs in this working directory**, and
+that they are never written by hand.
+
+What it does not guarantee, and cannot: anything about the suite a reader
+gets. It does not know what is tracked by git. On 4 August 2026 the published
+count of 124 was true here and false everywhere else -- 20 tests failed from a
+clean clone because artifacts they read were untracked, and this script had
+faithfully synchronised a number reachable only locally. It was not wrong; it
+was asked for less than was assumed of it.
+
+The clone-and-run guarantee belongs to CI (``.github/workflows/clean-clone.yml``),
+which checks out only tracked content. That job and this script are
+independent controls: CI does not make this promise wider, it adds another
+one. Keep both.
+"""
 from __future__ import annotations
 
 import argparse
