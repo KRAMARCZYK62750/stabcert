@@ -1,0 +1,50 @@
+{
+  "accessible_width_range": [
+    21,
+    30
+  ],
+  "architecture": "chain",
+  "counters": {
+    "affine_systems_solved": {
+      "exact_polynomial_coefficients": [
+        28.0,
+        -232.0,
+        598.0
+      ],
+      "exact_polynomial_degree": 2,
+      "log_log_exponent_all_points": 2.3738448683567164,
+      "log_log_exponent_last_step": 2.3117511811795937,
+      "log_log_exponent_upper_half": 2.331407844371614
+    },
+    "pivots": {
+      "log_log_exponent_all_points": 4.46012036276328,
+      "log_log_exponent_last_step": 4.381312960293089,
+      "log_log_exponent_upper_half": 4.413391500591059
+    },
+    "rank_reductions": {
+      "log_log_exponent_all_points": 3.356855340933569,
+      "log_log_exponent_last_step": 3.3127473103158143,
+      "log_log_exponent_upper_half": 3.3250066861942567
+    },
+    "row_xors": {
+      "log_log_exponent_all_points": 5.454028538840589,
+      "log_log_exponent_last_step": 8.307957612036375,
+      "log_log_exponent_upper_half": 4.903028780066375
+    },
+    "scalar_bit_xors": {
+      "log_log_exponent_all_points": 6.646656240380615,
+      "log_log_exponent_last_step": 9.692263408611124,
+      "log_log_exponent_upper_half": 6.090732864303832
+    },
+    "verify_seconds": {
+      "log_log_exponent_all_points": 4.864650764901557,
+      "log_log_exponent_last_step": 5.495535820007859,
+      "log_log_exponent_upper_half": 4.716868316693806
+    }
+  },
+  "format_version": "orelia.gf2-scaling/v1",
+  "instances": 10,
+  "policy": "channel-certified",
+  "scramble_depth": 6,
+  "seed": 20260802
+}

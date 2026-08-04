@@ -1,0 +1,13 @@
+category,index,binary_generator,legacy_signed_representative,aligned_signed_representative,diagnostic
+input_stabilizer,1,YZXXIX,-YZXXIX,-YZXXIX,aligned
+input_stabilizer,2,XYYZYX,+ZXZYYI,+XYYZYX,legacy representative mismatched binary generator
+logical_X,1,XXXIII,,+XXXIII,canonical logical generator
+logical_X,2,IIXXII,,+IIXXII,canonical logical generator
+logical_X,3,IIIXXI,,+IIIXXI,canonical logical generator
+logical_X,4,IIIIIX,,+IIIIIX,canonical logical generator
+logical_Z,1,ZXIIII,,+ZXIIII,canonical logical generator
+logical_Z,2,ZIZIII,,+ZIZIII,canonical logical generator
+logical_Z,3,ZXZYII,,+ZXZYII,canonical logical generator
+logical_Z,4,IXIIIZ,,+IXIIIZ,canonical logical generator
+destabilizer,1,IXIIXI,,+IXIIXI,first legacy incompatibility: destabilizer 1 anticommutes with legacy stabilizer 2
+destabilizer,2,IIIIXI,,+IIIIXI,first legacy incompatibility: destabilizer 1 anticommutes with legacy stabilizer 2

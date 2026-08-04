@@ -1,0 +1,181 @@
+B_size,seed,scrambler_layers,emission_time,petz_entanglement_fidelity,noise_model,noise_depth,synthesis_method,claim,geometry,architecture_diameter,causal_line_lower_bound,logical_cnot_count,logical_two_qubit_depth,mean_logical_interaction_distance,routing_swap_count,routed_cnot_count,routed_two_qubit_depth,final_entanglement_fidelity,status
+4,4000,3,1,0.9999999999999979,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4000,3,2,0.9999999999999984,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,36,27,1.4444444444444444,0,36,27,0.9999999999999947,validated
+4,4000,3,2,0.9999999999999984,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,36,27,1.4444444444444444,18,90,72,0.9999999999999947,validated
+4,4001,3,1,0.9999999999999978,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4001,3,2,0.9999999999999986,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,25,16,1.56,0,25,16,0.999999999999995,validated
+4,4001,3,2,0.9999999999999986,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,25,16,1.56,16,73,61,0.999999999999995,validated
+4,4002,3,1,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4002,3,2,0.9999999999999977,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,24,1.4482758620689655,0,29,24,0.9999999999999944,validated
+4,4002,3,2,0.9999999999999977,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,24,1.4482758620689655,26,107,82,0.9999999999999944,validated
+4,4003,3,1,0.9999999999999974,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4003,3,2,0.9999999999999958,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,28,24,1.2857142857142858,0,28,24,0.9999999999999962,validated
+4,4003,3,2,0.9999999999999958,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,4,28,24,1.2857142857142858,12,64,45,0.9999999999999962,validated
+4,4004,3,1,0.9999999999999982,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4004,3,2,0.9999999999999989,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,25,17,1.52,0,25,17,0.9999999999999956,validated
+4,4004,3,2,0.9999999999999989,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,4,25,17,1.52,28,109,85,0.9999999999999956,validated
+4,4005,3,1,0.9999999999999976,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4005,3,2,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,24,20,1.5416666666666667,0,24,20,0.999999999999995,validated
+4,4005,3,2,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,24,20,1.5416666666666667,30,114,80,0.999999999999995,validated
+4,4006,3,1,0.9999999999999979,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4006,3,2,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,33,25,1.4242424242424243,0,33,25,0.9999999999999956,validated
+4,4006,3,2,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,33,25,1.4242424242424243,32,129,97,0.9999999999999956,validated
+4,4007,3,1,0.9999999999999979,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4007,3,2,0.9999999999999981,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,35,25,1.457142857142857,0,35,25,0.9999999999999943,validated
+4,4007,3,2,0.9999999999999981,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,35,25,1.457142857142857,28,119,100,0.9999999999999943,validated
+4,4008,3,1,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4008,3,2,0.999999999999997,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,19,1.6206896551724137,0,29,19,0.9999999999999952,validated
+4,4008,3,2,0.999999999999997,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,19,1.6206896551724137,38,143,97,0.9999999999999952,validated
+4,4009,3,1,0.9999999999999984,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4009,3,2,0.9999999999999976,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,31,27,1.3548387096774193,0,31,27,0.9999999999999973,validated
+4,4009,3,2,0.9999999999999976,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,31,27,1.3548387096774193,8,55,36,0.9999999999999973,validated
+4,4010,3,1,0.9999999999999977,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4010,3,2,0.9999999999999971,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,25,16,1.4,0,25,16,0.9999999999999943,validated
+4,4010,3,2,0.9999999999999971,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,4,25,16,1.4,16,73,48,0.9999999999999943,validated
+4,4011,3,1,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4011,3,2,0.9999999999999968,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,21,1.5172413793103448,0,29,21,0.999999999999994,validated
+4,4011,3,2,0.9999999999999968,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,21,1.5172413793103448,14,71,57,0.999999999999994,validated
+4,4012,3,1,0.9999999999999982,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4012,3,2,0.9999999999999984,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,30,22,1.5,0,30,22,0.9999999999999962,validated
+4,4012,3,2,0.9999999999999984,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,4,30,22,1.5,16,78,54,0.9999999999999962,validated
+4,4013,3,1,0.499999999999999,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4013,3,2,0.49999999999999856,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,24,22,1.9166666666666667,0,24,22,0.4999999999999976,validated
+4,4013,3,2,0.49999999999999856,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,24,22,1.9166666666666667,22,90,57,0.4999999999999976,validated
+4,4014,3,1,0.9999999999999978,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4014,3,2,0.999999999999997,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,27,20,1.3703703703703705,0,27,20,0.9999999999999943,validated
+4,4014,3,2,0.999999999999997,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,27,20,1.3703703703703705,20,87,70,0.9999999999999943,validated
+4,4015,3,1,0.4999999999999989,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4015,3,2,0.9999999999999976,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,22,17,1.5,0,22,17,0.9999999999999944,validated
+4,4015,3,2,0.9999999999999976,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,22,17,1.5,24,94,69,0.9999999999999944,validated
+4,4016,3,1,0.999999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4016,3,2,0.9999999999999982,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,27,19,1.7407407407407407,0,27,19,0.9999999999999962,validated
+4,4016,3,2,0.9999999999999982,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,27,19,1.7407407407407407,18,81,71,0.9999999999999962,validated
+4,4017,3,1,0.49999999999999856,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4017,3,2,0.49999999999999917,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,23,17,1.4782608695652173,0,23,17,0.49999999999999734,validated
+4,4017,3,2,0.49999999999999917,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,23,17,1.4782608695652173,12,59,49,0.49999999999999734,validated
+4,4018,3,1,0.9999999999999979,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4018,3,2,0.9999999999999978,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,25,20,1.52,0,25,20,0.9999999999999956,validated
+4,4018,3,2,0.9999999999999978,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,25,20,1.52,10,55,41,0.9999999999999956,validated
+4,4019,3,1,0.49999999999999906,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4019,3,2,0.49999999999999933,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,31,29,1.8709677419354838,0,31,29,0.4999999999999972,validated
+4,4019,3,2,0.49999999999999933,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,31,29,1.8709677419354838,24,103,89,0.4999999999999972,validated
+4,4000,6,1,0.9999999999999963,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4000,6,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,26,23,1.7307692307692308,0,26,23,0.9999999999999925,validated
+4,4000,6,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,26,23,1.7307692307692308,28,110,90,0.9999999999999925,validated
+4,4001,6,1,0.9999999999999971,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4001,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,26,16,1.5,0,26,16,0.9999999999999952,validated
+4,4001,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,26,16,1.5,18,80,61,0.9999999999999952,validated
+4,4002,6,1,0.9999999999999964,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4002,6,2,0.9999999999999973,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,34,25,1.2647058823529411,0,34,25,0.9999999999999918,validated
+4,4002,6,2,0.9999999999999973,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,34,25,1.2647058823529411,22,100,85,0.9999999999999918,validated
+4,4003,6,1,0.999999999999996,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4003,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,26,24,1.5,0,26,24,0.9999999999999926,validated
+4,4003,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,26,24,1.5,32,122,89,0.9999999999999926,validated
+4,4004,6,1,0.4999999999999983,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4004,6,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,26,18,1.4230769230769231,0,26,18,0.9999999999999947,validated
+4,4004,6,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,26,18,1.4230769230769231,40,146,106,0.9999999999999947,validated
+4,4005,6,1,0.4999999999999982,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4005,6,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,27,23,1.6296296296296295,0,27,23,0.9999999999999939,validated
+4,4005,6,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,27,23,1.6296296296296295,16,75,59,0.9999999999999939,validated
+4,4006,6,1,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4006,6,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,32,24,1.59375,0,32,24,0.9999999999999952,validated
+4,4006,6,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,32,24,1.59375,24,104,92,0.9999999999999952,validated
+4,4007,6,1,0.4999999999999984,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4007,6,2,0.9999999999999966,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,27,20,1.5185185185185186,0,27,20,0.9999999999999925,validated
+4,4007,6,2,0.9999999999999966,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,27,20,1.5185185185185186,34,129,87,0.9999999999999925,validated
+4,4008,6,1,0.9999999999999964,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4008,6,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,24,1.6551724137931034,0,29,24,0.9999999999999923,validated
+4,4008,6,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,24,1.6551724137931034,38,143,112,0.9999999999999923,validated
+4,4009,6,1,0.4999999999999984,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4009,6,2,0.999999999999996,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,23,1.5172413793103448,0,29,23,0.9999999999999943,validated
+4,4009,6,2,0.999999999999996,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,23,1.5172413793103448,22,95,80,0.9999999999999943,validated
+4,4010,6,1,0.49999999999999845,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4010,6,2,0.49999999999999833,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,28,1.7241379310344827,0,29,28,0.49999999999999617,validated
+4,4010,6,2,0.49999999999999833,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,28,1.7241379310344827,32,125,105,0.49999999999999617,validated
+4,4011,6,1,0.9999999999999966,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4011,6,2,0.9999999999999969,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,21,16,1.9523809523809523,0,21,16,0.9999999999999947,validated
+4,4011,6,2,0.9999999999999969,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,21,16,1.9523809523809523,16,69,58,0.9999999999999947,validated
+4,4012,6,1,0.9999999999999973,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4012,6,2,0.9999999999999968,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,27,24,1.7777777777777777,0,27,24,0.9999999999999947,validated
+4,4012,6,2,0.9999999999999968,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,27,24,1.7777777777777777,24,99,77,0.9999999999999947,validated
+4,4013,6,1,0.49999999999999806,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4013,6,2,0.9999999999999953,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,24,16,1.625,0,24,16,0.9999999999999933,validated
+4,4013,6,2,0.9999999999999953,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,24,16,1.625,14,66,52,0.9999999999999933,validated
+4,4014,6,1,0.4999999999999981,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4014,6,2,0.9999999999999973,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,21,16,1.4761904761904763,0,21,16,0.9999999999999936,validated
+4,4014,6,2,0.9999999999999973,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,21,16,1.4761904761904763,22,87,72,0.9999999999999936,validated
+4,4015,6,1,0.9999999999999964,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4015,6,2,0.9999999999999971,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,25,1.6206896551724137,0,29,25,0.9999999999999931,validated
+4,4015,6,2,0.9999999999999971,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,25,1.6206896551724137,16,77,61,0.9999999999999931,validated
+4,4016,6,1,0.9999999999999971,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4016,6,2,0.9999999999999959,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,33,23,1.4848484848484849,0,33,23,0.9999999999999928,validated
+4,4016,6,2,0.9999999999999959,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,33,23,1.4848484848484849,26,111,89,0.9999999999999928,validated
+4,4017,6,1,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4017,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,24,20,1.5833333333333333,0,24,20,0.9999999999999926,validated
+4,4017,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,24,20,1.5833333333333333,20,84,64,0.9999999999999926,validated
+4,4018,6,1,0.9999999999999964,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4018,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,30,23,1.5333333333333334,0,30,23,0.9999999999999939,validated
+4,4018,6,2,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,30,23,1.5333333333333334,16,78,58,0.9999999999999939,validated
+4,4019,6,1,0.9999999999999964,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4019,6,2,0.9999999999999969,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,25,16,1.4,0,25,16,0.9999999999999943,validated
+4,4019,6,2,0.9999999999999969,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,25,16,1.4,18,79,70,0.9999999999999943,validated
+4,4000,9,1,0.4999999999999975,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4000,9,2,0.9999999999999956,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,32,25,1.46875,0,32,25,0.9999999999999909,validated
+4,4000,9,2,0.9999999999999956,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,32,25,1.46875,20,92,65,0.9999999999999909,validated
+4,4001,9,1,0.499999999999998,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4001,9,2,0.999999999999996,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,22,21,1.6818181818181819,0,22,21,0.999999999999992,validated
+4,4001,9,2,0.999999999999996,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,22,21,1.6818181818181819,16,70,57,0.999999999999992,validated
+4,4002,9,1,0.9999999999999962,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4002,9,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,20,1.3793103448275863,0,29,20,0.9999999999999913,validated
+4,4002,9,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,4,29,20,1.3793103448275863,22,95,75,0.9999999999999913,validated
+4,4003,9,1,0.49999999999999706,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4003,9,2,0.9999999999999951,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,33,25,1.5151515151515151,0,33,25,0.9999999999999906,validated
+4,4003,9,2,0.9999999999999951,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,33,25,1.5151515151515151,18,87,66,0.9999999999999906,validated
+4,4004,9,1,0.9999999999999951,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4004,9,2,0.9999999999999953,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,31,25,1.4838709677419355,0,31,25,0.9999999999999922,validated
+4,4004,9,2,0.9999999999999953,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,31,25,1.4838709677419355,24,103,90,0.9999999999999922,validated
+4,4005,9,1,0.49999999999999767,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4005,9,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,31,22,1.3870967741935485,0,31,22,0.9999999999999928,validated
+4,4005,9,2,0.9999999999999967,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,31,22,1.3870967741935485,22,97,85,0.9999999999999928,validated
+4,4006,9,1,0.49999999999999817,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4006,9,2,0.9999999999999964,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,23,1.4137931034482758,0,29,23,0.9999999999999929,validated
+4,4006,9,2,0.9999999999999964,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,23,1.4137931034482758,34,131,92,0.9999999999999929,validated
+4,4007,9,1,0.4999999999999975,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4007,9,2,0.9999999999999952,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,25,19,1.4,0,25,19,0.9999999999999909,validated
+4,4007,9,2,0.9999999999999952,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,25,19,1.4,12,61,46,0.9999999999999909,validated
+4,4008,9,1,0.49999999999999767,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4008,9,2,0.9999999999999953,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,28,18,1.2857142857142858,0,28,18,0.9999999999999913,validated
+4,4008,9,2,0.9999999999999953,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,28,18,1.2857142857142858,14,70,53,0.9999999999999913,validated
+4,4009,9,1,0.24999999999999908,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4009,9,2,0.4999999999999977,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,25,2.0,0,29,25,0.4999999999999968,validated
+4,4009,9,2,0.4999999999999977,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,25,2.0,30,119,94,0.4999999999999968,validated
+4,4010,9,1,0.49999999999999806,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4010,9,2,0.49999999999999833,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,28,22,1.7142857142857142,0,28,22,0.49999999999999645,validated
+4,4010,9,2,0.49999999999999833,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,28,22,1.7142857142857142,24,100,78,0.49999999999999645,validated
+4,4011,9,1,0.49999999999999784,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4011,9,2,0.4999999999999982,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,19,1.9655172413793103,0,29,19,0.4999999999999959,validated
+4,4011,9,2,0.4999999999999982,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,19,1.9655172413793103,36,137,111,0.4999999999999959,validated
+4,4012,9,1,0.9999999999999958,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4012,9,2,0.9999999999999958,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,29,28,1.5517241379310345,0,29,28,0.9999999999999923,validated
+4,4012,9,2,0.9999999999999958,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,29,28,1.5517241379310345,16,77,63,0.9999999999999923,validated
+4,4013,9,1,0.9999999999999946,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4013,9,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,28,19,1.3928571428571428,0,28,19,0.9999999999999913,validated
+4,4013,9,2,0.9999999999999957,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,28,19,1.3928571428571428,32,124,91,0.9999999999999913,validated
+4,4014,9,1,0.9999999999999947,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4014,9,2,0.9999999999999954,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,16,12,1.8125,0,16,12,0.9999999999999917,validated
+4,4014,9,2,0.9999999999999954,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,16,12,1.8125,34,118,80,0.9999999999999917,validated
+4,4015,9,1,0.4999999999999975,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4015,9,2,0.4999999999999972,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,33,27,1.8484848484848484,0,33,27,0.49999999999999567,validated
+4,4015,9,2,0.4999999999999972,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,33,27,1.8484848484848484,24,105,91,0.49999999999999567,validated
+4,4016,9,1,0.49999999999999845,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4016,9,2,0.9999999999999958,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,28,24,1.4285714285714286,0,28,24,0.9999999999999895,validated
+4,4016,9,2,0.9999999999999958,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,28,24,1.4285714285714286,18,82,71,0.9999999999999895,validated
+4,4017,9,1,0.4999999999999974,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4017,9,2,0.9999999999999956,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,30,24,1.5,0,30,24,0.9999999999999925,validated
+4,4017,9,2,0.9999999999999956,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,30,24,1.5,18,84,65,0.9999999999999925,validated
+4,4018,9,1,0.4999999999999975,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4018,9,2,0.4999999999999977,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,28,23,1.3928571428571428,0,28,23,0.4999999999999963,validated
+4,4018,9,2,0.4999999999999977,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,28,23,1.3928571428571428,14,70,54,0.4999999999999963,validated
+4,4019,9,1,0.9999999999999948,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,not_compiled,,,,,,,,,,Petz-only baseline; no circuit compiled
+4,4019,9,2,0.999999999999996,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,all_to_all_logical,1,0,20,17,1.6,0,20,17,0.9999999999999918,validated
+4,4019,9,2,0.999999999999996,ideal,0,signed_symplectic_Clifford,observed construction; not minimal,line_E0-E1-E2-E3-D0-D1,5,5,20,17,1.6,26,98,91,0.9999999999999918,validated

@@ -1,0 +1,9 @@
+{
+  "command": ".venv/bin/python -m pytest -q",
+  "format_version": "orelia.test-suite-count/v1",
+  "generated_at": "2026-08-04T08:49:27+00:00",
+  "outcomes": {
+    "passed": 124
+  },
+  "passed": 124
+}

@@ -1,0 +1,5 @@
+variant,signed_single_pauli_match,symplectic_matrix_match,phase_vector_match,candidate_entanglement_fidelity,status
+direct,False,True,False,1.0,rejected: Y phase mismatch
+transpose,True,True,True,1.0,accepted
+conjugate,True,True,True,1.0,accepted
+inverse_symplectic,False,False,False,0.24999999999999975,rejected: input/output direction is reversed

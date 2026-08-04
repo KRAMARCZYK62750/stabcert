@@ -1,0 +1,2 @@
+seed,scrambler_layers,t,layout,petz_abstract_fidelity,stinespring_exact_fidelity,support_dimension,extension_action_error,unitarity_error,petz_choi_rank,compiled_unitary_error,two_qubit_depth,cx_count,swap_count,one_qubit_count,qubits,final_layout,logical_output_physical_site,swap_restoration_lower_bound,output_site,farthest_site,distance_to_farthest,causal_depth_lower_bound_if_farthest_required
+20260802,0,1,E0-E1-E2-E3-D0,0.9999999999999996,0.9999999999999993,32,0.0,0.0,16,5.0245347759053926e-15,703,423,342,745,5,2-1-3-0-4,2,4,0,4,4,4

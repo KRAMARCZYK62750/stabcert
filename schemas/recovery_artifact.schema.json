@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orelia.local/schemas/recovery_artifact.v1.schema.json",
+  "title": "RecoveryArtifact v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version", "source_semantic_problem_hash", "source_document_hash",
+    "tau_support", "petz_target", "logical_circuit", "routed_circuit",
+    "topology", "final_permutation", "resources", "certificate", "metrics"
+  ],
+  "properties": {
+    "format_version": {"const": "orelia.recovery-artifact/v1"},
+    "source_semantic_problem_hash": {"$ref": "#/$defs/hash"},
+    "source_document_hash": {"$ref": "#/$defs/hash"},
+    "tau_support": {
+      "type": "object", "additionalProperties": false,
+      "required": ["qubit_order", "signed_generators", "support_rank", "logical_qubits"],
+      "properties": {
+        "qubit_order": {"$ref": "#/$defs/qubitList"},
+        "signed_generators": {"type": "array", "items": {"$ref": "#/$defs/pauli"}},
+        "support_rank": {"type": "integer", "minimum": 1},
+        "logical_qubits": {"type": "integer", "minimum": 0}
+      }
+    },
+    "petz_target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["choi_qubit_order", "signed_generators", "representation"],
+      "properties": {
+        "choi_qubit_order": {"$ref": "#/$defs/qubitList"},
+        "signed_generators": {"type": "array", "items": {"$ref": "#/$defs/pauli"}},
+        "representation": {"const": "pure_stabilizer_choi_purification"}
+      }
+    },
+    "logical_circuit": {"$ref": "#/$defs/circuit"},
+    "routed_circuit": {"$ref": "#/$defs/circuit"},
+    "topology": {"$ref": "recovery_problem.schema.json#/$defs/graph"},
+    "final_permutation": {"$ref": "#/$defs/qubitList"},
+    "resources": {
+      "type": "object", "additionalProperties": false,
+      "required": ["logical_depth", "routed_depth", "logical_cnot", "routed_cnot", "movement_swaps", "restoration_swaps", "environment_qubits"],
+      "properties": {
+        "logical_depth": {"type": "integer", "minimum": 0},
+        "routed_depth": {"type": "integer", "minimum": 0},
+        "logical_cnot": {"type": "integer", "minimum": 0},
+        "routed_cnot": {"type": "integer", "minimum": 0},
+        "movement_swaps": {"type": "integer", "minimum": 0},
+        "restoration_swaps": {"type": "integer", "minimum": 0},
+        "environment_qubits": {"type": "integer", "minimum": 0}
+      }
+    },
+    "certificate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target_reduced_choi_signature", "candidate_reduced_choi_signature", "logical_action_signature", "compiler_declared_valid"],
+      "properties": {
+        "target_reduced_choi_signature": {"type": "array", "items": {"type": "string"}},
+        "candidate_reduced_choi_signature": {"type": "array", "items": {"type": "string"}},
+        "logical_action_signature": {"type": "array", "items": {"type": "string"}},
+        "compiler_declared_valid": {"type": "boolean"}
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["name", "value", "unit"],
+        "properties": {"name": {"type": "string"}, "value": {"type": "string"}, "unit": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "qubitList": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "pauli": {"$ref": "recovery_problem.schema.json#/$defs/pauli"},
+    "gate": {"$ref": "recovery_problem.schema.json#/$defs/gate"},
+    "circuit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["qubit_order", "gates"],
+      "properties": {
+        "qubit_order": {"$ref": "#/$defs/qubitList"},
+        "gates": {"type": "array", "items": {"$ref": "#/$defs/gate"}}
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orelia.local/schemas/recovery_run_report.v2.schema.json",
+  "title": "RecoveryRunReport v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version", "command", "status", "exit_code",
+    "semantic_problem_hash", "problem_document_hash",
+    "artifact_document_hash", "started_at_utc", "finished_at_utc",
+    "wall_seconds", "peak_rss_mib", "iterations", "verification_policy",
+    "environment", "logs"
+  ],
+  "properties": {
+    "format_version": {"const": "orelia.recovery-run-report/v2"},
+    "command": {"enum": ["compile", "verify", "benchmark"]},
+    "status": {"enum": ["success", "input_invalid", "unsupported_version", "compilation_failed", "verification_rejected", "internal_error"]},
+    "exit_code": {"type": "integer", "minimum": 0, "maximum": 255},
+    "semantic_problem_hash": {"$ref": "#/$defs/optionalHash"},
+    "problem_document_hash": {"$ref": "#/$defs/optionalHash"},
+    "artifact_document_hash": {"$ref": "#/$defs/optionalHash"},
+    "started_at_utc": {"type": "string", "format": "date-time"},
+    "finished_at_utc": {"type": "string", "format": "date-time"},
+    "wall_seconds": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:[eE]-?[0-9]+)?$"},
+    "peak_rss_mib": {"type": ["string", "null"], "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:[eE]-?[0-9]+)?$"},
+    "iterations": {"type": "integer", "minimum": 1},
+    "verification_policy": {"enum": ["not_applicable", "reproducible-route", "channel-certified"]},
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core_version", "python_version", "numpy_version", "stim_version", "os_name", "os_release", "architecture", "processor", "hostname"],
+      "properties": {
+        "core_version": {"type": "string"},
+        "python_version": {"type": "string"},
+        "numpy_version": {"type": "string"},
+        "stim_version": {"type": "string"},
+        "os_name": {"type": "string"},
+        "os_release": {"type": "string"},
+        "architecture": {"type": "string"},
+        "processor": {"type": "string"},
+        "hostname": {"type": "string"}
+      }
+    },
+    "logs": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "optionalHash": {
+      "type": "string",
+      "pattern": "^(?:|[0-9a-f]{64})$"
+    }
+  }
+}

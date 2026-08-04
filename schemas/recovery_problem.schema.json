@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orelia.local/schemas/recovery_problem.v1.schema.json",
+  "title": "RecoveryProblem v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_version", "qubit_order", "channel_input", "source_clifford",
+    "ancilla_qubits", "ancilla_initial_stabilizers",
+    "accessible_partition", "inaccessible_partition", "requested_output",
+    "logical_qubit_order", "physical_initial_order", "coupling_graph",
+    "allowed_gates", "depth_convention", "router",
+    "certification_thresholds", "petz_reference", "choi_convention",
+    "transpose_convention", "support_inverse_policy",
+    "expected_tau_support", "metadata"
+  ],
+  "properties": {
+    "format_version": {"const": "orelia.recovery-problem/v1"},
+    "qubit_order": {"$ref": "#/$defs/qubitList"},
+    "channel_input": {"$ref": "#/$defs/qubitList"},
+    "source_clifford": {
+      "type": "array", "items": {"$ref": "#/$defs/gate"}
+    },
+    "ancilla_qubits": {"$ref": "#/$defs/qubitList"},
+    "ancilla_initial_stabilizers": {
+      "type": "array", "items": {"$ref": "#/$defs/pauli"}
+    },
+    "accessible_partition": {"$ref": "#/$defs/qubitList"},
+    "inaccessible_partition": {"$ref": "#/$defs/qubitList"},
+    "requested_output": {"$ref": "#/$defs/qubitList"},
+    "logical_qubit_order": {"$ref": "#/$defs/qubitList"},
+    "physical_initial_order": {"$ref": "#/$defs/qubitList"},
+    "coupling_graph": {"$ref": "#/$defs/graph"},
+    "allowed_gates": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "H"}, {"const": "S"}, {"const": "X"},
+        {"const": "Z"}, {"const": "CNOT"}
+      ],
+      "items": false
+    },
+    "depth_convention": {"const": "asap_two_qubit_layers_single_qubit_free"},
+    "router": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "lookahead", "candidate_budget", "restore_final_order"],
+      "properties": {
+        "algorithm": {"const": "common_lookahead_token_restore"},
+        "lookahead": {"type": "integer", "minimum": 0},
+        "candidate_budget": {"type": "integer", "minimum": 1},
+        "restore_final_order": {"const": true}
+      }
+    },
+    "certification_thresholds": {
+      "type": "object", "additionalProperties": false,
+      "required": ["numerical_tolerance"],
+      "properties": {
+        "numerical_tolerance": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?(?:[eE]-?[0-9]+)?$"}
+      }
+    },
+    "petz_reference": {"const": "maximally_mixed_on_channel_input"},
+    "choi_convention": {"const": "normalized_bell_source_order_output_reference_environment"},
+    "transpose_convention": {"const": "P_transpose_on_reference_Y_transpose_minus_Y"},
+    "support_inverse_policy": {"const": "moore_penrose_on_exact_stabilizer_support"},
+    "expected_tau_support": {
+      "type": "array", "items": {"$ref": "#/$defs/pauli"}
+    },
+    "metadata": {
+      "type": "array",
+      "items": {
+        "type": "array", "prefixItems": [{"type": "string"}, {"type": "string"}], "items": false
+      }
+    }
+  },
+  "$defs": {
+    "qubitList": {
+      "type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true
+    },
+    "pauli": {
+      "type": "object", "additionalProperties": false,
+      "required": ["qubit_order", "operators", "phase_exponent_mod_4"],
+      "properties": {
+        "qubit_order": {"$ref": "#/$defs/qubitList"},
+        "operators": {"type": "string", "pattern": "^[IXYZ]*$"},
+        "phase_exponent_mod_4": {"type": "integer", "minimum": 0, "maximum": 3}
+      }
+    },
+    "gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["operation", "qubits"],
+      "properties": {
+        "operation": {"enum": ["H", "S", "X", "Z", "CNOT"]},
+        "qubits": {"$ref": "#/$defs/qubitList"}
+      }
+    },
+    "graph": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sites", "edges", "directed", "native_two_qubit_gate"],
+      "properties": {
+        "sites": {"$ref": "#/$defs/qubitList"},
+        "edges": {
+          "type": "array", "uniqueItems": true,
+          "items": {
+            "type": "array", "prefixItems": [{"type": "string"}, {"type": "string"}], "items": false
+          }
+        },
+        "directed": {"type": "boolean"},
+        "native_two_qubit_gate": {"const": "CNOT"}
+      }
+    }
+  }
+}

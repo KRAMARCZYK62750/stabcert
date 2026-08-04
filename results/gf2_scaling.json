@@ -1,0 +1,86 @@
+{
+  "accessible_width_range": [
+    9,
+    20
+  ],
+  "architecture": "chain",
+  "counters": {
+    "affine_systems_solved": {
+      "exact_polynomial_coefficients": [
+        28.0,
+        -232.0,
+        598.0
+      ],
+      "exact_polynomial_degree": 2,
+      "log_log_exponent_all_points": 2.7641901166748926,
+      "log_log_exponent_last_step": 2.4954234504397124,
+      "log_log_exponent_lower_window": 2.927851371335876,
+      "log_log_exponent_upper_half": 2.568777466630475,
+      "structural_prediction": 2
+    },
+    "pivots": {
+      "log_log_exponent_all_points": 4.906664211432042,
+      "log_log_exponent_last_step": 4.450839511608958,
+      "log_log_exponent_lower_window": 5.062954701820316,
+      "log_log_exponent_upper_half": 4.709042153484647
+    },
+    "rank_reductions": {
+      "log_log_exponent_all_points": 3.6988953717601687,
+      "log_log_exponent_last_step": 3.2363067683010525,
+      "log_log_exponent_lower_window": 3.8259495327169786,
+      "log_log_exponent_upper_half": 3.549212300192216
+    },
+    "row_xors": {
+      "log_log_exponent_all_points": 6.527305512027669,
+      "log_log_exponent_last_step": 6.777266411638899,
+      "log_log_exponent_lower_window": 6.751958358605878,
+      "log_log_exponent_upper_half": 5.80848592253295,
+      "structural_prediction": 5
+    },
+    "scalar_bit_xors": {
+      "log_log_exponent_all_points": 7.909575141347708,
+      "log_log_exponent_last_step": 7.837771530158078,
+      "log_log_exponent_lower_window": 8.151027331131877,
+      "log_log_exponent_upper_half": 7.129146184572455,
+      "structural_prediction": 6
+    },
+    "verify_seconds": {
+      "log_log_exponent_all_points": 4.671287275894818,
+      "log_log_exponent_last_step": 5.376178726145213,
+      "log_log_exponent_lower_window": 4.455850106217021,
+      "log_log_exponent_upper_half": 4.926842756915062
+    }
+  },
+  "format_version": "orelia.gf2-scaling/v1",
+  "instances": 12,
+  "policy": "channel-certified",
+  "prediction_verdict": {
+    "affine_systems_solved": {
+      "excess": 0.568777466630475,
+      "observed_upper_half": 2.568777466630475,
+      "target": 2,
+      "trend": -0.3590739047054008,
+      "verdict": "confirmed"
+    },
+    "calibrator": "affine_systems_solved (exact degree 2)",
+    "finite_size_bias": 0.568777466630475,
+    "registered": "2026-08-04, before reading the n=21..30 sweep",
+    "row_xors": {
+      "excess": 0.8084859225329497,
+      "observed_upper_half": 5.80848592253295,
+      "target": 5,
+      "trend": -0.9434724360729279,
+      "verdict": "undecided"
+    },
+    "scalar_bit_xors": {
+      "excess": 1.1291461845724546,
+      "observed_upper_half": 7.129146184572455,
+      "target": 6,
+      "trend": -1.021881146559422,
+      "verdict": "undecided"
+    },
+    "tolerance": 0.568777466630475
+  },
+  "scramble_depth": 6,
+  "seed": 20260802
+}
