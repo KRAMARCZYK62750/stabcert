@@ -1,0 +1,169 @@
+% Bibliography for docs/paper/stabcert.md
+%
+% Provenance discipline, matching the disclosure of Section 8: an entry is
+% marked VERIFIED when its bibliographic record was checked against a listing
+% during preparation, READ-BY-AUTHOR when it is cited in
+% docs/notes/NOVELTY_AUDIT.md with content-level claims that indicate reading,
+% and TODO when it requires a decision or a check that has not been made.
+%
+% Verifying a *record* is not reading a *paper*. Section 8 states which tools
+% were characterised from documentation rather than from their articles; this
+% file does not upgrade that claim.
+
+% ---------------------------------------------------------------------------
+% Stabilizer formalism  (Section 2)
+% ---------------------------------------------------------------------------
+
+% TODO: pick one or both. The paper invokes Gottesman-Knill three times as the
+% ground of decidability; Aaronson-Gottesman is the usual citation for the
+% tableau simulation the implementation actually relies on.
+@phdthesis{gottesman1997,
+  author = {Daniel Gottesman},
+  title  = {Stabilizer Codes and Quantum Error Correction},
+  school = {California Institute of Technology},
+  year   = {1997},
+  note   = {TODO: verify record}
+}
+
+@article{aaronson2004improved,
+  author  = {Scott Aaronson and Daniel Gottesman},
+  title   = {Improved Simulation of Stabilizer Circuits},
+  journal = {Physical Review A},
+  volume  = {70},
+  number  = {5},
+  pages   = {052328},
+  year    = {2004},
+  note    = {TODO: verify record}
+}
+
+% TODO: Choi 1975 and Jamiolkowski 1972, for the correspondence used in the
+% proof of Theorem 1. Records not checked.
+
+% ---------------------------------------------------------------------------
+% Routing compilers under test  (Sections 6, 8)
+% ---------------------------------------------------------------------------
+
+% TODO: verify record. SABRE is cited ten times; the algorithm reference is
+% Li, Ding and Xie, ASPLOS 2019, but the record was not checked.
+@inproceedings{li2019sabre,
+  author    = {Gushu Li and Yufei Ding and Yuan Xie},
+  title     = {Tackling the Qubit Mapping Problem for {NISQ}-Era Quantum Devices},
+  booktitle = {ASPLOS},
+  year      = {2019},
+  note      = {TODO: verify record}
+}
+
+% TODO: verify record. pytket is cited eleven times.
+@article{sivarajah2020tket,
+  author  = {Seyon Sivarajah and Silas Dilkes and Alexander Cowtan and
+             Will Simmons and Alec Edgington and Ross Duncan},
+  title   = {t|ket$\rangle$: A Retargetable Compiler for {NISQ} Devices},
+  journal = {Quantum Science and Technology},
+  year    = {2020},
+  note    = {TODO: verify record}
+}
+
+% ---------------------------------------------------------------------------
+% Related work  (Section 8)
+% ---------------------------------------------------------------------------
+
+% VERIFIED (record). Characterised in Section 8 from documentation, not from
+% this article -- see the disclosure there.
+@article{burgholzer2021advanced,
+  author  = {Lukas Burgholzer and Robert Wille},
+  title   = {Advanced Equivalence Checking for Quantum Circuits},
+  journal = {IEEE Transactions on Computer-Aided Design of Integrated
+             Circuits and Systems},
+  year    = {2021}
+}
+
+% VERIFIED (record). The ZX engine whose incompleteness for inequivalence is
+% stated in Section 8.
+@misc{peham2022zx,
+  author = {Tom Peham and Lukas Burgholzer and Robert Wille},
+  title  = {Equivalence Checking of Quantum Circuits with the {ZX}-Calculus},
+  year   = {2022},
+  eprint = {2208.12820},
+  archivePrefix = {arXiv}
+}
+
+% VERIFIED (record). Characterised in Section 8 from the project repository
+% and site; the ESOP article itself was not read -- a fetch of it failed.
+@inproceedings{chareton2021qbricks,
+  author    = {Christophe Chareton and S{\'e}bastien Bardin and
+               Fran{\c c}ois Bobot and Valentin Perrelle and Beno{\^i}t Valiron},
+  title     = {An Automated Deductive Verification Framework for
+               Circuit-building Quantum Programs},
+  booktitle = {ESOP},
+  pages     = {148--177},
+  year      = {2021}
+}
+
+% ---------------------------------------------------------------------------
+% Petz recovery literature  (docs/notes/NOVELTY_AUDIT.md)
+% ---------------------------------------------------------------------------
+%
+% NOVELTY_AUDIT.md states that no publishable novelty is claimed without a
+% full reading and an equation-by-equation comparison with Burri. If the paper
+% makes any claim about the Petz formula, that reservation must travel with it.
+% As drafted it does not: the contribution is the decision procedure.
+
+% READ-BY-AUTHOR
+@misc{burri2025petz,
+  author = {Burri},
+  title  = {Entanglement Fidelity of the {P}etz Decoder for One-Shot
+            Entanglement Transmission},
+  year   = {2025},
+  eprint = {2502.17411},
+  archivePrefix = {arXiv},
+  note   = {TODO: complete author given name}
+}
+
+% READ-BY-AUTHOR
+@misc{yoshida2021recovery,
+  author = {Beni Yoshida},
+  title  = {Recovery Algorithms for {C}lifford {H}ayden--{P}reskill Problem},
+  year   = {2021},
+  eprint = {2106.15628},
+  archivePrefix = {arXiv}
+}
+
+% TODO -- DECISION REQUIRED.
+% Section 4.3 names the "Yoshida-Kitaev decoder", whose canonical form is
+% measurement-based. The repository's bibliography contains only Yoshida 2021,
+% a different work. If the 2017 Yoshida-Kitaev decoder is meant, it needs its
+% own entry; if Yoshida 2021 is meant, Section 4.3 should say so.
+
+% READ-BY-AUTHOR
+@article{hu2024petz,
+  author  = {Hu and Zou},
+  title   = {{P}etz Map Recovery for Long-Range Entangled Quantum
+             Many-Body States},
+  journal = {Physical Review B},
+  volume  = {110},
+  pages   = {195107},
+  year    = {2024},
+  note    = {TODO: complete author given names}
+}
+
+% READ-BY-AUTHOR
+@misc{beigi2016decoding,
+  author = {Salman Beigi and Nilanjana Datta and Felix Leditzky},
+  title  = {Decoding Quantum Information via the {P}etz Recovery Map},
+  year   = {2016},
+  eprint = {1504.04449},
+  archivePrefix = {arXiv}
+}
+
+% ---------------------------------------------------------------------------
+% Implementation dependency  (Section 5)
+% ---------------------------------------------------------------------------
+
+% TODO: verify record. Stim provides the tableau engine.
+@article{gidney2021stim,
+  author  = {Craig Gidney},
+  title   = {Stim: A Fast Stabilizer Circuit Simulator},
+  journal = {Quantum},
+  year    = {2021},
+  note    = {TODO: verify record}
+}
