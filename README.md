@@ -112,6 +112,27 @@ channel.
 Resource figures reported by the tool are measured, not certified: SWAP
 attribution does not participate in any verdict.
 
+## Transparency
+
+This project was developed with AI assistance. The author takes responsibility
+for its content, but AI-assisted work can contain errors, omissions, and
+questionable implementation choices that internal review may not catch.
+
+Independent scrutiny is therefore welcome, and three places would benefit most:
+
+- **the proof of Theorem 1** — [`docs/paper/stabcert.md`](docs/paper/stabcert.md),
+  Section 3.3, in particular the reconstruction of the channel from its
+  code-Choi state and the phase-uniqueness step of Lemma 1;
+- **the certified import closure** — Section 5.2 of the same document, and the
+  invariant that enforces it in
+  [`tests/test_certified_import_closure.py`](tests/test_certified_import_closure.py);
+- **the traceability of every reported figure to its artifact** — the mapping
+  is in [`docs/notes/REVIEW_PASSES.md`](docs/notes/REVIEW_PASSES.md), and the
+  artifacts are the tracked files under `results/`.
+
+Contributions that confirm the results and contributions that find errors are
+equally useful.
+
 ## Development
 
 Test counts quoted in `docs/notes/` are generated, never written by hand.
