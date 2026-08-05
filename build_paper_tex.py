@@ -50,7 +50,7 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \newtheorem{hypothesis}{Hypothesis}
 
 \title{StabCert: translation validation for stabilizer channels}
-\author{Frédéric Kramarczyk \\ \texttt{fkra62@gmail.com}}
+\author{Frédéric Kramarczyk\\Independent researcher\\\texttt{fkra62@gmail.com}}
 \date{}
 
 \begin{document}
