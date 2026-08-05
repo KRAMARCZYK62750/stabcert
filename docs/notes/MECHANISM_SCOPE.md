@@ -19,9 +19,9 @@ qu'on lui prêtait : « il vérifie l'appariement ». Ce qu'il faisait : « il
 compare deux valeurs, quelles qu'elles soient ».
 
 **Le jackknife.** Ajuster `e(n) = d + K/n` pour extrapoler le degré
-asymptotique donnait, sur l'étalon dont le degré vaut exactement 2, une valeur
-de 1,929 avec un intervalle de [1,927 ; 1,930] — la vérité exclue, l'intervalle
-trente fois trop serré. Ce qu'on lui prêtait : « il mesure l'incertitude sur
+asymptotique donnait, sur l'étalon dont le degré vaut exactement 2 et sur
+`n = 9…30`, une valeur de 1,929 avec un intervalle de [1,927 ; 1,930] — la
+vérité exclue, l'intervalle trente fois trop serré. Ce qu'on lui prêtait : « il mesure l'incertitude sur
 `d` ». Ce qu'il faisait : « il mesure la stabilité de l'ajustement », qui ne
 voit pas un biais systématique.
 
@@ -99,6 +99,11 @@ Quatre conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
 
    Cette règle est la plus transférable de la journée : elle ne dépend ni de
    ce projet ni de son domaine.
+
+   Elle a mordu son propre texte en moins d'une minute. Le paragraphe sur le
+   jackknife, deux écrans plus haut, citait ses nombres sans nommer la plage —
+   exactement ce que la règle interdit. Corrigé. Gardé comme illustration :
+   une règle qui ne trouve rien au moment où on l'écrit n'en est pas une.
 
 ## Où chacun est traité
 
