@@ -484,6 +484,14 @@ produced elsewhere is not the reference route, and is nonetheless the specified
 channel. The last three establish that acceptance is not vacuous — a single
 sign flip in the tableau, or a permutation claimed but not realised, is caught.
 
+**Reproducibility.** The routed artifacts reported here were produced with
+Qiskit 2.5.1 (SABRE, `decay` heuristic, seed 20260803, one trial) and pytket
+2.18.1 (`RoutingPass` with `LexiLabellingMethod` and `LexiRouteRoutingMethod`),
+on the fixtures published under `tests/fixtures/recovery_v1/`. SABRE is a
+stochastic search: a different seed or version yields a different route, which
+`channel-certified` accepts and `reproducible-route` rejects — the verdicts of
+this section are stable under that variation, the resource figures are not.
+
 ### 6.2 Adversarial campaigns
 
 Two campaigns, with distinct objects and non-interchangeable figures.
