@@ -59,6 +59,11 @@ Deux objets seulement, trois noms en circulation :
       définition ; l'autre renvoie.
 - [ ] Gottesman–Knill est posé en §2 comme fondement, pas cité en §4.1 comme
       concession.
+- [ ] **§1 et §8 sur QCEC** — constaté à l'assemblage : le paragraphe sur la
+      canonicité est répété **mot pour mot**, et celui sur les moteurs
+      (diagrammes de décision, ancilla, équivalence partielle, ZX incomplet)
+      quasi intégralement. Usage habituel : l'introduction pose la distinction
+      en deux lignes, la section 8 détaille. Ici les deux détaillent.
 
 ### 1.4 Instructions de lecture orphelines
 
@@ -88,6 +93,18 @@ Deux objets seulement, trois noms en circulation :
 - [ ] **§4.3** — `admits` / `contains no` / `claim nothing`. Aucun mécanisme
       de syndrome décrit au présent de l'indicatif.
 - [ ] **§5.4** — formulation opérationnelle depuis que la CI est verte.
+- [ ] **Divulgation de non-exécution, §1 contre §8** — constaté à
+      l'assemblage : le §8 s'ouvre sur « We have not executed any of the tools
+      discussed below », le §1 n'a aucun équivalent et caractérise pourtant
+      QCEC en détail — moteurs, complétude, complexité. C'est l'asymétrie
+      corrigée dans `TOOL_POSITIONING.md` : signaler la non-exécution à un
+      endroit et la taire à l'autre crée une hiérarchie de preuve qui n'existe
+      pas. Un lecteur qui commence par l'introduction lit des affirmations sur
+      un outil tiers sans savoir d'où elles viennent.
+
+      Le remède est commun avec l'item de duplication ci-dessus : si le §1 se
+      limite à la distinction et renvoie au §8 pour les capacités, il n'a plus
+      de caractérisation à divulguer. Un seul geste règle les deux.
 
 ### 1.6 Renvois
 

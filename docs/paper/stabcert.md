@@ -34,23 +34,72 @@ not circuit width alone — as a key factor in verification cost.
 
 ## 1. Introduction
 
-<!-- À COMPLÉTER — corps de l'introduction -->
+Quantum programs written for hardware must be routed: a compiler inserts SWAP
+gates and relabels qubits so that every two-qubit operation acts on an edge of
+the device coupling map. This transformation is substantial, and it is
+performed by heuristic search procedures that are not themselves verified.
+Qiskit's SABRE and pytket's routing passes are widely deployed and largely
+trusted on the strength of testing.
 
-### Contributions
+Existing verification approaches address adjacent problems.
 
-<!-- À COMPLÉTER — puces précédentes -->
+Compiler certification — proving the transformation itself, once and for all —
+applies only where the compiler's source is available and under the verifier's
+control. SABRE and pytket are neither.
+
+Equivalence checking, as implemented for example in QCEC, compares a compiled
+circuit against a reference circuit. Its decision-diagram engines provide exact
+equivalence checking by comparing canonical representations of the implemented
+operators, with support for ancilla and garbage qubits and a notion of partial
+equivalence defined on measurement distributions, although resource consumption
+can be exponential in the worst case. QCEC also includes a ZX-calculus engine
+that is often effective at establishing equivalence but, because its rewriting
+procedure is incomplete, cannot in general establish inequivalence.
+
+Like our approach, QCEC relies on canonical representations. The distinction is
+not canonicity but the object represented and the input required: QCEC
+canonically represents operators and compares two of them, whereas we
+canonically represent a stabilizer channel restricted to a code subspace and
+compare one against a target reconstructed from a channel specification. The
+question is therefore not whether a canonical form exists, but what it is
+intended to certify.
+
+Deductive verification proves properties of programs written in a dedicated
+language, reaching algorithms as complex as Shor's order finding, but takes its
+input as a program rather than as an artifact produced elsewhere.
+
+None of these answers the question a routing pass raises in practice: given a
+circuit produced by an untrusted compiler, does it implement the channel the
+specification calls for? The distinction matters because the reference circuit
+is itself an artifact. Comparing against it certifies faithfulness to a
+possibly wrong starting point.
+
+**Contribution.** We restrict attention to stabilizer channels — Clifford
+unitaries with stabilizer ancilla preparation and partial trace — and show that
+within this class the question is decidable in polynomial time. Specifically:
 
 - We define the code-Choi state, a mixed stabilizer state — a state stabilized
   by a signed subgroup — encoding a channel's action on a specified input
   subspace, and prove that equality of its canonical signed signature is
   necessary and sufficient for equality of the channels on that subspace
   (Section 3).
-
-<!-- À COMPLÉTER — puces suivantes -->
+- We show the verdict is invariant under any change of Stinespring dilation, so
+  that circuits differing only in ancilla convention are correctly accepted
+  (Section 3.4).
+- We implement the procedure in StabCert and certify routed circuits produced
+  by SABRE and pytket, with adversarial campaigns reporting no false accepts
+  and no false rejects (Sections 5–6).
+- We measure verification cost and separate the contribution of circuit width
+  from that of generator density (Section 7).
 
 The property is proved of the decision procedure; the adversarial campaigns of
 Section 6 test the implementation that realises it, and no finite corpus could
 establish the former.
+
+**Scope.** The class is narrow by design. Gottesman–Knill makes stabilizer
+circuits classically simulable, which is what permits an exact decision
+procedure; it also means our results say nothing about non-Clifford gates,
+noise, or timing. Section 4 states the boundary precisely.
 
 ---
 
@@ -345,25 +394,83 @@ is none.
 
 ## 5. Implementation
 
-<!-- À COMPLÉTER — §5.1, §5.2, et le corps de §5.3 -->
+StabCert implements the procedure of Section 3. It is a Python package with two
+runtime dependencies, NumPy and Stim, the latter providing the tableau engine
+on which canonical comparison rests. It is available under Apache 2.0.
 
-The tool contains a deterministic router, which the `reproducible-route` policy
-needs in order to reconstruct the reference route. It exists because that
-policy requires it, not as a contribution.
+The package also contains a routing procedure. It exists because the
+`reproducible-route` policy below requires a reference route to compare
+against; it is not offered as a compiler and no claim is made about its output
+relative to other routers.
 
-### 5.3 Independent checks
+### 5.1 Two policies
 
-<!-- À COMPLÉTER — présentation des contrôles -->
+The tool exposes two verification policies, and the distinction is the point of
+the design.
+
+`reproducible-route` requires bit-for-bit equality with the reference route. It
+answers *did this run reproduce the reference implementation?* and is used for
+regression testing.
+
+`channel-certified` reconstructs the target from the channel specification and
+accepts any synthesis, routing, or Stinespring dilation whose canonical signed
+signature matches. It answers the question of Section 1: *does this artifact,
+however produced, realise the specified channel on the specified subspace?*
+
+Circuits routed by third-party compilers fail the first policy and pass the
+second. That is the intended behaviour, and Section 6 reports it as such.
+
+### 5.2 The certified closure
+
+The verification path is a closed import closure, computed by AST traversal
+from the three entry points — compiler, verifier, command line — and enforced
+by the test suite. The closure comprises eleven modules; the verifier alone
+reaches eight. No module within it constructs a dense matrix or enumerates
+basis states.
+
+The distribution also ships exploratory and instance-construction code outside
+this closure, including a dense stabilizer-group enumeration. No verification
+path can reach it, and the closure test fails if that changes. We state this
+because the claim of Section 3 — polynomial time, no enumeration — is a claim
+about the closure, not about every file in the package; a reader who greps the
+installed package will find the enumeration and should know why it is harmless.
+
+The closure assertion is bidirectional: it fails both if an unreachable module
+becomes reachable and if a declared module is no longer reached, so the
+declaration cannot decay into a wish list.
+
+### 5.3 What the verdict aggregates
+
+A single invocation checks, and reports separately:
+
+- Semantic equality of the reduced channel on the code subspace, by canonical
+  signature comparison (Section 3).
+- Coupling-map conformance: every two-qubit gate in the routed circuit is
+  checked against an edge of the device graph, gate by gate, on the final gate
+  list. No routing trace is required, since the final gate list is what the
+  device executes.
+- Metadata consistency: the artifact's claimed support is compared against the
+  reconstructed `Π`, never used to build it (Hypothesis 1).
 
 These are independent conditions, not components of a score: a failure in any
 one produces a failing verdict, and no success elsewhere compensates for it.
 
+Resource figures are recorded alongside the verdict; Section 4.4 states which
+of them enter it.
+
 ### 5.4 Reproducibility
 
-A continuous-integration job runs the suite from a checkout on each push, under
-Python 3.10 and 3.12, with core dependencies only and then with every optional
-backend. The suite passes: 124 tests with all backends, 104 passing and 2
-modules skipped without them.
+Published test counts are not written by hand. A synchronisation script replays
+the suite, parses the summary, and rewrites the counted spans in the
+documentation; it refuses to touch the documentation if the suite is not green,
+and a `--check` mode exits non-zero on divergence for use in CI.
+
+The script guarantees that the documentation matches the local suite. It does
+not, by itself, guarantee anything about what a reader obtains from a checkout.
+That is established separately: a continuous-integration job runs the suite
+from a checkout on each push, under Python 3.10 and 3.12, with core
+dependencies only and then with every optional backend. The suite passes: 124
+tests with all backends, 104 passing and 2 modules skipped without them.
 
 ---
 
