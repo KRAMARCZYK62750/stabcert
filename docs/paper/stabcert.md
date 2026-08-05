@@ -11,13 +11,46 @@
 
 ## Abstract
 
-<!-- À COMPLÉTER -->
+Quantum routing compilers rewrite circuits to satisfy hardware connectivity
+constraints, but the resulting circuits are seldom verified against the channel
+they are meant to implement. We present a decision procedure for the equality
+of stabilizer channels — Clifford unitaries with stabilizer ancilla preparation
+and partial trace — restricted to a specified input subspace.
+
+Our procedure compares the canonical signed signatures of code-Choi states,
+relative to a support determined by the specification, and is both sound and
+complete: two such channels agree on the code subspace if and only if their
+signatures coincide. It runs in polynomial time, avoids dense matrix
+representations and basis state enumeration, and its verdict is invariant under
+any change of Stinespring dilation.
+
+We implement this in StabCert, a tool that treats the compiler as an untrusted
+black box and certifies routed circuits produced by Qiskit SABRE and pytket
+against targets reconstructed from a specification rather than from a reference
+circuit. On the families studied, our measurements identify generator density —
+not circuit width alone — as a key factor in verification cost.
 
 ---
 
 ## 1. Introduction
 
-<!-- À COMPLÉTER -->
+<!-- À COMPLÉTER — corps de l'introduction -->
+
+### Contributions
+
+<!-- À COMPLÉTER — puces précédentes -->
+
+- We define the code-Choi state, a mixed stabilizer state — a state stabilized
+  by a signed subgroup — encoding a channel's action on a specified input
+  subspace, and prove that equality of its canonical signed signature is
+  necessary and sufficient for equality of the channels on that subspace
+  (Section 3).
+
+<!-- À COMPLÉTER — puces suivantes -->
+
+The property is proved of the decision procedure; the adversarial campaigns of
+Section 6 test the implementation that realises it, and no finite corpus could
+establish the former.
 
 ---
 
@@ -312,7 +345,25 @@ is none.
 
 ## 5. Implementation
 
-<!-- À COMPLÉTER -->
+<!-- À COMPLÉTER — §5.1, §5.2, et le corps de §5.3 -->
+
+The tool contains a deterministic router, which the `reproducible-route` policy
+needs in order to reconstruct the reference route. It exists because that
+policy requires it, not as a contribution.
+
+### 5.3 Independent checks
+
+<!-- À COMPLÉTER — présentation des contrôles -->
+
+These are independent conditions, not components of a score: a failure in any
+one produces a failing verdict, and no success elsewhere compensates for it.
+
+### 5.4 Reproducibility
+
+A continuous-integration job runs the suite from a checkout on each push, under
+Python 3.10 and 3.12, with core dependencies only and then with every optional
+backend. The suite passes: 124 tests with all backends, 104 passing and 2
+modules skipped without them.
 
 ---
 
