@@ -1,0 +1,265 @@
+#!/usr/bin/env python3
+"""Generate docs/paper/stabcert.tex from the markdown source.
+
+The markdown is the source and the .tex is generated, never edited by hand.
+That keeps both review passes valid: they search the source, and a hand-kept
+.tex would drift from it silently.
+
+Two things this script does not do, and says so rather than implying
+otherwise.
+
+It does not compile. No LaTeX toolchain was available where it was written, so
+the output is generated but never typeset. Treat a first `pdflatex` run as
+part of review, not as a formality.
+
+It does not convert the seven results into theorem environments. They stay as
+bold run-in headings, matching the source, because environments would number
+them independently of the prose that names "Theorem 1" and "Definition 2".
+Resolving that is an editorial decision about the source, not a conversion
+step.
+
+And it guesses, in one place. The source uses backticks for two different
+things: mathematics (`tau_X`, `Pi`, `k = |X| - |S_X|`) and literal code
+(`channel-certified`, `sync_test_counts.py`). A span becomes math when it
+contains mathematical unicode or reads like a formula, and \\texttt otherwise.
+Every span where that decision was not obvious is listed in the report, so the
+author reviews a short list instead of the whole file.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+import re
+
+ROOT = Path(__file__).resolve().parent
+
+PREAMBLE = r"""\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+
+% Declared but deliberately unused. The source states its seven results as
+% bold run-in headings, and turning them into environments would renumber them
+% independently of the section text that refers to "Theorem 1" and
+% "Definition 2" by name. That is an editorial decision, not a conversion one:
+% either the source adopts environment syntax, or these declarations go.
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}{Hypothesis}
+
+\title{StabCert: translation validation for stabilizer channels}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+"""
+
+# Mathematical unicode to LaTeX. Applied inside math mode only.
+MATH: dict[str, str] = {
+    "Δ": r"\Delta", "Λ": r"\Lambda", "Π": r"\Pi", "β": r"\beta", "γ": r"\gamma",
+    "δ": r"\delta", "ρ": r"\rho", "σ": r"\sigma", "τ": r"\tau", "ψ": r"\psi",
+    "→": r"\to", "↦": r"\mapsto", "⇐": r"\Leftarrow", "⇒": r"\Rightarrow",
+    "⟺": r"\iff", "∈": r"\in", "∉": r"\notin", "∏": r"\prod", "∖": r"\setminus",
+    "∪": r"\cup", "≈": r"\approx", "≤": r"\le", "≥": r"\ge", "⊆": r"\subseteq",
+    "⊗": r"\otimes", "⟨": r"\langle", "⟩": r"\rangle", "·": r"\cdot",
+    "×": r"\times", "±": r"\pm", "−": "-", "†": r"^\dagger", "′": "'",
+    "²": "^2", "³": "^3", "ᵢ": "_i", "ⱼ": "_j", "₀": "_0", "₂": "_2",
+    "⁻": "^-", "∎": r"\qed",
+}
+# Text-mode unicode, outside formulas.
+TEXT: dict[str, str] = {
+    "–": "--", "—": "---", "…": r"\dots", "−": "-", "×": r"$\times$",
+    "≈": r"$\approx$", "≥": r"$\ge$", "≤": r"$\le$", "²": "$^2$", "ł": r"\l{}",
+}
+MATH_MARKERS = set("ΔΛΠβγδρστψ→↦⇐⇒⟺∈∉∏∖∪≈≤≥⊆⊗⟨⟩·×±−†′²³ᵢⱼ₀₂⁻")
+
+
+def to_math(span: str) -> str:
+    out = span
+    out = out.replace("X̄", r"\bar{X}").replace("Z̄", r"\bar{Z}")
+    for source, target in MATH.items():
+        out = out.replace(source, target)
+    out = re.sub(r"\|([^|]+)\|", r"\\lvert \1 \\rvert", out)
+    out = out.replace("_", "_").replace("^", "^")
+    return f"${out}$"
+
+
+def to_texttt(span: str) -> str:
+    out = span
+    for source, target in TEXT.items():
+        out = out.replace(source, target)
+    return r"\texttt{" + out.replace("_", r"\_").replace("^", r"\^{}") + "}"
+
+
+# The source uses backticks for mathematics far more often than for code, so
+# the default is mathematics and code is recognised by explicit pattern. The
+# reverse default sent (x|z), 2n and A = 1 to \texttt on the first attempt.
+CODE_PATTERNS = (
+    r"\.(py|md|json|csv|yml)$",              # file names
+    r"/.*\.|/$",                             # paths
+    r"^--",                                  # command-line flags
+    r"^[a-z]+(-[a-z]+)+$",                   # policy names: channel-certified
+    r"^[a-z][a-z0-9]*_[a-z0-9_]+$",          # snake_case identifiers
+    r"^[A-Z][a-zA-Z]{3,}$",                  # class names: LexiRouteRoutingMethod
+    r"^orelia\.",                            # campaign format identifiers
+)
+CODE_LITERALS = {"reference", "chain", "grid_2d", "arch", "TEST_COUNT",
+                 "NumPy", "Stim", "SABRE", "pytket", "Qiskit"}
+
+
+def is_code(span: str) -> bool:
+    if set(span) & MATH_MARKERS:
+        return False
+    if span in CODE_LITERALS:
+        return True
+    return any(re.search(pattern, span) for pattern in CODE_PATTERNS)
+
+
+def convert_spans(line: str, judged: list[dict[str, str]]) -> str:
+    def one(match: re.Match[str]) -> str:
+        span = match.group(1)
+        code = is_code(span)
+        # Flag spans that neither carry mathematical unicode nor match a code
+        # pattern: the classifier defaulted, and the default deserves a look.
+        if not code and not (set(span) & MATH_MARKERS):
+            judged.append({"span": span, "rendered": "math (by default)"})
+        return to_texttt(span) if code else to_math(span)
+
+    return re.sub(r"`([^`\n]+)`", one, line)
+
+
+def escape_text(line: str) -> str:
+    for source, target in TEXT.items():
+        line = line.replace(source, target)
+    line = re.sub(r"(?<!\\)([&%#])", r"\\\1", line)
+    line = re.sub(r"\*\*([^*]+)\*\*", r"\\textbf{\1}", line)
+    line = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"\\emph{\1}", line)
+    return line
+
+
+def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
+    judged: list[dict[str, str]] = []
+    out: list[str] = [PREAMBLE]
+    lines = markdown.split("\n")
+    index = 0
+    in_abstract = False
+    while index < len(lines):
+        line = lines[index]
+
+        if line.startswith("> "):  # internal assembly note, not part of the paper
+            index += 1
+            continue
+        if line.strip() == "---":
+            index += 1
+            continue
+        if line.startswith("```"):
+            out.append(r"\begin{verbatim}")
+            index += 1
+            while index < len(lines) and not lines[index].startswith("```"):
+                out.append(lines[index])
+                index += 1
+            out.append(r"\end{verbatim}")
+            index += 1
+            continue
+        if line.startswith("| "):
+            block = []
+            while index < len(lines) and lines[index].startswith("|"):
+                block.append(lines[index])
+                index += 1
+            out.append(table(block, judged))
+            continue
+        if line.startswith("# "):
+            index += 1
+            continue  # title is in the preamble
+        if line.startswith("## "):
+            name = line[3:].strip()
+            if name == "Abstract":
+                out.append(r"\begin{abstract}")
+                in_abstract = True
+            else:
+                if in_abstract:
+                    out.append(r"\end{abstract}")
+                    in_abstract = False
+                out.append(r"\section{" + escape_text(re.sub(r"^\d+\.\s*", "", name)) + "}")
+            index += 1
+            continue
+        if line.startswith("### "):
+            name = re.sub(r"^\d+\.\d+\s*", "", line[4:].strip())
+            out.append(r"\subsection{" + escape_text(name) + "}")
+            index += 1
+            continue
+        if line.startswith("- "):
+            out.append(r"\begin{itemize}")
+            while index < len(lines) and (lines[index].startswith("- ") or lines[index].startswith("  ")):
+                if lines[index].startswith("- "):
+                    out.append(r"\item " + escape_text(convert_spans(lines[index][2:], judged)))
+                else:
+                    out.append(escape_text(convert_spans(lines[index].strip(), judged)))
+                index += 1
+            out.append(r"\end{itemize}")
+            continue
+        out.append(escape_text(convert_spans(line, judged)))
+        index += 1
+
+    if in_abstract:
+        out.append(r"\end{abstract}")
+    body = "\n".join(out)
+    # Emphasis often spans a line break in the source, which a line-oriented
+    # substitution cannot see. Applied here, over the assembled body, with
+    # verbatim blocks held out.
+    chunks = re.split(r"(\\begin\{verbatim\}.*?\\end\{verbatim\})", body, flags=re.S)
+    for position, chunk in enumerate(chunks):
+        if not chunk.startswith(r"\begin{verbatim}"):
+            chunks[position] = re.sub(r"(?<!\*)\*([^*]+?)\*(?!\*)", r"\\emph{\1}", chunk, flags=re.S)
+    out = ["".join(chunks)]
+    out.append(r"\bibliographystyle{plain}")
+    out.append(r"\bibliography{stabcert}")
+    out.append(r"\end{document}")
+    return "\n".join(out), judged
+
+
+def table(block: list[str], judged: list[dict[str, str]]) -> str:
+    rows = [r for r in block if not re.fullmatch(r"\|[\s|:-]+\|", r.strip())]
+    cells = [[c.strip() for c in r.strip().strip("|").split("|")] for r in rows]
+    width = max(len(r) for r in cells)
+    spec = "l" * width
+    lines = [r"\begin{center}", r"\begin{tabular}{" + spec + "}", r"\toprule"]
+    for position, row in enumerate(cells):
+        rendered = " & ".join(escape_text(convert_spans(c, judged)) for c in row)
+        lines.append(rendered + r" \\")
+        if position == 0:
+            lines.append(r"\midrule")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\end{center}"]
+    return "\n".join(lines)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source", default=str(ROOT / "docs" / "paper" / "stabcert.md"))
+    parser.add_argument("--output", default=str(ROOT / "docs" / "paper" / "stabcert.tex"))
+    arguments = parser.parse_args()
+    latex, judged = convert(Path(arguments.source).read_text(encoding="utf-8"))
+    Path(arguments.output).write_text(
+        "% Generated by build_paper_tex.py from stabcert.md. Do not edit by hand.\n"
+        "% Never typeset by its generator -- no LaTeX toolchain was available.\n" + latex + "\n",
+        encoding="utf-8",
+    )
+    unique = {j["span"]: j["rendered"] for j in judged}
+    print(json.dumps({
+        "output": arguments.output,
+        "compiled": False,
+        "spans_needing_review": [{"span": s, "rendered": r} for s, r in sorted(unique.items())],
+    }, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
