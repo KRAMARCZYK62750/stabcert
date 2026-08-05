@@ -8,11 +8,6 @@
 \usepackage{hyperref}
 \usepackage[margin=1in]{geometry}
 
-% Declared but deliberately unused. The source states its seven results as
-% bold run-in headings, and turning them into environments would renumber them
-% independently of the section text that refers to "Theorem 1" and
-% "Definition 2" by name. That is an editorial decision, not a conversion one:
-% either the source adopts environment syntax, or these declarations go.
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}
@@ -21,7 +16,7 @@
 \newtheorem{hypothesis}{Hypothesis}
 
 \title{StabCert: translation validation for stabilizer channels}
-\author{}
+\author{Frédéric Kramarczyk \\ \texttt{fkra62@gmail.com}}
 \date{}
 
 \begin{document}
@@ -154,9 +149,9 @@ $S_X$ & subgroup of $S$ surviving the partial trace onto $X$ \\
 $\tau_X$ & marginal $N(I/d)$ on $X$, with `d = 2^{ & M & }` \\
 $\Pi$ & projector onto $supp(\tau_X)$ \\
 $k$ & logical qubits, `k = & X & - & S_X & ` \\
-$E$ & support encoder (Definition 1) \\
+$E$ & support encoder (Definition~\ref{def:1}) \\
 $Ref(X)$ & reference register of the code subspace, ` & X & ` wires \\
-$sig(\cdot)$ & canonical signed signature (Definition 3) \\
+$sig(\cdot)$ & canonical signed signature (Definition~\ref{def:3}) \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -185,8 +180,10 @@ $\Pi = \prod_i (I + S_i)/2$ for the projector onto the joint $+1$ eigenspace of 
 and $k = \lvert X \rvert - \lvert S_X \rvert$ for the number of logical qubits. The target subspace is
 $supp(\tau_X)$ with $\tau_X = \Pi / 2^k$.
 
-\textbf{Hypothesis 1 (specification-determined support).} $\Pi$ is a function of $P$
+\begin{hypothesis}[specification-determined support]\label{hyp:1}
+$\Pi$ is a function of $P$
 alone. No part of the candidate artifact contributes to its construction.
+\end{hypothesis}
 
 This is what the verdict below is relative to, and it is the hypothesis on
 which the theorem's usefulness rests: a candidate may claim a support, but that
@@ -195,15 +192,16 @@ materialised; it is represented throughout by its signed generators.
 
 \subsection{The code-Choi state}
 
-\textbf{Definition 1 (support encoder).} Let $\bar{X}_i, \bar{Z}_i$ ($i < k$) be canonical
+\begin{definition}[support encoder]\label{def:1}
+Let $\bar{X}_i, \bar{Z}_i$ ($i < k$) be canonical
 logical representatives of the code defined by $S_X$, and $D_j, S_j$ its
 destabilizer--stabilizer pairs. The support encoder $E$ is the Clifford on
 $\lvert X \rvert$ qubits determined by
-
-\begin{verbatim}
-E Xᵢ E† = X̄ᵢ ,      E Zᵢ E† = Z̄ᵢ        (i < k)
-E X_{k+j} E† = Dⱼ ,  E Z_{k+j} E† = Sⱼ    (j ≥ 0)
-\end{verbatim}
+\begin{equation*}\begin{split}
+E X_i E^\dagger = \bar{X}_i ,      E Z_i E^\dagger = \bar{Z}_i        (i < k) \\
+E X_{k+j} E^\dagger = D_j ,  E Z_{k+j} E^\dagger = S_j    (j \ge 0) \\
+\end{split}\end{equation*}
+\end{definition}
 
 Both families of labels are obtained by canonical $F_2$ elimination, so $E$ is
 determined by $P$ and involves no gauge choice. $E$ maps
@@ -214,22 +212,24 @@ The problem format requires $O \subseteq X$ with $\lvert O \rvert = \lvert M \rv
 construction; this is the condition under which the two sides of the comparison
 below are of the same type.
 
-\textbf{Definition 2 (code-Choi state).} Let $Ref(X)$ be a reference register of
+\begin{definition}[code-Choi state]\label{def:2}
+Let $Ref(X)$ be a reference register of
 $\lvert X \rvert$ qubits. Prepare $k$ Bell pairs between $Ref(X)$ and the first $k$ wires
 of $X$, with the remaining $\lvert X \rvert - k$ wires of each half in $|0\rangle$, and apply the
 support encoder $E$ to both halves. Pass $X$ through the candidate channel $\Lambda$.
 The code-Choi state $J_\Pi(\Lambda)$ is the result reduced onto $O \cup Ref(X)$.
+\end{definition}
 
 Three remarks, each of which a reader will otherwise have to reconstruct.
 
 \emph{The reduction registers differ on the two sides.} The target is reduced onto
 $R \cup X$; the candidate onto $O \cup Ref(X)$. They are comparable because
-$\lvert O \rvert = \lvert M \rvert$, which Definition 1 requires.
+$\lvert O \rvert = \lvert M \rvert$, which Definition~\ref{def:1} requires.
 
 \emph{Three distinct partial traces occur in the chain, and they must not be
 conflated.} $R$ and $C$ are traced to form $\tau_X$; $C$ is traced to form the
 reduced target; $X \setminus O$ is traced to form the reduced candidate. Only the last
-belongs to Definition 2.
+belongs to Definition~\ref{def:2}.
 
 \emph{The state is mixed, on $\lvert O \rvert + \lvert X \rvert$ wires.} It is not a purification and not a
 pure stabilizer state: tracing $X \setminus O$ leaves a state stabilized by a proper
@@ -243,41 +243,49 @@ factor is separable, and no subset can be discarded.
 
 \subsection{Canonical form and the decision procedure}
 
-\textbf{Definition 3 (canonical signed signature).} For a set of independent signed
+\begin{definition}[canonical signed signature]\label{def:3}
+For a set of independent signed
 Pauli generators, put the binary vectors $(x|z)$ in reduced row echelon form,
 performing each row operation simultaneously on the binary vector and on the
 corresponding Pauli string, so that phases follow the elimination rather than
 being recomputed. The canonical signed signature $sig(\cdot)$ is the resulting
 ordered tuple of signed generators.
+\end{definition}
 
-\textbf{Lemma 1.} \emph{Let the generators be independent and generate a group not
+\begin{lemma}\label{lem:1}
+\emph{Let the generators be independent and generate a group not
 containing $-I$. Then the canonical signed signature is a normal form: two such
 sets generate the same signed subgroup if and only if their signatures are
 equal.}
+\end{lemma}
 
-\emph{Proof.} RREF over $F_2$ is unique for a given row space, so the binary parts
+\begin{proof}
+RREF over $F_2$ is unique for a given row space, so the binary parts
 agree exactly when the subgroups agree as unsigned groups. Because each row
 operation is applied to the Pauli strings in parallel, the phase attached to
 each echelon generator is the phase of the unique group element with that
 binary support --- unique precisely because $-I \notin S$, without which the group
 would contain both $P$ and $-P$ for the same support. Hence equality of
-signatures is equivalent to equality of the signed subgroups. ∎
+signatures is equivalent to equality of the signed subgroups.
+\end{proof}
 
 The hypothesis $-I \notin S$ is not incidental: the implementation rejects any
 specification whose generators fail it, together with commutation and
 independence, before any comparison is attempted.
 
-\textbf{Theorem 1 (soundness and completeness).} \emph{Let $\Lambda$, $\Lambda'$ be stabilizer
+\begin{theorem}[soundness and completeness]\label{thm:1}
+\emph{Let $\Lambda$, $\Lambda'$ be stabilizer
 channels and $\Pi$ as above. Then}
+\begin{equation*}\begin{split}
+sig(J_\Pi(\Lambda)) = sig(J_\Pi(\Lambda'))  \iff  \Lambda(\rho) = \Lambda'(\rho) for all \rho with supp(\rho) \subseteq supp(\tau_X) \\
+\end{split}\end{equation*}
+\end{theorem}
 
-\begin{verbatim}
-sig(J_Π(Λ)) = sig(J_Π(Λ′))  ⟺  Λ(ρ) = Λ′(ρ) for all ρ with supp(ρ) ⊆ supp(τ_X)
-\end{verbatim}
-
-\emph{Proof.} (⇐) Suppose the channels agree on the code subspace. The states $\rho$
+\begin{proof}
+(⇐) Suppose the channels agree on the code subspace. The states $\rho$
 supported in $supp(\Pi)$ span the operator space on that subspace, so by
 linearity the two channels agree on all of it, hence on the joint state of
-Definition 2. The code-Choi states coincide, and by Lemma 1 their signatures
+Definition~\ref{def:2}. The code-Choi states coincide, and by Lemma~\ref{lem:1} their signatures
 are equal.
 
 (⇒) Equal signatures give equal signed stabilizer groups, hence
@@ -292,29 +300,34 @@ logical channel $\Lambdã : \sigma \mapsto \Lambda(E(\sigma \otimes \lvert 0\ra
 
 Third, Choi--Jamio\l{}kowski inverts explicitly:
 
-\begin{verbatim}
+```
 Λ̃(σ) = 2^k · Tr_Ref[ (σ^T ⊗ I) · J_Π(Λ) ]
-\end{verbatim}
+```
 
 where the transpose on the reference is the convention the construction
 applies, with $Y^T = -Y$. Equal Choi states therefore give $\Lambdã = \Lambdã'$, and by
 the first step $\Lambda = \Lambda'$ on every state supported in $supp(\tau_X)$.
 
 Equality of the induced logical channels determines $\Lambda$ only on the image of
-$E$, which is $supp(\tau_X)$ --- precisely the domain the theorem asserts. ∎
+$E$, which is $supp(\tau_X)$ --- precisely the domain the theorem asserts.
+\end{proof}
 
 The implementation compares canonical signatures. An equivalent double-inclusion
-test exists in the same module but has no caller; Lemma 1 makes the two
+test exists in the same module but has no caller; Lemma~\ref{lem:1} makes the two
 equivalent, and the signature form is retained because it is a normal form ---
 one comparison rather than $2\cdot\lvert generators \rvert$ membership solves.
 
 \subsection{Gauge invariance}
 
-\textbf{Proposition 1.} \emph{The verdict is invariant under any transformation acting
+\begin{proposition}\label{prop:1}
+\emph{The verdict is invariant under any transformation acting
 only on the discarded environment.}
+\end{proposition}
 
-\emph{Proof.} $J_\Pi$ is obtained by partial trace over the environment, and the trace
-is invariant under isometries acting on the traced factor alone. ∎
+\begin{proof}
+$J_\Pi$ is obtained by partial trace over the environment, and the trace
+is invariant under isometries acting on the traced factor alone.
+\end{proof}
 
 Consequently two circuits differing only in ancilla convention or Stinespring
 dilation receive the same verdict --- a property required for accepting output
@@ -464,7 +477,7 @@ checked against an edge of the device graph, gate by gate, on the final gate
 list. No routing trace is required, since the final gate list is what the
 device executes.
 \item Metadata consistency: the artifact's claimed support is compared against the
-reconstructed $\Pi$, never used to build it (Hypothesis 1).
+reconstructed $\Pi$, never used to build it (Hypothesis~\ref{hyp:1}).
 \end{itemize}
 
 These are independent conditions, not components of a score: a failure in any
@@ -624,9 +637,9 @@ $n = 9\dots40$.
 \section{Cost}
 
 Two different questions are answered here, and conflating them is the way this
-section is most likely to be misread. **What does verification cost as
-instances grow?\textbf{ is a question about a family. }What is the degree at fixed
-generator density?** is a question about the algorithm. The family we measure
+section is most likely to be misread. \textbf{What does verification cost as
+instances grow?} is a question about a family. \textbf{What is the degree at fixed
+generator density?} is a question about the algorithm. The family we measure
 has a density that drifts with $n$, so the two answers differ: roughly $n^5$
 for the first, roughly $n^{5.7}$ for the second. Both are stated; neither is
 the other.
@@ -726,8 +739,8 @@ operations, and converge on that exponent from below.
 
 The two series therefore bracket the answer from opposite sides: counters
 descending from 6.285 to 4.907, time ascending from 4.711 to 4.780, meeting
-within 0.13. **Two independent series converging from above and below constrain
-more than a two-parameter fit to either one.**
+within 0.13. \textbf{Two independent series converging from above and below constrain
+more than a two-parameter fit to either one.}
 
 \subsection{Density, and what the exponent is an exponent of}
 

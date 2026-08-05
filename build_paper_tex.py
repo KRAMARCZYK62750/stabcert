@@ -12,11 +12,11 @@ It does not compile. No LaTeX toolchain was available where it was written, so
 the output is generated but never typeset. Treat a first `pdflatex` run as
 part of review, not as a formality.
 
-It does not convert the seven results into theorem environments. They stay as
-bold run-in headings, matching the source, because environments would number
-them independently of the prose that names "Theorem 1" and "Definition 2".
-Resolving that is an editorial decision about the source, not a conversion
-step.
+The seven results become theorem environments with labels, and prose
+references become \\ref. Manual numbering in two places -- the heading and the
+prose that names "Theorem 1" -- was two sources of truth for one number. The
+generator now checks the source instead of trusting it: if a result is not the
+nth of its kind in document order, it refuses to build.
 
 And it guesses, in one place. The source uses backticks for two different
 things: mathematics (`tau_X`, `Pi`, `k = |X| - |S_X|`) and literal code
@@ -42,11 +42,6 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \usepackage{hyperref}
 \usepackage[margin=1in]{geometry}
 
-% Declared but deliberately unused. The source states its seven results as
-% bold run-in headings, and turning them into environments would renumber them
-% independently of the section text that refers to "Theorem 1" and
-% "Definition 2" by name. That is an editorial decision, not a conversion one:
-% either the source adopts environment syntax, or these declarations go.
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}
@@ -55,7 +50,7 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \newtheorem{hypothesis}{Hypothesis}
 
 \title{StabCert: translation validation for stabilizer channels}
-\author{}
+\author{Frédéric Kramarczyk \\ \texttt{fkra62@gmail.com}}
 \date{}
 
 \begin{document}
@@ -136,13 +131,26 @@ def convert_spans(line: str, judged: list[dict[str, str]]) -> str:
     return re.sub(r"`([^`\n]+)`", one, line)
 
 
+def cross_references(text: str) -> str:
+    for kind, prefix in LABEL.items():
+        text = re.sub(rf"(?<!\\begin{{)\b{kind} (\d+)\b",
+                      lambda m, k=kind, p=prefix: f"{k}~\\ref{{{p}:{m.group(1)}}}", text)
+    return text
+
+
 def escape_text(line: str) -> str:
     for source, target in TEXT.items():
         line = line.replace(source, target)
     line = re.sub(r"(?<!\\)([&%#])", r"\\\1", line)
-    line = re.sub(r"\*\*([^*]+)\*\*", r"\\textbf{\1}", line)
-    line = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"\\emph{\1}", line)
     return line
+
+
+ENV = {"Theorem": "theorem", "Lemma": "lemma", "Proposition": "proposition",
+       "Definition": "definition", "Hypothesis": "hypothesis"}
+LABEL = {"Theorem": "thm", "Lemma": "lem", "Proposition": "prop",
+         "Definition": "def", "Hypothesis": "hyp"}
+RESULT = re.compile(r"^\*\*(Theorem|Lemma|Proposition|Definition|Hypothesis) (\d+)"
+                    r"(?: \(([^)]+)\))?\.\*\*\s*(.*)$")
 
 
 def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
@@ -151,8 +159,54 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
     lines = markdown.split("\n")
     index = 0
     in_abstract = False
+    seen: dict[str, int] = {}
     while index < len(lines):
         line = lines[index]
+
+        result = RESULT.match(line)
+        if result:
+            kind, number, name, rest = result.groups()
+            seen[kind] = seen.get(kind, 0) + 1
+            if int(number) != seen[kind]:
+                raise SystemExit(
+                    f"{kind} {number} is the {seen[kind]} of its kind in the source: "
+                    "the manual numbering and the document order disagree, and the "
+                    "prose refers to these numbers by hand"
+                )
+            head = r"\begin{" + ENV[kind] + "}"
+            if name:
+                head += "[" + escape_text(name) + "]"
+            out.append(head + r"\label{" + LABEL[kind] + ":" + number + "}")
+            if rest:
+                out.append(escape_text(convert_spans(rest, judged)))
+            index += 1
+            while index < len(lines) and lines[index].strip():
+                out.append(escape_text(convert_spans(lines[index], judged)))
+                index += 1
+            # A display block immediately after belongs to the statement.
+            if index + 1 < len(lines) and lines[index + 1].startswith("```"):
+                index += 2
+                out.append(r"\begin{equation*}\begin{split}")
+                while index < len(lines) and not lines[index].startswith("```"):
+                    out.append(to_math(lines[index])[1:-1] + r" \\")
+                    index += 1
+                out.append(r"\end{split}\end{equation*}")
+                index += 1
+            out.append(r"\end{" + ENV[kind] + "}")
+            continue
+
+        if line.startswith("*Proof.*"):
+            out.append(r"\begin{proof}")
+            out.append(escape_text(convert_spans(line[len("*Proof.*"):].strip(), judged)))
+            index += 1
+            while index < len(lines) and "\u220e" not in lines[index]:
+                out.append(escape_text(convert_spans(lines[index], judged)))
+                index += 1
+            if index < len(lines):
+                out.append(escape_text(convert_spans(lines[index].replace("\u220e", "").rstrip(), judged)))
+                index += 1
+            out.append(r"\end{proof}")
+            continue
 
         if line.startswith("> "):  # internal assembly note, not part of the paper
             index += 1
@@ -218,8 +272,14 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
     chunks = re.split(r"(\\begin\{verbatim\}.*?\\end\{verbatim\})", body, flags=re.S)
     for position, chunk in enumerate(chunks):
         if not chunk.startswith(r"\begin{verbatim}"):
-            chunks[position] = re.sub(r"(?<!\*)\*([^*]+?)\*(?!\*)", r"\\emph{\1}", chunk, flags=re.S)
-    out = ["".join(chunks)]
+            chunk = re.sub(r"\*\*(.+?)\*\*", r"\\textbf{\1}", chunk, flags=re.S)
+            # The opening star must not follow a word character, or equation*
+            # and its siblings lose theirs -- which is how \begin{equation*}
+            # became \begin{equation\emph{} on the first attempt.
+            chunk = re.sub(r"(?<![\w*])\*(?!\*)(.+?)\*(?![\w*])",
+                           r"\\emph{\1}", chunk, flags=re.S)
+            chunks[position] = chunk
+    out = [cross_references("".join(chunks))]
     out.append(r"\bibliographystyle{plain}")
     out.append(r"\bibliography{stabcert}")
     out.append(r"\end{document}")
