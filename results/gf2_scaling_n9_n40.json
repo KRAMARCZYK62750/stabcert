@@ -82,6 +82,18 @@
     },
     "tolerance": 0.28960797435454255
   },
+  "rejected_method_control": {
+    "estimated_degree": 1.9405278836118045,
+    "excludes_truth": true,
+    "fitted_on": "affine_systems_solved",
+    "jackknife_spread": [
+      1.9394944161445082,
+      1.9419913179641748
+    ],
+    "method": "e(n) = d + K/n fitted to local exponents",
+    "true_degree": 2,
+    "verdict": "rejected: a jackknife measures the stability of a fit, not its accuracy, and tightens around the wrong value when the residuals are systematic -- here the 1/n form is only the leading correction"
+  },
   "scramble_depth": 6,
   "seed": 20260802
 }

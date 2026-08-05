@@ -50,6 +50,7 @@ COUNTERS = (
     "rank_reductions",
     "pivots",
 )
+CALIBRATOR_FOR_CONTROL = "affine_systems_solved"
 EXACTNESS_TOLERANCE = 1e-9
 # Degrees predicted by composing the nesting with the cost of one elimination:
 # n**2 eliminations, each a Gaussian elimination costing ~n**3 row operations,
@@ -271,6 +272,41 @@ def _coerce(value: str):
     return value
 
 
+def rejected_method_control(rows: list[dict[str, object]]) -> dict[str, object]:
+    """Emit the numbers that justify rejecting the bias-corrected extrapolation.
+
+    Fitting ``e(n) = d + K/n`` to the sequence of local exponents would read the
+    asymptotic degree directly. Run against the calibrator, whose degree is
+    exactly 2, it returns a confidently wrong answer. Those numbers are quoted
+    when the rejection is reported, so they are emitted here rather than
+    recomputed by hand: a figure that appears in a write-up should be
+    recomputable from a published artifact.
+    """
+    widths = np.asarray([row["accessible_width"] for row in rows], dtype=float)
+    values = np.asarray([row[CALIBRATOR_FOR_CONTROL] for row in rows], dtype=float)
+    secant = np.log(values[1:] / values[:-1]) / np.log(widths[1:] / widths[:-1])
+    midpoints = (widths[1:] + widths[:-1]) / 2
+    design = np.vstack([np.ones_like(midpoints), 1 / midpoints]).T
+    degree, coefficient = np.linalg.lstsq(design, secant, rcond=None)[0]
+    jackknife = [
+        float(np.linalg.lstsq(np.delete(design, index, 0), np.delete(secant, index), rcond=None)[0][0])
+        for index in range(len(secant))
+    ]
+    return {
+        "method": "e(n) = d + K/n fitted to local exponents",
+        "fitted_on": CALIBRATOR_FOR_CONTROL,
+        "true_degree": 2,
+        "estimated_degree": float(degree),
+        "jackknife_spread": [min(jackknife), max(jackknife)],
+        "excludes_truth": not (min(jackknife) <= 2 <= max(jackknife)),
+        "verdict": (
+            "rejected: a jackknife measures the stability of a fit, not its "
+            "accuracy, and tightens around the wrong value when the residuals "
+            "are systematic -- here the 1/n form is only the leading correction"
+        ),
+    }
+
+
 def _rows_from_csv(paths: list[str]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for path in paths:
@@ -329,6 +365,7 @@ def main() -> int:
         "accessible_width_range": [rows[0]["accessible_width"], rows[-1]["accessible_width"]],
         "counters": summary,
         "prediction_verdict": evaluate_prediction(summary),
+        "rejected_method_control": rejected_method_control(rows),
     }
     Path(str(output).replace(".csv", ".json")).write_text(
         json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
