@@ -67,7 +67,7 @@ Aucun n'est un bug. Chacun fait exactement ce qui est écrit dans son code. Dans
 les six cas l'écart est entre la portée réelle et la portée supposée, et il
 est invisible tant que les deux coïncident par accident.
 
-Trois conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
+Quatre conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
 
 1. **Un contrôle qui échoue silencieusement est pire qu'un contrôle absent.**
    L'absence se voit. Un faux négatif qui laisse passer une réponse confiante
@@ -80,6 +80,25 @@ Trois conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
    Améliorer le motif d'extraction des chemins de test ne pouvait pas trouver
    la famille de vingt graines ; exécuter depuis un clone l'a trouvée en trois
    itérations. Le motif cherchait ce qu'on savait déjà chercher.
+4. **Une quantité mesurée exige un artefact ; une quantité dérivée exige sa
+   formule ; un nombre qui n'a ni l'un ni l'autre n'est pas vérifiable, quelle
+   que soit sa justesse.**
+   La version naïve — « tout nombre doit venir d'un CSV » — produirait un
+   artefact pour une table d'arithmétique : du théâtre de traçabilité, qui a
+   l'apparence de la rigueur sans la substance. Une densité de code de surface
+   se recalcule depuis sa formule en dix secondes ; la publier en CSV
+   n'ajouterait rien qu'un fichier à croire.
+
+   L'instance : le contrôle du jackknife était cité avec ses nombres —
+   `d = 1,929`, intervalle `[1,927 ; 1,930]` — calculés dans un script jeté.
+   Le chiffre n'était pas faux. Il était **sans provenance**, et sa plage a
+   changé sous lui sans que rien ne le signale : le même contrôle sur
+   `n = 9…40` rend `1,941` et `[1,939 ; 1,942]`. Les deux excluent la vérité,
+   donc la conclusion tient — mais elle tenait par chance. Le contrôle est
+   désormais émis avec l'analyse d'échelle.
+
+   Cette règle est la plus transférable de la journée : elle ne dépend ni de
+   ce projet ni de son domaine.
 
 ## Où chacun est traité
 
