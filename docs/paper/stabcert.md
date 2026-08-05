@@ -189,9 +189,16 @@ below are of the same type.
 
 **Definition 2 (code-Choi state).** Let `Ref(X)` be a reference register of
 `|X|` qubits. Prepare `k` Bell pairs between `Ref(X)` and the first `k` wires
-of `X`, with the remaining `|X| − k` wires of each half in `|0⟩`, and apply the
-support encoder `E` to both halves. Pass `X` through the candidate channel `Λ`.
-The code-Choi state `J_Π(Λ)` is the result reduced onto `O ∪ Ref(X)`.
+of `X`, with the remaining `|X| − k` wires of each half in `|0⟩`. Apply the
+**complex conjugate** `Ē` to `Ref(X)` and the support encoder `E` to `X`. Pass
+`X` through the candidate channel `Λ`. The code-Choi state `J_Π(Λ)` is the
+result reduced onto `O ∪ Ref(X)`.
+
+The conjugation on the reference is not a convention of convenience. It is the
+same fact as the transpose appearing in the inversion of Theorem 1, seen from
+the other side: `Ē` on `Ref(X)` is what makes `Tr_Ref[(σ^T ⊗ I) J_Π(Λ)]`
+return `Λ̃(σ)` rather than `Λ̃(σ^T)`. Stating either without the other leaves
+the definition and the proof inconsistent with each other.
 
 Three remarks, each of which a reader will otherwise have to reconstruct.
 
@@ -257,11 +264,20 @@ are equal.
 `J_Π(Λ) = J_Π(Λ′)` as states. Three steps then recover the channels.
 
 First, `E` restricts to a unitary isomorphism between `C^{2^k} ⊗ |0⟩^{|X|−k}`
-and the code subspace, so every `ρ` with `supp(ρ) ⊆ supp(τ_X)` is
-`E(σ ⊗ |0⟩⟨0|)E†` for a unique `σ` on `k` qubits.
+and the code subspace. By Definition 1, `E` maps the stabilizer group of
+`|0⟩^{|X|−k}` on the last `|X| − k` wires onto `S_X`, so it carries that
+subspace onto the joint `+1` eigenspace of `S_X`, which is `supp(Π)`; being
+Clifford it is unitary, hence a bijection between the two. Every `ρ` with
+`supp(ρ) ⊆ supp(τ_X)` is therefore `E(σ ⊗ |0⟩⟨0|)E†` for a unique `σ` on `k`
+qubits.
 
-Second, by construction `J_Π(Λ)` is the ordinary Choi state of the induced
-logical channel `Λ̃ : σ ↦ Λ(E(σ ⊗ |0⟩⟨0|)E†)`.
+Second, `J_Π(Λ)` is the ordinary Choi state of the induced logical channel
+`Λ̃ : σ ↦ Λ(E(σ ⊗ |0⟩⟨0|)E†)`. The prepared state of Definition 2 is
+`(Ē ⊗ E)(Φ_k ⊗ |0⟩⟨0|)(Ē ⊗ E)†`, whose reduction on `X` is `Π/2^k` and whose
+correlations with `Ref(X)` are those of `Φ_k` transported by `Ē ⊗ E`. Applying
+`Λ` to `X` and reducing onto `O ∪ Ref(X)` therefore yields `(id ⊗ Λ̃)(Φ_k)` up
+to the relabelling `Ē` performs on the reference — which is precisely the
+transpose carried in the inversion below.
 
 Third, Choi–Jamiołkowski inverts explicitly:
 

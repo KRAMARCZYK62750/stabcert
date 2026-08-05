@@ -215,10 +215,17 @@ below are of the same type.
 \begin{definition}[code-Choi state]\label{def:2}
 Let $Ref(X)$ be a reference register of
 $\lvert X \rvert$ qubits. Prepare $k$ Bell pairs between $Ref(X)$ and the first $k$ wires
-of $X$, with the remaining $\lvert X \rvert - k$ wires of each half in $|0\rangle$, and apply the
-support encoder $E$ to both halves. Pass $X$ through the candidate channel $\Lambda$.
-The code-Choi state $J_\Pi(\Lambda)$ is the result reduced onto $O \cup Ref(X)$.
+of $X$, with the remaining $\lvert X \rvert - k$ wires of each half in $|0\rangle$. Apply the
+\textbf{complex conjugate} $Ē$ to $Ref(X)$ and the support encoder $E$ to $X$. Pass
+$X$ through the candidate channel $\Lambda$. The code-Choi state $J_\Pi(\Lambda)$ is the
+result reduced onto $O \cup Ref(X)$.
 \end{definition}
+
+The conjugation on the reference is not a convention of convenience. It is the
+same fact as the transpose appearing in the inversion of Theorem~\ref{thm:1}, seen from
+the other side: $Ē$ on $Ref(X)$ is what makes $Tr_Ref[(\sigma^T \otimes I) J_\Pi(\Lambda)]$
+return $\Lambdã(\sigma)$ rather than $\Lambdã(\sigma^T)$. Stating either without the other leaves
+the definition and the proof inconsistent with each other.
 
 Three remarks, each of which a reader will otherwise have to reconstruct.
 
@@ -292,11 +299,20 @@ are equal.
 $J_\Pi(\Lambda) = J_\Pi(\Lambda')$ as states. Three steps then recover the channels.
 
 First, $E$ restricts to a unitary isomorphism between $C^{2^k} \otimes \lvert 0\rangle^{ \rvertX|-k}$
-and the code subspace, so every $\rho$ with $supp(\rho) \subseteq supp(\tau_X)$ is
-$E(\sigma \otimes \lvert 0\rangle\langle0 \rvert)E^\dagger$ for a unique $\sigma$ on $k$ qubits.
+and the code subspace. By Definition~\ref{def:1}, $E$ maps the stabilizer group of
+$\lvert 0\rangle^{ \rvertX|-k}$ on the last $\lvert X \rvert - k$ wires onto $S_X$, so it carries that
+subspace onto the joint $+1$ eigenspace of $S_X$, which is $supp(\Pi)$; being
+Clifford it is unitary, hence a bijection between the two. Every $\rho$ with
+$supp(\rho) \subseteq supp(\tau_X)$ is therefore $E(\sigma \otimes \lvert 0\rangle\langle0 \rvert)E^\dagger$ for a unique $\sigma$ on $k$
+qubits.
 
-Second, by construction $J_\Pi(\Lambda)$ is the ordinary Choi state of the induced
-logical channel $\Lambdã : \sigma \mapsto \Lambda(E(\sigma \otimes \lvert 0\rangle\langle0 \rvert)E^\dagger)$.
+Second, $J_\Pi(\Lambda)$ is the ordinary Choi state of the induced logical channel
+$\Lambdã : \sigma \mapsto \Lambda(E(\sigma \otimes \lvert 0\rangle\langle0 \rvert)E^\dagger)$. The prepared state of Definition~\ref{def:2} is
+$(Ē \otimes E)(Φ_k \otimes \lvert 0\rangle\langle0 \rvert)(Ē \otimes E)^\dagger$, whose reduction on $X$ is $\Pi/2^k$ and whose
+correlations with $Ref(X)$ are those of $Φ_k$ transported by $Ē \otimes E$. Applying
+$\Lambda$ to $X$ and reducing onto $O \cup Ref(X)$ therefore yields $(id \otimes \Lambdã)(Φ_k)$ up
+to the relabelling $Ē$ performs on the reference --- which is precisely the
+transpose carried in the inversion below.
 
 Third, Choi--Jamio\l{}kowski inverts explicitly:
 
