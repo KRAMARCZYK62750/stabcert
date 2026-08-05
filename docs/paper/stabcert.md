@@ -1,11 +1,11 @@
 # StabCert: translation validation for stabilizer channels
 
-> **Assembly note.** Prose in sections 2, 3, 4, 6, 7 and 8 is reconstructed
-> from drafting; every figure in sections 6 and 7 is regenerated from the
-> published artifacts named in the traceability table, never copied from an
-> earlier message. Three sections await their settled text. Do not run review
-> pass 1 until they are filled: it would report as missing the symbols that
-> the abstract and introduction introduce.
+> **Assembly note.** Every figure in sections 6 and 7 is regenerated from the
+> published artifacts named in the traceability table of
+> `docs/notes/REVIEW_PASSES.md`, never copied from an earlier message. Review
+> pass 1 has run; its mechanical checks are automated in
+> `check_paper_consistency.py`. Pass 2 — recomputing each figure from its
+> artifact — has not.
 
 ---
 
@@ -48,21 +48,10 @@ applies only where the compiler's source is available and under the verifier's
 control. SABRE and pytket are neither.
 
 Equivalence checking, as implemented for example in QCEC, compares a compiled
-circuit against a reference circuit. Its decision-diagram engines provide exact
-equivalence checking by comparing canonical representations of the implemented
-operators, with support for ancilla and garbage qubits and a notion of partial
-equivalence defined on measurement distributions, although resource consumption
-can be exponential in the worst case. QCEC also includes a ZX-calculus engine
-that is often effective at establishing equivalence but, because its rewriting
-procedure is incomplete, cannot in general establish inequivalence.
-
-Like our approach, QCEC relies on canonical representations. The distinction is
-not canonicity but the object represented and the input required: QCEC
-canonically represents operators and compares two of them, whereas we
-canonically represent a stabilizer channel restricted to a code subspace and
-compare one against a target reconstructed from a channel specification. The
-question is therefore not whether a canonical form exists, but what it is
-intended to certify.
+circuit against a reference circuit. Like our approach it relies on canonical
+representations; the distinction is not canonicity but the object represented
+and the input required. Section 8 states it precisely, together with the
+capabilities and limits of the engines involved.
 
 Deductive verification proves properties of programs written in a dedicated
 language, reaching algorithms as complex as Shor's order finding, but takes its
@@ -74,9 +63,9 @@ specification calls for? The distinction matters because the reference circuit
 is itself an artifact. Comparing against it certifies faithfulness to a
 possibly wrong starting point.
 
-**Contribution.** We restrict attention to stabilizer channels — Clifford
-unitaries with stabilizer ancilla preparation and partial trace — and show that
-within this class the question is decidable in polynomial time. Specifically:
+**Contribution.** We restrict attention to stabilizer channels, as defined in
+Section 2, and show that within this class the question is decidable in
+polynomial time. Specifically:
 
 - We define the code-Choi state, a mixed stabilizer state — a state stabilized
   by a signed subgroup — encoding a channel's action on a specified input
@@ -316,9 +305,8 @@ every subsequent claim is read within it.
 
 ### 4.1 What the procedure covers
 
-Stabilizer channels, as defined in Section 2: Clifford unitaries, stabilizer
-ancilla preparation, and partial trace over a discarded environment. Within
-this class the decision of Section 3 is exact.
+Stabilizer channels, as defined in Section 2. Within this class the decision
+of Section 3 is exact.
 
 Gottesman–Knill is what makes this possible, and the same fact bounds the
 result: nothing here transfers to non-Clifford gates, and the procedure says
@@ -372,11 +360,11 @@ density; Section 7.6 separates the two.
 
 Second, no extrapolation to surface-code circuits is warranted. The densities
 measured range from **0.149 to 0.578**. For a surface code the same metric is
-derived rather than measured: with `d²` data qubits and stabilizer generators
-of weight at most four, mean weight `w̄` gives density `w̄ / d²`, so a
-distance-5 code sits at `3.33 / 25 ≈ 0.133` — at the edge of the measured range
-rather than beyond it. The order-of-magnitude gap appears only at distance 13
-and above, where constant-weight generators over a growing lattice drive the
+derived rather than measured: a code of distance `Δ` has `Δ²` data qubits and
+stabilizer generators of weight at most four, so mean weight `w̄` gives density
+`w̄ / Δ²`, and `Δ = 5` sits at `3.33 / 25 ≈ 0.133` — at the edge of the measured
+range rather than beyond it. The order-of-magnitude gap appears only at
+`Δ ≥ 13`, where constant-weight generators over a growing lattice drive the
 density as `1/n`. Cost projections beyond the measured range are upper bounds
 on a family chosen to be unfavourable, not predictions.
 
@@ -599,7 +587,7 @@ Over 32 instances, `n = 9` to `40`, the number of affine systems solved is not
 approximately but **exactly**
 
 ```
-S(n) = 28n² − 232n + 598
+N_sys(n) = 28n² − 232n + 598
 ```
 
 with zero residual. Second differences are constant at 56; the reader can
@@ -615,11 +603,11 @@ touching about `n` bits — predicts degrees 2, 5 and 6 for the three counters.
 Observed exponents cannot be compared to those targets directly: they are
 inflated by lower-order terms. The counter whose degree is known exactly
 calibrates that inflation on the same instances. The inflation is derivable in
-closed form from the identity above — the tangent exponent is `n·S′(n)/S(n)`,
+closed form from the identity above — the tangent exponent is `n·N_sys′(n)/N_sys(n)`,
 so the bias is
 
 ```
-b(n) = (232n − 1196) / (28n² − 232n + 598)  →  232/28 = 8.286 / n
+β(n) = (232n − 1196) / (28n² − 232n + 598)  →  232/28 = 8.286 / n
 ```
 
 matching the measured secant bias to within `1.2 × 10⁻³` across the range.
@@ -687,7 +675,7 @@ widening gap and is not readable. Density does not stay neutralised; it must be
 modelled.
 
 Pooling both depths at 22 matched widths — where the elimination structure is
-identical, the same `S(n)` at every width — gives
+identical, the same `N_sys(n)` at every width — gives
 
 ```
 log(row_xors) = a + b·log n + c·log(density)
@@ -724,10 +712,10 @@ density; what is not is locality.
 
 ### 7.7 One method tried and rejected
 
-Fitting `e(n) = d + K/n` to the sequence of local exponents extrapolates the
+Fitting `e(n) = γ + K/n` to the sequence of local exponents extrapolates the
 asymptotic degree directly and would have terminated the range question
 cleanly. Run first against the calibrator, whose degree is exactly 2, it
-returns `d = 1.941` with a jackknife spread of `[1.939, 1.942]` over
+returns `γ = 1.941` with a jackknife spread of `[1.939, 1.942]` over
 `n = 9…40` — excluding the truth inside an interval some thirty times too
 narrow.
 
