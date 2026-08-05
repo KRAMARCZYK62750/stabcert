@@ -153,3 +153,4 @@ results/*
 !results/petz_logical_action_seed4019_layers3_t2.csv
 !results/petz_logical_action_seed4019_layers6_t2.csv
 !results/petz_logical_action_seed4019_layers9_t2.csv
+!results/verifier_adversarial_validation.csv

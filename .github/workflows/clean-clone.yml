@@ -55,3 +55,13 @@ jobs:
       # trust. --report reuses the output above instead of running a third time.
       - name: documented test counts match this run
         run: python sync_test_counts.py --report pytest-full.txt --check
+
+      # The paper's figures are recomputed from the tracked artifacts. Without
+      # this, regenerating a campaign would silently move a figure away from
+      # the text that quotes it -- and a checkout is the only place where an
+      # untracked artifact shows up as missing.
+      - name: paper review pass 1 -- form
+        run: python check_paper_consistency.py
+
+      - name: paper review pass 2 -- figures against artifacts
+        run: python verify_paper_figures.py
