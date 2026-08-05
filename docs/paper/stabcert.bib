@@ -16,15 +16,19 @@
 % Stabilizer formalism  (Section 2)
 % ---------------------------------------------------------------------------
 
-% TODO: pick one or both. The paper invokes Gottesman-Knill three times as the
-% ground of decidability; Aaronson-Gottesman is the usual citation for the
-% tableau simulation the implementation actually relies on.
+% Both, and at the same place. Section 2 makes two claims in one sentence:
+% it names the Gottesman-Knill theorem, whose source is this thesis, and then
+% describes the tableau simulation -- "a tableau of 2n signed generators
+% determines the state, and each gate updates it in polynomial time" -- which
+% is Aaronson-Gottesman below.
+% VERIFIED (record).
 @phdthesis{gottesman1997,
-  author = {Daniel Gottesman},
+  author = {Daniel Eric Gottesman},
   title  = {Stabilizer Codes and Quantum Error Correction},
   school = {California Institute of Technology},
   year   = {1997},
-  note   = {TODO: verify record}
+  eprint = {quant-ph/9705052},
+  archivePrefix = {arXiv}
 }
 
 % VERIFIED (record).
@@ -72,24 +76,35 @@
 % Routing compilers under test  (Sections 6, 8)
 % ---------------------------------------------------------------------------
 
-% TODO: verify record. SABRE is cited ten times; the algorithm reference is
-% Li, Ding and Xie, ASPLOS 2019, but the record was not checked.
+% These two are tools, not results, and they need two different things. The
+% algorithm papers below are the citations. The versions actually exercised --
+% Qiskit 2.5.1 with the decay heuristic, seed 20260803, one trial; pytket
+% 2.18.1 with RoutingPass(LexiLabellingMethod, LexiRouteRoutingMethod) --
+% belong in a reproducibility note in Section 6, not in a bibliography entry.
+% Section 6 currently pins neither.
+
+% VERIFIED (record).
 @inproceedings{li2019sabre,
   author    = {Gushu Li and Yufei Ding and Yuan Xie},
   title     = {Tackling the Qubit Mapping Problem for {NISQ}-Era Quantum Devices},
-  booktitle = {ASPLOS},
-  year      = {2019},
-  note      = {TODO: verify record}
+  booktitle = {Proceedings of the Twenty-Fourth International Conference on
+               Architectural Support for Programming Languages and Operating
+               Systems (ASPLOS)},
+  pages     = {1001--1014},
+  year      = {2019}
 }
 
-% TODO: verify record. pytket is cited eleven times.
+% VERIFIED (record).
 @article{sivarajah2020tket,
   author  = {Seyon Sivarajah and Silas Dilkes and Alexander Cowtan and
              Will Simmons and Alec Edgington and Ross Duncan},
   title   = {t|ket$\rangle$: A Retargetable Compiler for {NISQ} Devices},
   journal = {Quantum Science and Technology},
+  volume  = {6},
+  number  = {1},
+  pages   = {014003},
   year    = {2020},
-  note    = {TODO: verify record}
+  doi     = {10.1088/2058-9565/ab8e92}
 }
 
 % ---------------------------------------------------------------------------
