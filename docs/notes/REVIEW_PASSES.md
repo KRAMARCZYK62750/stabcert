@@ -36,7 +36,6 @@ ne regarde pas. Passe 2 ensuite, parce qu'elle seule juge les affirmations.
   - [ ] `d` — vaut `2^|M|`, employé dans `τ_X = N(I/d)` ;
   - [ ] `sig(·)` — signature canonique signée ;
   - [ ] `Ref(X)` — référence du sous-espace de code, `|X|` fils.
-- [ ] Aucun symbole posé n'est inutilisé.
 - [ ] `R` ne désigne que la référence purifiante — les canaux sont `Λ`, `Λ′`.
       Deux références distinctes coexistent, `R` sur `|M|` fils et `Ref(X)`
       sur `|X|` : vérifier qu'aucun passage ne les confond.
@@ -96,6 +95,14 @@ Deux objets seulement, trois noms en circulation :
 - [ ] Le §4.5 renvoie au §7.6 pour les régimes de dérive plutôt que de
       réargumenter.
 
+### 1.7 Nettoyage — sans gravité
+
+Séparé du reste **délibérément** : un symbole inutilisé ne trompe personne. Le
+mettre au même niveau qu'un symbole manquant mettrait une coquille et une
+erreur sur le même plan.
+
+- [ ] Aucun symbole posé dans la table n'est resté inutilisé.
+
 ---
 
 ## Passe 2 — recalcul
@@ -106,15 +113,45 @@ Un seul principe, et il est déjà écrit dans `MECHANISM_SCOPE.md` :
 > formule. Un nombre qui n'a ni l'un ni l'autre n'est pas vérifiable, quelle
 > que soit sa justesse.
 
-Chaque nombre du papier est repris **depuis son artefact**, jamais depuis un
-message ou une version antérieure du texte. La table de correspondance
-section → artefact sert de plan.
+La table de correspondance section → artefact sert de plan.
 
-Deux points d'attention hérités de la rédaction :
+### 2.0 La règle qui rend la passe non vide
+
+À cocher en premier, parce qu'elle interdit le mode d'échec qui rendrait tout
+le reste sans objet — vérifier un nombre depuis un autre passage du papier
+produit une confirmation garantie et vide de contenu.
+
+- [ ] **Aucun nombre du papier n'est vérifié depuis un autre passage du
+      papier, depuis une note, ni depuis un message antérieur. Chaque nombre
+      est repris depuis son artefact publié, depuis une exécution faite
+      pendant la passe, ou depuis sa formule.**
+
+Un script *lu* n'est pas une source : seule son exécution en est une. C'est
+l'écart de `signed_groups_equal`, jamais appelée, et celui du motif de chemins
+raté deux fois — le code disait ce qu'il faisait, personne ne l'avait fait
+tourner.
+
+Et les messages sont la source la plus tentante et la moins fiable : sur les
+chiffres qui circulaient pendant la rédaction, **4,69**, **1,929** et **0,16**
+étaient respectivement mal attribué, périmé et faux.
+
+### 2.1 Points d'attention hérités
 
 - [ ] Tout exposant cité nomme **sa plage et sa fenêtre**. Trois valeurs
       circulent pour le temps — 4,67 global sur `n ≤ 20`, 4,83 fenêtre haute
       sur `n ≤ 30`, 4,78 fenêtre haute sur `n ≤ 40` — toutes justes pour la
       leur.
+- [ ] **§7.7 — le contrôle du jackknife.** Le papier cite `1,929` et
+      `[1,927 ; 1,930]`, valeurs de `n ≤ 30`. Le contrôle est désormais émis
+      avec l'analyse et donne `1,941` et `[1,939 ; 1,942]` sur `n = 9…40`.
+      Reprendre la valeur de la plage effectivement citée, et nommer la plage.
+      C'est l'instance qui a motivé la règle 2.0 ; elle ne peut pas rester
+      fausse dans le texte qui s'en réclame.
+- [ ] **§6.4 contre §7.5 — le recoupement.** 26,1 mesuré contre 27,5 prédit
+      par l'exposant. Les deux nombres viennent de sources différentes et
+      n'ont pas été ajustés l'un sur l'autre — c'est ce qui fait leur valeur.
+      Recalculer **les deux côtés** : si l'un bouge, l'accord disparaît et la
+      phrase devient fausse. Ne pas recalculer un seul côté et conserver
+      l'autre.
 - [ ] Les densités de codes de surface sont **dérivées** : la formule est
       écrite, pas le seul résultat.
