@@ -1,5 +1,7 @@
 # StabCert
 
+[![clean clone](https://github.com/KRAMARCZYK62750/stabcert/actions/workflows/clean-clone.yml/badge.svg)](https://github.com/KRAMARCZYK62750/stabcert/actions/workflows/clean-clone.yml)
+
 Sound and complete translation validation for stabilizer channels.
 
 Quantum compilers rewrite circuits to fit hardware connectivity constraints.
