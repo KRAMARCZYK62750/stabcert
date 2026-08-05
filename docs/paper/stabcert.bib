@@ -2,9 +2,11 @@
 %
 % Provenance discipline, matching the disclosure of Section 8: an entry is
 % marked VERIFIED when its bibliographic record was checked against a listing
-% during preparation, READ-BY-AUTHOR when it is cited in
-% docs/notes/NOVELTY_AUDIT.md with content-level claims that indicate reading,
-% and TODO when it requires a decision or a check that has not been made.
+% during preparation, AUTHOR-REPORTED when it is carried over from
+% docs/notes/NOVELTY_AUDIT.md on the author's report rather than on any
+% independent check, and TODO when it requires a check or a decision that has
+% not been made. AUTHOR-REPORTED is a statement about where the information
+% comes from, not about whether it is right.
 %
 % Verifying a *record* is not reading a *paper*. Section 8 states which tools
 % were characterised from documentation rather than from their articles; this
@@ -25,6 +27,7 @@
   note   = {TODO: verify record}
 }
 
+% VERIFIED (record).
 @article{aaronson2004improved,
   author  = {Scott Aaronson and Daniel Gottesman},
   title   = {Improved Simulation of Stabilizer Circuits},
@@ -32,8 +35,7 @@
   volume  = {70},
   number  = {5},
   pages   = {052328},
-  year    = {2004},
-  note    = {TODO: verify record}
+  year    = {2004}
 }
 
 % TODO: Choi 1975 and Jamiolkowski 1972, for the correspondence used in the
@@ -108,7 +110,7 @@
 % makes any claim about the Petz formula, that reservation must travel with it.
 % As drafted it does not: the contribution is the decision procedure.
 
-% READ-BY-AUTHOR
+% AUTHOR-REPORTED
 @misc{burri2025petz,
   author = {Burri},
   title  = {Entanglement Fidelity of the {P}etz Decoder for One-Shot
@@ -119,7 +121,7 @@
   note   = {TODO: complete author given name}
 }
 
-% READ-BY-AUTHOR
+% AUTHOR-REPORTED
 @misc{yoshida2021recovery,
   author = {Beni Yoshida},
   title  = {Recovery Algorithms for {C}lifford {H}ayden--{P}reskill Problem},
@@ -128,13 +130,20 @@
   archivePrefix = {arXiv}
 }
 
-% TODO -- DECISION REQUIRED.
-% Section 4.3 names the "Yoshida-Kitaev decoder", whose canonical form is
-% measurement-based. The repository's bibliography contains only Yoshida 2021,
-% a different work. If the 2017 Yoshida-Kitaev decoder is meant, it needs its
-% own entry; if Yoshida 2021 is meant, Section 4.3 should say so.
+% Decision taken: Section 4.3 means this work, not Yoshida 2021. It is the
+% decoder whose canonical form is measurement-based, and of which the circuits
+% verified here are the coherent counterpart. Yoshida 2021 remains above as a
+% separate reference; it does not replace this one.
+% VERIFIED (record).
+@misc{yoshida2017efficient,
+  author = {Beni Yoshida and Alexei Kitaev},
+  title  = {Efficient Decoding for the {H}ayden--{P}reskill Protocol},
+  year   = {2017},
+  eprint = {1710.03363},
+  archivePrefix = {arXiv}
+}
 
-% READ-BY-AUTHOR
+% AUTHOR-REPORTED
 @article{hu2024petz,
   author  = {Hu and Zou},
   title   = {{P}etz Map Recovery for Long-Range Entangled Quantum
@@ -146,7 +155,7 @@
   note    = {TODO: complete author given names}
 }
 
-% READ-BY-AUTHOR
+% AUTHOR-REPORTED
 @misc{beigi2016decoding,
   author = {Salman Beigi and Nilanjana Datta and Felix Leditzky},
   title  = {Decoding Quantum Information via the {P}etz Recovery Map},
@@ -159,11 +168,14 @@
 % Implementation dependency  (Section 5)
 % ---------------------------------------------------------------------------
 
-% TODO: verify record. Stim provides the tableau engine.
+% VERIFIED (record). Stim provides the tableau engine.
 @article{gidney2021stim,
   author  = {Craig Gidney},
   title   = {Stim: A Fast Stabilizer Circuit Simulator},
   journal = {Quantum},
+  volume  = {5},
+  pages   = {497},
   year    = {2021},
-  note    = {TODO: verify record}
+  eprint  = {2103.02202},
+  archivePrefix = {arXiv}
 }
