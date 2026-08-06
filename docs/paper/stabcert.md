@@ -758,10 +758,16 @@ The method invents essentially nothing.
 **density governs a real share of the cost.** `b = 6.313` is an all-points fit
 and carries the same finite-size inflation the calibrator shows on that fit
 (`b₀ = 2.611` against a true 2, so `+0.611`), giving a bias-corrected degree at
-fixed density of about **5.7** — higher than the family exponent of 5, as it
-must be, since density falls with `n` and cost rises with density. The relation
-that reconciles the two is `family exponent = b + c·δ`, with `δ` the density
-drift of the arm.
+fixed density of about **5.7** — higher than the measured family exponent of
+**4.907** on the upper-half window over `n = 9…40`, as it must be, since
+density falls with `n` and cost rises with density. The relation that
+reconciles the two is `family exponent = b + c·δ`, with `δ` the density drift
+of the arm.
+
+The figure quoted here was 5 in an earlier draft. That was not a measurement
+but the invalidated target of 7.3, left behind when the targets were corrected
+— the kind of residue a stale prediction leaves in prose that once agreed with
+it.
 
 One weakness to report: the maximum log residual is 0.408 for `row_xors`
 against 0.104 for the calibrator. The model satisfies the exponent gate but
