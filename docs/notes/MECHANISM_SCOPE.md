@@ -3,12 +3,12 @@
 **Date :** 4 août 2026.
 
 Le danger ne vient pas des mécanismes qui échouent. Il vient de ce qu'on leur
-prête en plus de ce qu'ils promettent. Six instances du même schéma sont
+prête en plus de ce qu'ils promettent. Sept instances du même schéma sont
 apparues en une seule journée de travail sur ce dépôt, dans des domaines sans
 rapport entre eux. Elles sont consignées ici parce que le schéma est plus
 utile que chacun des cas.
 
-## Les six
+## Les sept
 
 **Le `.get()` qui rendait `None`.** `compare_density_cost.py` contrôlait que
 les deux bras partageaient le même rang de support. Les CSV du bras dense
@@ -61,10 +61,28 @@ contrôle de compteurs. Ce qu'on lui prêtait : « le fichier porte ce que j'y
 ai écrit ». Ce qu'il faisait : « le fichier porte ce que le générateur émet ».
 Toute édition manuelle d'un fichier généré est temporaire par construction.
 
-## Ce que les six ont en commun
+**Le seuil pré-enregistré.** Le critère du §7 a confirmé les cibles 5 et 6
+avec toute sa rigueur — excès de −0,09 et +0,11 contre une tolérance de 0,290.
+Les cibles venaient d'une composition qui multipliait `Θ(n²)` éliminations par
+`n³`, le coût **en bits** d'une élimination, et appelait le produit un compte
+de lignes. Trois lignes mesurant une seule élimination ont renversé ce que
+32 points balayés et un critère enregistré avaient validé. Ce qu'on lui
+prêtait : « la composition est vérifiée ». Ce qu'il faisait : « l'observation
+concorde avec la prédiction fournie ».
+
+> **Un contrôle attrape une méthode. Une mesure attrape une hypothèse.** Un
+> seuil pré-enregistré protège contre l'ajustement d'une affirmation aux
+> données ; il n'offre aucune protection contre une hypothèse fausse.
+
+C'est la limite la plus générale trouvée ici, et la seule qui porte sur une
+pratique — le pré-enregistrement — plutôt que sur un mécanisme de ce dépôt.
+Aucun contrôle n'aurait pu l'attraper : le critère validait exactement ce qu'on
+lui avait donné à valider.
+
+## Ce que les sept ont en commun
 
 Aucun n'est un bug. Chacun fait exactement ce qui est écrit dans son code. Dans
-les six cas l'écart est entre la portée réelle et la portée supposée, et il
+les sept cas l'écart est entre la portée réelle et la portée supposée, et il
 est invisible tant que les deux coïncident par accident.
 
 Quatre conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
@@ -115,6 +133,7 @@ Quatre conséquences pratiques, toutes vérifiées à l'usage sur ce dépôt :
 | synchroniseur | portée divulguée dans la docstring, + exécution depuis un checkout | `sync_test_counts.py`, intégration continue |
 | statut à travers un tube | `set -o pipefail` en CI ; ne plus lire `$?` derrière un tube | `.github/workflows/clean-clone.yml` |
 | deux générateurs, un fichier | le fichier généré retiré de `DOCUMENTS`, avec la raison | `sync_test_counts.py` |
+| seuil sur une hypothèse fausse | facteur mesuré au lieu d'être supposé ; borne prouvée | `measure_elimination_cost.py`, §7.4 et §7.7 du papier |
 
 La divulgation et l'exécution depuis un checkout sont **deux contrôles
 indépendants**, pas l'un le remplaçant de l'autre. Le second n'élargit pas ce
