@@ -8,9 +8,12 @@ That keeps both review passes valid: they search the source, and a hand-kept
 Two things this script does not do, and says so rather than implying
 otherwise.
 
-It does not compile. No LaTeX toolchain was available where it was written, so
-the output is generated but never typeset. Treat a first `pdflatex` run as
-part of review, not as a formality.
+It does not compile, and no LaTeX toolchain is available where it runs. The
+first typesetting elsewhere found seven classes of defect that reading the
+output had not, so treat a `pdflatex` run as a control rather than a formality
+-- and note that this file has changed since the last one that passed. As of
+4 August 2026 the generated .tex compiles in 15 pages with no undefined
+citation or reference; nothing here guarantees the next regeneration does.
 
 The seven results become theorem environments with labels, and prose
 references become \\ref. Manual numbering in two places -- the heading and the
