@@ -67,23 +67,37 @@ MATH: dict[str, str] = {
     "⊗": r"\otimes", "⟨": r"\langle", "⟩": r"\rangle", "·": r"\cdot",
     "×": r"\times", "±": r"\pm", "−": "-", "†": r"^\dagger", "′": "'",
     "²": "^2", "³": "^3", "ᵢ": "_i", "ⱼ": "_j", "₀": "_0", "₂": "_2",
-    "⁻": "^-", "∎": r"\qed",
+    "⁻⁴": "^{-4}", "⁻³": "^{-3}", "⁻²": "^{-2}", "⁻": "^-", "⁴": "^4",
+    "⁵": "^5", "Φ": r"\Phi", "Θ": r"\Theta", "∎": r"\qed", "Ē": r"\bar{E}",
+    "≠": r"\ne", "…": r"\dots", "‑": "-",
 }
 # Text-mode unicode, outside formulas.
 TEXT: dict[str, str] = {
-    "–": "--", "—": "---", "…": r"\dots", "−": "-", "×": r"$\times$",
-    "≈": r"$\approx$", "≥": r"$\ge$", "≤": r"$\le$", "²": "$^2$", "ł": r"\l{}",
+    "–": "--", "—": "---", "…": r"\dots", "−": "--", "ł": r"\l{}", "′": "'", "…": r"\dots{}",
+    "\u0304": "", "\u0303": "",
 }
+# Mathematics met outside a span must still enter math mode, or the command
+# lands in text mode and the error surfaces somewhere else entirely.
+TEXT_MATH = ("⁻³", "×", "≈", "≥", "≤", "²", "³", "⁴", "⁵", "∈", "∉", "⊆", "⊗",
+             "→", "↦", "⇐", "⇒", "⟺", "∏", "∖", "∪", "·", "±", "†", "Φ", "Θ",
+             "Π", "Λ", "Δ", "σ", "τ", "ρ", "ψ", "β", "γ", "δ", "ᵢ", "ⱼ", "₀",
+             "₂", "⟨", "⟩", "∎", "Ē", "≠")
 MATH_MARKERS = set("ΔΛΠβγδρστψ→↦⇐⇒⟺∈∉∏∖∪≈≤≥⊆⊗⟨⟩·×±−†′²³ᵢⱼ₀₂⁻")
 
 
 def to_math(span: str) -> str:
     out = span
-    out = out.replace("X̄", r"\bar{X}").replace("Z̄", r"\bar{Z}")
+    for base, target in (("X̄", r"\bar{X}"), ("Z̄", r"\bar{Z}"), ("Ē", r"\bar{E}"),
+                         ("Λ̃", r"\tilde{\Lambda}"), ("σ̃", r"\tilde{\sigma}")):
+        out = out.replace(base, target)
+    out = out.replace("\u0304", "").replace("\u0303", "")
     for source, target in MATH.items():
         out = out.replace(source, target)
-    out = re.sub(r"\|([^|]+)\|", r"\\lvert \1 \\rvert", out)
-    out = out.replace("_", "_").replace("^", "^")
+    if out.count("|") % 2 == 0:
+        out = re.sub(r"\|([^|]*)\|", r"\\lvert \1\\rvert", out)
+    else:
+        out = out.replace("|", r"\mid ")
+    out = re.sub(r"(\\[a-zA-Z]+)(?=[A-Za-z])", r"\1 ", out)
     return f"${out}$"
 
 
@@ -141,8 +155,30 @@ def cross_references(text: str) -> str:
 def escape_text(line: str) -> str:
     for source, target in TEXT.items():
         line = line.replace(source, target)
-    line = re.sub(r"(?<!\\)([&%#])", r"\\\1", line)
+    for symbol in TEXT_MATH:
+        if symbol in line:
+            line = line.replace(symbol, "$" + MATH.get(symbol, symbol) + "$")
+    line = re.sub(r"(?<!\\)([&%#_])", r"\\\1", line)
     return line
+
+
+def render(line: str, judged: list[dict[str, str]]) -> str:
+    """Convert spans, escape the rest, and keep the escaping off the spans.
+
+    escape_text used to run over output that convert_spans had already turned
+    into mathematics, which is how O(n^4) became $O(n$^4$)$ -- math mode opened
+    and closed inside one expression. Converted spans are now held behind
+    placeholders while the surrounding text is escaped.
+    """
+    held: list[str] = []
+
+    def hold(match):
+        held.append(convert_spans(match.group(0), judged))
+        return "@@S" + str(len(held) - 1) + "@@"
+
+    masked = re.sub(r"`[^`\n]+`", hold, line)
+    escaped = escape_text(masked)
+    return re.sub(r"@@S(\d+)@@", lambda m: held[int(m.group(1))], escaped)
 
 
 ENV = {"Theorem": "theorem", "Lemma": "lemma", "Proposition": "proposition",
@@ -178,10 +214,10 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
                 head += "[" + escape_text(name) + "]"
             out.append(head + r"\label{" + LABEL[kind] + ":" + number + "}")
             if rest:
-                out.append(escape_text(convert_spans(rest, judged)))
+                out.append(render(rest, judged))
             index += 1
             while index < len(lines) and lines[index].strip():
-                out.append(escape_text(convert_spans(lines[index], judged)))
+                out.append(render(lines[index], judged))
                 index += 1
             # A display block immediately after belongs to the statement.
             if index + 1 < len(lines) and lines[index + 1].startswith("```"):
@@ -197,13 +233,22 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
 
         if line.startswith("*Proof.*"):
             out.append(r"\begin{proof}")
-            out.append(escape_text(convert_spans(line[len("*Proof.*"):].strip(), judged)))
+            out.append(render(line[len("*Proof.*"):].strip(), judged))
             index += 1
             while index < len(lines) and "\u220e" not in lines[index]:
-                out.append(escape_text(convert_spans(lines[index], judged)))
+                if lines[index].startswith("```"):
+                    index += 1
+                    out.append(r"\begin{equation*}\begin{split}")
+                    while index < len(lines) and not lines[index].startswith("```"):
+                        out.append(to_math(lines[index])[1:-1] + r" \\")
+                        index += 1
+                    out.append(r"\end{split}\end{equation*}")
+                    index += 1
+                    continue
+                out.append(render(lines[index], judged))
                 index += 1
             if index < len(lines):
-                out.append(escape_text(convert_spans(lines[index].replace("\u220e", "").rstrip(), judged)))
+                out.append(render(lines[index].replace("\u220e", "").rstrip(), judged))
                 index += 1
             out.append(r"\end{proof}")
             continue
@@ -215,13 +260,22 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
             index += 1
             continue
         if line.startswith("```"):
-            out.append(r"\begin{verbatim}")
             index += 1
+            block: list[str] = []
             while index < len(lines) and not lines[index].startswith("```"):
-                out.append(lines[index])
+                block.append(lines[index])
                 index += 1
-            out.append(r"\end{verbatim}")
             index += 1
+            # A display block carrying mathematical symbols is mathematics, and
+            # verbatim would hand those symbols straight to the typesetter.
+            if any(set(row) & MATH_MARKERS for row in block):
+                out.append(r"\begin{equation*}\begin{split}")
+                out += [to_math(row)[1:-1] + r" \\" for row in block if row.strip()]
+                out.append(r"\end{split}\end{equation*}")
+            else:
+                out.append(r"\begin{verbatim}")
+                out += block
+                out.append(r"\end{verbatim}")
             continue
         if line.startswith("| "):
             block = []
@@ -254,13 +308,13 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
             out.append(r"\begin{itemize}")
             while index < len(lines) and (lines[index].startswith("- ") or lines[index].startswith("  ")):
                 if lines[index].startswith("- "):
-                    out.append(r"\item " + escape_text(convert_spans(lines[index][2:], judged)))
+                    out.append(r"\item " + render(lines[index][2:], judged))
                 else:
-                    out.append(escape_text(convert_spans(lines[index].strip(), judged)))
+                    out.append(render(lines[index].strip(), judged))
                 index += 1
             out.append(r"\end{itemize}")
             continue
-        out.append(escape_text(convert_spans(line, judged)))
+        out.append(render(line, judged))
         index += 1
 
     if in_abstract:
@@ -288,12 +342,28 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
 
 def table(block: list[str], judged: list[dict[str, str]]) -> str:
     rows = [r for r in block if not re.fullmatch(r"\|[\s|:-]+\|", r.strip())]
-    cells = [[c.strip() for c in r.strip().strip("|").split("|")] for r in rows]
+    cells = []
+    for row in rows:
+        # A span may contain vertical bars -- `|M|`, `k = |X| - |S_X|`. Splitting
+        # the row first cuts them into pieces that are no longer spans.
+        held: list[str] = []
+
+        def hold(match, held=held):
+            held.append(match.group(0))
+            return "@@C" + str(len(held) - 1) + "@@"
+
+        masked = re.sub(r"`[^`\n]+`", hold, row)
+        parts = [c.strip() for c in masked.strip().strip("|").split("|")]
+        cells.append([re.sub(r"@@C(\d+)@@", lambda m, h=held: h[int(m.group(1))], c)
+                      for c in parts])
     width = max(len(r) for r in cells)
     spec = "l" * width
-    lines = [r"\begin{center}", r"\begin{tabular}{" + spec + "}", r"\toprule"]
+    lines = [r"\begin{center}"]
+    if width >= 5:                        # six- and seven-column tables overflow
+        lines.append(r"\small")
+    lines += [r"\begin{tabular}{" + spec + "}", r"\toprule"]
     for position, row in enumerate(cells):
-        rendered = " & ".join(escape_text(convert_spans(c, judged)) for c in row)
+        rendered = " & ".join(render(c, judged) for c in row)
         lines.append(rendered + r" \\")
         if position == 0:
             lines.append(r"\midrule")
