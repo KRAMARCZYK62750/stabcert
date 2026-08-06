@@ -370,7 +370,7 @@ The scaling results of Section 7 are measured on one family of instances: a
 chain architecture with random stabilizer scramblers, a single seed, and two
 scrambling depths. Two consequences.
 
-First, the exponent we confirm is an exponent of that family. Because the
+First, the exponent we measure is an exponent of that family. Because the
 family's generator density drifts with `n`, it is not a degree at fixed
 density; Section 7.6 separates the two.
 
@@ -588,9 +588,9 @@ Two different questions are answered here, and conflating them is the way this
 section is most likely to be misread. **What does verification cost as
 instances grow?** is a question about a family. **What is the degree at fixed
 generator density?** is a question about the algorithm. The family we measure
-has a density that drifts with `n`, so the two answers differ: roughly `n^5`
-for the first, roughly `n^{5.7}` for the second. Both are stated; neither is
-the other.
+has a density that drifts with `n`, so the two answers differ. Both are
+stated; neither is the other. A proved bound is given in 7.4, and the measured
+exponents sit above it over the range measured, approaching it from above.
 
 ### 7.1 Counters, not seconds
 
@@ -620,9 +620,16 @@ nested elimination: the two nested loops compose to `n²` solves, not `n³`.
 
 ### 7.3 A prediction, registered before measurement
 
-Composing the nesting with the cost of one elimination — `n²` solves, each a
-Gaussian elimination costing about `n³` row operations, each row operation
-touching about `n` bits — predicts degrees 2, 5 and 6 for the three counters.
+Composing the nesting with the cost of one elimination gives the targets. That
+second factor was assumed on a first pass and the assumption mixed units: it
+took `n³`, the bit count of an elimination, for its row count. Measuring one
+elimination against system size settles it — exponents 1.98 for row operations
+and 2.96 for bit operations over sizes 16 to 128
+(`results/elimination_cost.json`). So `Θ(n²)` eliminations, each `O(n²)` row
+operations and `O(n³)` bit operations, predict degrees 2, **4** and **5**.
+
+Three lines of measurement decided what 32 swept points had not, because the
+factor had never been measured — only supposed.
 
 Observed exponents cannot be compared to those targets directly: they are
 inflated by lower-order terms. The counter whose degree is known exactly
@@ -654,15 +661,44 @@ Windows are the lower and upper halves of `n = 9…40`, 16 points each.
 | counter | target | lower | upper | trend | excess | tolerance | verdict |
 |---|---:|---:|---:|---:|---:|---:|---|
 | `affine_systems_solved` | 2 | 2.690 | 2.290 | −0.400 | — | — | calibrator |
-| `row_xors` | 5 | 6.285 | **4.907** | −1.378 | −0.093 | 0.290 | confirmed |
-| `scalar_bit_xors` | 6 | 7.643 | **6.106** | −1.536 | +0.106 | 0.290 | confirmed |
+| `row_xors` | 4 | 6.285 | **4.907** | −1.378 | +0.907 | 0.290 | **rejected** |
+| `scalar_bit_xors` | 5 | 7.643 | **6.106** | −1.536 | +1.106 | 0.290 | **rejected** |
 | `verify_seconds` | — | 4.711 | 4.780 | **+0.068** | — | — | not a verdict |
 
-The structural composition holds at the registered threshold. `row_xors`
-crossing below 5 is not evidence of a degree below 5: it is a data-dependent
-counter that fell by 1.38 over the range, and an overshoot of 0.09 is within
-that movement. Single-step exponents are not reported — at the top of the range
-they are unstable enough to be meaningless.
+**Both are rejected at the registered threshold**, and the earlier reading of
+this table said the opposite. It compared the same measurements against
+targets of 5 and 6, found excesses of −0.09 and +0.11, and recorded a
+confirmation. Those targets came from the unit-mixed composition; a
+pre-registered threshold can only validate the prediction it is given, and it
+confirmed a wrong one with every appearance of rigour. The threshold did not
+fail. The hypothesis did.
+
+Rejection here does not mean the cost is worse than claimed. The bound below is
+tighter than what the section previously asserted, and the measurements are
+unchanged. It means the measured exponents have not reached their asymptote
+over `n = 9…40`: both are falling steeply, by 1.38 and 1.54 across the range,
+which is the signature of a function approaching its degree **from above** —
+consistent with an `n⁴` and an `n⁵` asymptote, and not with 5 and 6.
+
+Single-step exponents are not reported — at the top of the range they are
+unstable enough to be meaningless.
+
+**Proposition 2 (cost bound).** *Deciding signature equality for a
+specification of accessible width `n` performs `Θ(n²)` eliminations, each on a
+system of `O(n)` rows and `O(n)` columns, hence `O(n⁴)` row operations and
+`O(n⁵)` bit operations over `F₂`, independently of generator density.*
+
+*Proof.* The elimination count is the exact identity of 7.2. One elimination
+performs at most `O(n)` pivots, each exclusive-or of the pivot row into at most
+`O(n)` rows, hence `O(n²)` row operations; each row spans `O(n)` bits, hence
+`O(n³)` bit operations. Neither factor depends on how dense the systems are —
+only on their dimensions, which are fixed by `n`. Multiplying gives the stated
+bounds. ∎
+
+This is what makes *polynomial* in the abstract a proved claim rather than a
+measured one. The measurement of 7.4 is then a second, independent statement:
+that the bound is not grossly loose, since the exponents descend towards it
+rather than towards something far below.
 
 ### 7.5 Wall time is not the complexity
 

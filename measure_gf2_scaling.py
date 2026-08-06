@@ -65,10 +65,15 @@ EXACTNESS_TOLERANCE = 1e-9
 # in ``compare_density_cost.py`` separates them and finds a density elasticity
 # of about 1.4, so the two quantities genuinely differ.  Confirmation stands;
 # its object is the family, not the algorithm in the abstract.
+# Corrected 4 August 2026. The earlier targets of 5 and 6 multiplied the
+# Theta(n^2) eliminations by n^3, which is the *bit* count of one elimination,
+# and called the product a row count. measure_elimination_cost.py measures the
+# factor instead of assuming it: one elimination costs n^2 row operations and
+# n^3 bit operations, so the composition gives 4 and 5.
 STRUCTURAL_PREDICTION = {
     "affine_systems_solved": 2,
-    "row_xors": 5,
-    "scalar_bit_xors": 6,
+    "row_xors": 4,
+    "scalar_bit_xors": 5,
 }
 
 

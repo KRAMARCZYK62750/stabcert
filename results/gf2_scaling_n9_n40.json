@@ -35,14 +35,14 @@
       "log_log_exponent_last_step": -0.5433307521283728,
       "log_log_exponent_lower_window": 6.285029777895095,
       "log_log_exponent_upper_half": 4.907177252495946,
-      "structural_prediction": 5
+      "structural_prediction": 4
     },
     "scalar_bit_xors": {
       "log_log_exponent_all_points": 7.007118494736413,
       "log_log_exponent_last_step": 1.2796183141684927,
       "log_log_exponent_lower_window": 7.642721252577915,
       "log_log_exponent_upper_half": 6.106291801538101,
-      "structural_prediction": 6
+      "structural_prediction": 5
     },
     "verify_seconds": {
       "log_log_exponent_all_points": 4.773809316560112,
@@ -67,18 +67,18 @@
     "finite_size_bias": 0.28960797435454255,
     "registered": "2026-08-04, before reading the n=21..30 sweep",
     "row_xors": {
-      "excess": -0.09282274750405417,
+      "excess": 0.9071772524959458,
       "observed_upper_half": 4.907177252495946,
-      "target": 5,
+      "target": 4,
       "trend": -1.377852525399149,
-      "verdict": "confirmed"
+      "verdict": "rejected"
     },
     "scalar_bit_xors": {
-      "excess": 0.10629180153810136,
+      "excess": 1.1062918015381014,
       "observed_upper_half": 6.106291801538101,
-      "target": 6,
+      "target": 5,
       "trend": -1.5364294510398135,
-      "verdict": "confirmed"
+      "verdict": "rejected"
     },
     "tolerance": 0.28960797435454255
   },

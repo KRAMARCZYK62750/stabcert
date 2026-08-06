@@ -1,0 +1,21 @@
+{
+  "format_version": "orelia.elimination-cost/v1",
+  "row_xors": {
+    "log_log_exponent_all_points": 2.060900009177379,
+    "log_log_exponent_upper_half": 1.9755028993802581
+  },
+  "scalar_bit_xors": {
+    "log_log_exponent_all_points": 3.0366136517810767,
+    "log_log_exponent_upper_half": 2.96247436363181
+  },
+  "seed": 20260804,
+  "sizes": [
+    16,
+    24,
+    32,
+    48,
+    64,
+    96,
+    128
+  ]
+}
