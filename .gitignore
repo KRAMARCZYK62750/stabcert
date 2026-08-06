@@ -156,3 +156,9 @@ results/*
 !results/verifier_adversarial_validation.csv
 !results/elimination_cost.csv
 !results/elimination_cost.json
+docs/paper/*.aux
+docs/paper/*.log
+docs/paper/*.out
+docs/paper/*.bbl
+docs/paper/*.blg
+docs/paper/*.pdf
