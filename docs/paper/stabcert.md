@@ -47,8 +47,9 @@ Compiler certification — proving the transformation itself, once and for all �
 applies only where the compiler's source is available and under the verifier's
 control. SABRE and pytket are neither.
 
-Equivalence checking, as implemented for example in QCEC, compares a compiled
-circuit against a reference circuit. Like our approach it relies on canonical
+Equivalence checking, as implemented for example in QCEC
+\cite{burgholzer2021advanced}, compares a compiled circuit against a reference
+circuit. Like our approach it relies on canonical
 representations; the distinction is not canonicity but the object represented
 and the input required. Section 8 states it precisely, together with the
 capabilities and limits of the engines involved.
@@ -107,7 +108,8 @@ conjugation, and is fully specified by the images of `2n` generators. A
 **stabilizer channel** is a Clifford unitary composed with stabilizer ancilla
 preparation and partial trace over a discarded register.
 
-By the **Gottesman–Knill theorem**, stabilizer circuits admit efficient
+By the **Gottesman–Knill theorem** \cite{gottesman1997,aaronson2004improved},
+stabilizer circuits admit efficient
 classical simulation: a tableau of `2n` signed generators determines the state,
 and each gate updates it in polynomial time. This is what makes the decision
 procedure of Section 3 possible, and it also bounds it — everything below is
@@ -279,7 +281,8 @@ correlations with `Ref(X)` are those of `Φ_k` transported by `Ē ⊗ E`. Applyi
 to the relabelling `Ē` performs on the reference — which is precisely the
 transpose carried in the inversion below.
 
-Third, Choi–Jamiołkowski inverts explicitly:
+Third, Choi–Jamiołkowski \cite{choi1975completely,jamiolkowski1972linear}
+inverts explicitly:
 
 ```
 Λ̃(σ) = 2^k · Tr_Ref[ (σ^T ⊗ I) · J_Π(Λ) ]
@@ -348,7 +351,8 @@ implementation **contains no syndrome handling at all** — its recovery circuit
 are measurement-free, so no branch arises and no such matrix is constructed. We
 **claim nothing** about that path and report no results for it.
 
-Readers familiar with the Yoshida–Kitaev decoder should note that its canonical
+Readers familiar with the Yoshida–Kitaev decoder \cite{yoshida2017efficient}
+should note that its canonical
 form is measurement-based; the circuits here are its coherent counterpart.
 
 ### 4.4 What is verified and what is reported
@@ -399,7 +403,8 @@ is none.
 ## 5. Implementation
 
 StabCert implements the procedure of Section 3. It is a Python package with two
-runtime dependencies, NumPy and Stim, the latter providing the tableau engine
+runtime dependencies, NumPy and Stim \cite{gidney2021stim}, the latter
+providing the tableau engine
 on which canonical comparison rests. It is available under Apache 2.0.
 
 The package also contains a routing procedure. It exists because the
@@ -501,8 +506,8 @@ channel. The last three establish that acceptance is not vacuous — a single
 sign flip in the tableau, or a permutation claimed but not realised, is caught.
 
 **Reproducibility.** The routed artifacts reported here were produced with
-Qiskit 2.5.1 (SABRE, `decay` heuristic, seed 20260803, one trial) and pytket
-2.18.1 (`RoutingPass` with `LexiLabellingMethod` and `LexiRouteRoutingMethod`),
+Qiskit 2.5.1 (SABRE \cite{li2019sabre}, `decay` heuristic, seed 20260803, one trial) and pytket 2.18.1
+\cite{sivarajah2020tket} (`RoutingPass` with `LexiLabellingMethod` and `LexiRouteRoutingMethod`),
 on the fixtures published under `tests/fixtures/recovery_v1/`. SABRE is a
 stochastic search: a different seed or version yields a different route, which
 `channel-certified` accepts and `reproducible-route` rejects — the verdicts of
@@ -800,13 +805,13 @@ source is available and under the verifier's control. SABRE and pytket are
 neither. Translation validation, certifying each output rather than the
 producer, is the classical answer to that situation, and it is the one we take.
 
-**Equivalence checking.** QCEC compares a compiled circuit against a reference
-circuit. Its decision-diagram engines provide exact equivalence checking by
+**Equivalence checking.** QCEC \cite{burgholzer2021advanced} compares a
+compiled circuit against a reference circuit. Its decision-diagram engines provide exact equivalence checking by
 comparing canonical representations of the implemented operators, with support
 for ancilla and garbage qubits and a notion of partial equivalence defined on
 measurement distributions, although resource consumption can be exponential in
-the worst case; a ZX-calculus engine is often effective at establishing
-equivalence but, being based on an incomplete rewriting procedure, cannot in
+the worst case; a ZX-calculus engine \cite{peham2022zx} is often effective at
+establishing equivalence but, being based on an incomplete rewriting procedure, cannot in
 general establish inequivalence. The two engines are combined deliberately, and
 exploiting the `G G′†` structure is the published contribution that keeps the
 diagrams small in practice.
@@ -820,7 +825,8 @@ is not a deficiency of QCEC — in its own use case, checking that a compiler
 preserved the source circuit, the reference *is* the specification and the
 question is well posed. The gap matters only where no reference exists yet.
 
-**Deductive verification.** Qbricks verifies circuit-building quantum programs,
+**Deductive verification.** Qbricks \cite{chareton2021qbricks} verifies
+circuit-building quantum programs,
 reaching parametric implementations of Shor's order finding, quantum phase
 estimation and Grover's search, with high proof automation over parametrized
 path sums in Why3. Its scope is far wider than ours in the class of circuits
