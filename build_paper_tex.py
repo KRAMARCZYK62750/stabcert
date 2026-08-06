@@ -42,7 +42,7 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage[margin=1in]{geometry}
 
 \newtheorem{theorem}{Theorem}
@@ -62,21 +62,21 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 
 # Mathematical unicode to LaTeX. Applied inside math mode only.
 MATH: dict[str, str] = {
-    "Δ": r"\Delta", "Λ": r"\Lambda", "Π": r"\Pi", "β": r"\beta", "γ": r"\gamma",
-    "δ": r"\delta", "ρ": r"\rho", "σ": r"\sigma", "τ": r"\tau", "ψ": r"\psi",
-    "→": r"\to", "↦": r"\mapsto", "⇐": r"\Leftarrow", "⇒": r"\Rightarrow",
-    "⟺": r"\iff", "∈": r"\in", "∉": r"\notin", "∏": r"\prod", "∖": r"\setminus",
-    "∪": r"\cup", "≈": r"\approx", "≤": r"\le", "≥": r"\ge", "⊆": r"\subseteq",
-    "⊗": r"\otimes", "⟨": r"\langle", "⟩": r"\rangle", "·": r"\cdot",
-    "×": r"\times", "±": r"\pm", "−": "-", "†": r"^\dagger", "′": "'",
-    "²": "^2", "³": "^3", "ᵢ": "_i", "ⱼ": "_j", "₀": "_0", "₂": "_2",
+    "Δ": r"\Delta ", "Λ": r"\Lambda ", "Π": r"\Pi ", "β": r"\beta ", "γ": r"\gamma ",
+    "δ": r"\delta ", "ρ": r"\rho ", "σ": r"\sigma ", "τ": r"\tau ", "ψ": r"\psi ",
+    "→": r"\to ", "↦": r"\mapsto ", "⇐": r"\Leftarrow ", "⇒": r"\Rightarrow ",
+    "⟺": r"\iff ", "∈": r"\in ", "∉": r"\notin ", "∏": r"\prod ", "∖": r"\setminus ",
+    "∪": r"\cup ", "≈": r"\approx ", "≤": r"\le ", "≥": r"\ge ", "⊆": r"\subseteq ",
+    "⊗": r"\otimes ", "⟨": r"\langle ", "⟩": r"\rangle ", "·": r"\cdot ",
+    "×": r"\times ", "±": r"\pm ", "−": "-", "†": r"^\dagger", "′": "'",
+    "²": "^2", "³": "^3", "ᵢ": "_i", "ⱼ": "_j", "₀": "_0", "₂": "_2", "F₂": r"\mathbb{F}_2",
     "⁻⁴": "^{-4}", "⁻³": "^{-3}", "⁻²": "^{-2}", "⁻": "^-", "⁴": "^4",
-    "⁵": "^5", "Φ": r"\Phi", "Θ": r"\Theta", "∎": r"\qed", "Ē": r"\bar{E}",
-    "≠": r"\ne", "…": r"\dots", "‑": "-",
+    "⁵": "^5", "Φ": r"\Phi ", "Θ": r"\Theta ", "∎": r"\qed ", "Ē": r"\bar{E}",
+    "≠": r"\ne ", "…": r"\dots ", "‑": "-",
 }
 # Text-mode unicode, outside formulas.
 TEXT: dict[str, str] = {
-    "–": "--", "—": "---", "…": r"\dots", "−": "--", "ł": r"\l{}", "′": "'", "…": r"\dots{}",
+    "–": "--", "—": "---", "…": r"\dots ", "−": "--", "ł": r"\l{}", "′": "'", "…": r"\dots{}",
     "\u0304": "", "\u0303": "",
 }
 # Mathematics met outside a span must still enter math mode, or the command
@@ -100,7 +100,10 @@ def to_math(span: str) -> str:
         out = re.sub(r"\|([^|]*)\|", r"\\lvert \1\\rvert", out)
     else:
         out = out.replace("|", r"\mid ")
-    out = re.sub(r"(\\[a-zA-Z]+)(?=[A-Za-z])", r"\1 ", out)
+    # No regex here. An earlier attempt inserted a space after "a control
+    # sequence followed by a letter", and backtracked: \lvert failed the
+    # lookahead on the following space, so the engine retried at \lver and
+    # split a valid command. Each substitution carries its own trailing space.
     return f"${out}$"
 
 
