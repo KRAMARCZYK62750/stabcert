@@ -438,11 +438,19 @@ on a family chosen to be unfavourable, not predictions.
 \subsection{Two adversarial campaigns}
 
 We report two campaigns with different objects, and the figures are not
-interchangeable. \texttt{orelia.verifier-adversarial-campaign/v1} targets the verifier
-as a whole; \texttt{orelia.channel-certified-adversarial-campaign/v1} targets the
-channel-certified policy specifically. Section 6.2 states which is which; a
-reader encountering either figure in a published CSV can identify it by these
-format identifiers. Conflating them would suggest an inconsistency where there
+interchangeable:
+
+\begin{itemize}
+\item \texttt{orelia.verifier-adversarial-campaign/v1} targets the verifier as a
+whole.
+\item \texttt{orelia.channel-certified-adversarial-campaign/v1} targets the
+\texttt{channel-certified} policy specifically.
+\end{itemize}
+
+Section 6.2 states which is which; a reader encountering either figure in a
+published CSV can identify it by these strings, which are the
+\texttt{format\_version} recorded in the artifacts and retained from an earlier
+name of the project. Conflating them would suggest an inconsistency where there
 is none.
 
 
@@ -558,6 +566,7 @@ produced elsewhere is not the reference route, and is nonetheless the specified
 channel. The last three establish that acceptance is not vacuous --- a single
 sign flip in the tableau, or a permutation claimed but not realised, is caught.
 
+\begin{sloppypar}
 \textbf{Reproducibility.} The routed artifacts reported here were produced with
 Qiskit 2.5.1 (SABRE \cite{li2019sabre}, $decay$ heuristic, seed 20260803, one trial) and pytket 2.18.1
 \cite{sivarajah2020tket} (\texttt{RoutingPass} with \texttt{LexiLabellingMethod} and \texttt{LexiRouteRoutingMethod}),
@@ -565,12 +574,14 @@ on the fixtures published under \texttt{tests/fixtures/recovery\_v1/}. SABRE is 
 stochastic search: a different seed or version yields a different route, which
 \texttt{channel-certified} accepts and \texttt{reproducible-route} rejects --- the verdicts of
 this section are stable under that variation, the resource figures are not.
+\end{sloppypar}
 
 \subsection{Adversarial campaigns}
 
 Two campaigns, with distinct objects and non-interchangeable figures.
 
 \begin{center}
+\small
 \begin{tabular}{lllll}
 \toprule
 campaign & invalid & valid & false accepts & false rejects \\
@@ -741,6 +752,7 @@ threshold chosen after seeing that number would have been chosen differently.
 Windows are the lower and upper halves of $n = 9\dots40$, 16 points each.
 
 \begin{center}
+\small
 \begin{tabular}{llllllll}
 \toprule
 counter & target & lower & upper & trend & excess & tolerance & verdict \\
@@ -845,7 +857,8 @@ $c = 1.410$ against a threshold of 0.384 and a false-positive floor of 0.006:
 \textbf{density governs a real share of the cost.} $b = 6.313$ is an all-points fit
 and carries the same finite-size inflation the calibrator shows on that fit
 ($b_0 = 2.611$ against a true 2, so $+0.611$), giving a bias-corrected degree at
-fixed density of about \textbf{5.7} --- higher than the family exponent of 5, as it
+fixed density of about \textbf{5.7} --- higher than the measured family exponent
+of \textbf{4.907} on the upper-half window over $n = 9\dots 40$, as it
 must be, since density falls with $n$ and cost rises with density. The relation
 that reconciles the two is $\text{family exponent} = b + c\delta$, with $\delta$ the density
 drift of the arm.

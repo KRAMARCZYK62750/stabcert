@@ -1,0 +1,24 @@
+0
+
+# Maximum number of overfull hboxes tolerated when typesetting stabcert.tex.
+# Read by the paper job of .github/workflows/clean-clone.yml, which takes the
+# first integer above and ignores the rest of this file.
+#
+# Provenance of the number: this is an intention, not a measurement. No LaTeX
+# toolchain was available where the four fixes below were written, so 0 states
+# the target and the first CI run establishes the truth. If that run reports a
+# non-zero count, the count is fixed or recorded here with its reason -- it is
+# not raised to whatever came out.
+#
+# The five boxes measured by hand on 6 August 2026, at 11pt with margin=1in
+# (text width 469pt), and what each was given:
+#
+#   163.5pt  4.6 prose, two 47-character identifiers     itemize, in the source
+#    42.5pt  6 reproducibility, LexiRouteRoutingMethod   sloppypar
+#    28.9pt  6 reproducibility, LexiLabellingMethod      sloppypar
+#    33.0pt  6 campaign table, five columns              \small
+#     2.3pt  7.4 verdict table, eight columns            \small
+#
+# Scope, stated exactly: this budget covers docs/paper/stabcert.tex, the
+# generator's output. It says nothing about a hand-corrected copy compiled
+# under another name.

@@ -430,12 +430,18 @@ on a family chosen to be unfavourable, not predictions.
 \subsection{Two adversarial campaigns}
 
 We report two campaigns with different objects, and the figures are not
-interchangeable. \texttt{orelia.verifier-adversarial-campaign/v1} targets the verifier
-as a whole; \texttt{orelia.channel-certified-adversarial-campaign/v1} targets the
-channel-certified policy specifically. Section 6.2 states which is which; a
-reader encountering either figure in a published CSV can identify it by these
-format identifiers. Conflating them would suggest an inconsistency where there
-is none.
+interchangeable:
+
+\begin{itemize}
+\item \texttt{orelia.verifier-adversarial-campaign/v1} targets the verifier as a whole.
+\item \texttt{orelia.channel-certified-adversarial-campaign/v1} targets the
+\texttt{channel-certified} policy specifically.
+\end{itemize}
+
+Section 6.2 states which is which; a reader encountering either figure in a
+published CSV can identify it by these strings, which are the \texttt{format\_version}
+recorded in the artifacts and retained from an earlier name of the project.
+Conflating them would suggest an inconsistency where there is none.
 
 
 \section{Implementation}
@@ -445,19 +451,23 @@ runtime dependencies, NumPy and Stim \cite{gidney2021stim}, the latter
 providing the tableau engine
 on which canonical comparison rests. It is available under Apache 2.0.
 
+\begin{sloppypar}
 The package also contains a routing procedure. It exists because the
 \texttt{reproducible-route} policy below requires a reference route to compare
 against; it is not offered as a compiler and no claim is made about its output
 relative to other routers.
+\end{sloppypar}
 
 \subsection{Two policies}
 
 The tool exposes two verification policies, and the distinction is the point of
 the design.
 
+\begin{sloppypar}
 \texttt{reproducible-route} requires bit-for-bit equality with the reference route. It
 answers \emph{did this run reproduce the reference implementation?} and is used for
 regression testing.
+\end{sloppypar}
 
 \texttt{channel-certified} reconstructs the target from the channel specification and
 accepts any synthesis, routing, or Stinespring dilation whose canonical signed
@@ -550,6 +560,7 @@ produced elsewhere is not the reference route, and is nonetheless the specified
 channel. The last three establish that acceptance is not vacuous --- a single
 sign flip in the tableau, or a permutation claimed but not realised, is caught.
 
+\begin{sloppypar}
 \textbf{Reproducibility.} The routed artifacts reported here were produced with
 Qiskit 2.5.1 (SABRE \cite{li2019sabre}, $decay$ heuristic, seed 20260803, one trial) and pytket 2.18.1
 \cite{sivarajah2020tket} (\texttt{RoutingPass} with \texttt{LexiLabellingMethod} and \texttt{LexiRouteRoutingMethod}),
@@ -557,6 +568,7 @@ on the fixtures published under \texttt{tests/fixtures/recovery\_v1/}. SABRE is 
 stochastic search: a different seed or version yields a different route, which
 \texttt{channel-certified} accepts and \texttt{reproducible-route} rejects --- the verdicts of
 this section are stable under that variation, the resource figures are not.
+\end{sloppypar}
 
 \subsection{Adversarial campaigns}
 
@@ -696,6 +708,7 @@ nested elimination: the two nested loops compose to $n^2$ solves, not $n^3$.
 
 \subsection{A prediction, registered before measurement}
 
+\begin{sloppypar}
 Composing the nesting with the cost of one elimination gives the targets. That
 second factor was assumed on a first pass and the assumption mixed units: it
 took $n^3$, the bit count of an elimination, for its row count. Measuring one
@@ -703,6 +716,7 @@ elimination against system size settles it --- exponents 1.98 for row operations
 and 2.96 for bit operations over sizes 16 to 128
 (\texttt{results/elimination\_cost.json}). So $\Theta (n^2)$ eliminations, each $O(n^2)$ row
 operations and $O(n^3)$ bit operations, predict degrees 2, \textbf{4} and \textbf{5}.
+\end{sloppypar}
 
 Three lines of measurement decided what 32 swept points had not, because the
 factor had never been measured --- only supposed.

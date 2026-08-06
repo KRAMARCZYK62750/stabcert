@@ -194,6 +194,66 @@ LABEL = {"Theorem": "thm", "Lemma": "lem", "Proposition": "prop",
 RESULT = re.compile(r"^\*\*(Theorem|Lemma|Proposition|Definition|Hypothesis) (\d+)"
                     r"(?: \(([^)]+)\))?\.\*\*\s*(.*)$")
 
+# Lines opening structure rather than prose. \textbf and \emph are deliberately
+# absent: a paragraph may open with one -- "\textbf{Reproducibility.} The routed
+# artifacts..." is the paragraph that overflowed by 42pt -- and treating it as
+# structure is what hid that paragraph from the first version of this rule.
+STRUCTURE = re.compile(r"^\\(begin|end|section|subsection|item|bibliograph"
+                       r"|maketitle|title|author|date|small|toprule|midrule|bottomrule)")
+
+# TeX will not hyphenate inside \texttt, so a long identifier is one unbreakable
+# box. Past this width it can no longer be placed on a justified line without
+# pushing past the margin, and the compiler reports an overfull hbox. Measured:
+# 4 of 104 paragraphs, among them the two that overflowed. This loosens
+# interword spacing in those paragraphs and nowhere else.
+UNBREAKABLE = 18
+
+
+def loosen(body: str) -> str:
+    """Wrap top-level prose paragraphs carrying long \\texttt spans in sloppypar.
+
+    Scope, stated exactly: this reduces overfull boxes, it does not eliminate
+    them. A single \\texttt wider than the column still overflows, and material
+    inside an environment -- table cells above all -- is never touched here.
+    The guarantee lives in the CI overfull count, not in this function.
+    """
+    out: list[str] = []
+    depth = 0
+    paragraph: list[str] = []
+
+    def flush() -> None:
+        if not paragraph:
+            return
+        text = "\n".join(paragraph)
+        spans = re.findall(r"\\texttt\{([^{}]*)\}", text)
+        if any(len(s) >= UNBREAKABLE for s in spans):
+            out.extend([r"\begin{sloppypar}", text, r"\end{sloppypar}"])
+        else:
+            out.append(text)
+        paragraph.clear()
+
+    for line in body.split("\n"):
+        stripped = line.strip()
+        if not stripped:
+            flush()
+            out.append(line)
+        elif depth == 0 and not STRUCTURE.match(stripped):
+            paragraph.append(line)
+        else:
+            flush()
+            out.append(line)
+        # After the test: a line carrying \begin belongs to what it opens, and
+        # judging it by the depth it leaves behind would misfile the opener.
+        #
+        # document is excluded, and not as a nicety. This runs before
+        # \end{document} is appended, so counting it leaves the whole body at
+        # depth 1 from the preamble onward and the rule matches nothing --
+        # silently, with a clean build and an empty result.
+        depth += len(re.findall(r"\\begin\{(?!document\})", stripped))
+        depth -= len(re.findall(r"\\end\{(?!document\})", stripped))
+    flush()
+    return "\n".join(out)
+
 
 def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
     judged: list[dict[str, str]] = []
@@ -339,7 +399,7 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
             chunk = re.sub(r"(?<![\w*])\*(?!\*)(.+?)\*(?![\w*])",
                            r"\\emph{\1}", chunk, flags=re.S)
             chunks[position] = chunk
-    out = [cross_references("".join(chunks))]
+    out = [cross_references(loosen("".join(chunks)))]
     out.append(r"\bibliographystyle{plain}")
     out.append(r"\bibliography{stabcert}")
     out.append(r"\end{document}")
@@ -365,7 +425,10 @@ def table(block: list[str], judged: list[dict[str, str]]) -> str:
     width = max(len(r) for r in cells)
     spec = "l" * width
     lines = [r"\begin{center}"]
-    if width >= 5:                        # six- and seven-column tables overflow
+    # Five columns is where the measured overflow starts: the campaign table has
+    # five and ran 33pt wide at 11pt, the verdict table eight and ran 2.3pt wide.
+    # \small is 9.1% at this size, against the 6.6% the wider of the two needed.
+    if width >= 5:
         lines.append(r"\small")
     lines += [r"\begin{tabular}{" + spec + "}", r"\toprule"]
     for position, row in enumerate(cells):

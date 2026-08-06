@@ -391,12 +391,16 @@ on a family chosen to be unfavourable, not predictions.
 ### 4.6 Two adversarial campaigns
 
 We report two campaigns with different objects, and the figures are not
-interchangeable. `orelia.verifier-adversarial-campaign/v1` targets the verifier
-as a whole; `orelia.channel-certified-adversarial-campaign/v1` targets the
-channel-certified policy specifically. Section 6.2 states which is which; a
-reader encountering either figure in a published CSV can identify it by these
-format identifiers. Conflating them would suggest an inconsistency where there
-is none.
+interchangeable:
+
+- `orelia.verifier-adversarial-campaign/v1` targets the verifier as a whole.
+- `orelia.channel-certified-adversarial-campaign/v1` targets the
+  `channel-certified` policy specifically.
+
+Section 6.2 states which is which; a reader encountering either figure in a
+published CSV can identify it by these strings, which are the `format_version`
+recorded in the artifacts and retained from an earlier name of the project.
+Conflating them would suggest an inconsistency where there is none.
 
 ---
 
