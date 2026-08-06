@@ -123,8 +123,11 @@ def expected() -> list[tuple[str, str, str]]:
                 f"N_sys(n) = {a}n² − {abs(b)}n + {c}"))
     out.append(("7.2 instance count", "gf2_scaling csv",
                 f"Over {len(scale)} instances"))
+    # Written as the paper writes it. The figure is still recomputed from the
+    # identity above; only its rendering is quoted, and a display rewritten
+    # without moving the number will fail here and say so.
     out.append(("7.3 bias asymptote", "derived from the identity",
-                f"{abs(b)}/{a} = {abs(b)/a:.3f} / n"))
+                f"\\frac{{{abs(b)}}}{{{a}}} = \\frac{{{abs(b)/a:.3f}}}{{n}}"))
     out.append(("7.3 tolerance", "gf2_scaling_n9_n40.json",
                 f"the measured bias being {verdict['tolerance']:.4f}"))
     for key, name in (("affine_systems_solved", "calibrator"), ("row_xors", "row_xors"),
@@ -139,7 +142,8 @@ def expected() -> list[tuple[str, str, str]]:
     joint = density["joint_regression"]["row_xors"]
     control = density["joint_regression"]["calibrator_control"]
     out.append(("7.6 joint coefficients", "density_cost_comparison.json",
-                f"b = {joint['degree_at_fixed_density_b']:.3f}     c = {joint['density_elasticity_c']:.3f}"))
+                f"b = {joint['degree_at_fixed_density_b']:.3f},"
+                f"\\quad c = {joint['density_elasticity_c']:.3f}"))
     out.append(("7.6 control elasticity", "density_cost_comparison.json",
                 f"it returns `c₀ = {control['density_elasticity_c']:.3f}`"))
     out.append(("7.6 contrast drift", "density_cost_comparison.json",

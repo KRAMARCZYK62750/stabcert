@@ -4,20 +4,28 @@
 # Read by the paper job of .github/workflows/clean-clone.yml, which takes the
 # first integer above and ignores the rest of this file.
 #
-# Provenance of the number: this is an intention, not a measurement. No LaTeX
-# toolchain was available where the four fixes below were written, so 0 states
-# the target and the first CI run establishes the truth. If that run reports a
-# non-zero count, the count is fixed or recorded here with its reason -- it is
-# not raised to whatever came out.
+# Provenance of the number: measured, on 6 August 2026, by typesetting
+# stabcert.tex with TeX Live 2026 (BasicTeX) -- pdflatex, bibtex, pdflatex
+# twice. 15 pages, no undefined citation or reference, no overfull box.
 #
-# The five boxes measured by hand on 6 August 2026, at 11pt with margin=1in
-# (text width 469pt), and what each was given:
+# It was written first as an intention, when no LaTeX was thought to be
+# available here. Compiling turned it into a measurement and found a sixth box
+# the hand count had missed, which is the whole argument for this job existing:
+# five boxes were found by reading a log, the sixth only by producing one.
+#
+# The six boxes and what cleared each, at 11pt with margin=1in (469pt):
 #
 #   163.5pt  4.6 prose, two 47-character identifiers     itemize, in the source
 #    42.5pt  6 reproducibility, LexiRouteRoutingMethod   sloppypar
 #    28.9pt  6 reproducibility, LexiLabellingMethod      sloppypar
 #    33.0pt  6 campaign table, five columns              \small
 #     2.3pt  7.4 verdict table, eight columns            \small
+#     1.4pt  4.6 list item, after the five above         \sloppy inside itemize
+#
+# The last one is the instructive one. The paragraph rule that cleared boxes
+# two and three skipped it: a list item is a paragraph, but it sits inside an
+# environment and the rule only walked the top level. It was invisible until
+# the other five were gone.
 #
 # Scope, stated exactly: this budget covers docs/paper/stabcert.tex, the
 # generator's output. It says nothing about a hand-corrected copy compiled

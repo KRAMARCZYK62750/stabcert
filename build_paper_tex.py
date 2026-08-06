@@ -8,12 +8,16 @@ That keeps both review passes valid: they search the source, and a hand-kept
 Two things this script does not do, and says so rather than implying
 otherwise.
 
-It does not compile, and no LaTeX toolchain is available where it runs. The
-first typesetting elsewhere found seven classes of defect that reading the
-output had not, so treat a `pdflatex` run as a control rather than a formality
--- and note that this file has changed since the last one that passed. As of
-4 August 2026 the generated .tex compiles in 15 pages with no undefined
-citation or reference; nothing here guarantees the next regeneration does.
+It does not compile. Typesetting is a separate control, and it is the control
+that matters: reading the output found seven classes of defect, compiling it
+found four more that reading had passed over -- a superscript that TeX rejects,
+an en-dash standing in for a minus, and two overfull boxes. The paper job of
+.github/workflows/clean-clone.yml runs it on every push and fails on an error,
+an undefined reference, or an overfull box beyond docs/paper/overfull_budget.txt.
+
+As of 6 August 2026 the generated .tex typesets in 15 pages with no error, no
+undefined citation or reference, and no overfull box. Nothing here guarantees
+the next regeneration does -- that is what the job is for.
 
 The seven results become theorem environments with labels, and prose
 references become \\ref. Manual numbering in two places -- the heading and the
@@ -62,6 +66,12 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 
 # Mathematical unicode to LaTeX. Applied inside math mode only.
 MATH: dict[str, str] = {
+    # Multi-character keys first: these are applied in order, so a key whose
+    # components appear below it never matches. F2 sat after the subscript and
+    # was dead for exactly that reason -- the entry existed, read correctly,
+    # and produced nothing, because the subscript had already consumed it.
+    "F₂": r"\mathbb{F}_2", "ℂ": r"\mathbb{C}",
+    "⁻⁴": "^{-4}", "⁻³": "^{-3}", "⁻²": "^{-2}",
     "Δ": r"\Delta ", "Λ": r"\Lambda ", "Π": r"\Pi ", "β": r"\beta ", "γ": r"\gamma ",
     "δ": r"\delta ", "ρ": r"\rho ", "σ": r"\sigma ", "τ": r"\tau ", "ψ": r"\psi ",
     "→": r"\to ", "↦": r"\mapsto ", "⇐": r"\Leftarrow ", "⇒": r"\Rightarrow ",
@@ -69,14 +79,17 @@ MATH: dict[str, str] = {
     "∪": r"\cup ", "≈": r"\approx ", "≤": r"\le ", "≥": r"\ge ", "⊆": r"\subseteq ",
     "⊗": r"\otimes ", "⟨": r"\langle ", "⟩": r"\rangle ", "·": r"\cdot ",
     "×": r"\times ", "±": r"\pm ", "−": "-", "†": r"^\dagger", "′": "'",
-    "²": "^2", "³": "^3", "ᵢ": "_i", "ⱼ": "_j", "₀": "_0", "₂": "_2", "F₂": r"\mathbb{F}_2",
-    "⁻⁴": "^{-4}", "⁻³": "^{-3}", "⁻²": "^{-2}", "⁻": "^-", "⁴": "^4",
-    "⁵": "^5", "Φ": r"\Phi ", "Θ": r"\Theta ", "∎": r"\qed ", "Ē": r"\bar{E}",
+    "²": "^2", "³": "^3", "ᵢ": "_i", "ⱼ": "_j", "₀": "_0", "₂": "_2",
+    "⁻": "^-", "⁴": "^4",
+    "⁵": "^5", "Φ": r"\Phi ", "Θ": r"\Theta ", "∎": r"\qed ", "Ē": r"\overline{E}",
     "≠": r"\ne ", "…": r"\dots ", "‑": "-",
 }
 # Text-mode unicode, outside formulas.
 TEXT: dict[str, str] = {
-    "–": "--", "—": "---", "…": r"\dots ", "−": "--", "ł": r"\l{}", "′": "'", "…": r"\dots{}",
+    # U+2212 is a minus, not a dash. Mapped to "--" it set an en-dash, which is
+    # how the verdict table came to read --0.400 for a trend of -0.400.
+    "−": "$-$",
+    "–": "--", "—": "---", "…": r"\dots ", "ł": r"\l{}", "′": "'", "…": r"\dots{}",
     "\u0304": "", "\u0303": "",
 }
 # Mathematics met outside a span must still enter math mode, or the command
@@ -88,14 +101,41 @@ TEXT_MATH = ("⁻³", "×", "≈", "≥", "≤", "²", "³", "⁴", "⁵", "∈"
 MATH_MARKERS = set("ΔΛΠβγδρστψ→↦⇐⇒⟺∈∉∏∖∪≈≤≥⊆⊗⟨⟩·×±−†′²³ᵢⱼ₀₂⁻")
 
 
+# Function names, not products of single-letter variables. Left alone, TeX sets
+# supp as s.u.p.p in maths italic and spaces it as a product; \operatorname sets
+# it upright and spaces it as an operator. This is a closed set of names, which
+# is what makes it a rule rather than a list of places to patch.
+#
+# The boundary is spelled out rather than \b: an underscore is a word character
+# to the regex engine, so \bTr\b does not fire in Tr_Ref -- the one occurrence
+# that most needed it.
+OPERATORS = re.compile(r"(?<![A-Za-z])(supp|sig|Ref|Tr|RREF)(?![A-Za-z])")
+
+# A subscript of two or more letters is a word, not a product of variables, and
+# is set upright: N_sys, not N times s times y times s.
+SUBSCRIPT_WORD = re.compile(r"_([A-Za-z]{2,})")
+
+
 def to_math(span: str) -> str:
-    out = span
-    for base, target in (("X̄", r"\bar{X}"), ("Z̄", r"\bar{Z}"), ("Ē", r"\bar{E}"),
-                         ("Λ̃", r"\tilde{\Lambda}"), ("σ̃", r"\tilde{\sigma}")):
+    out = SUBSCRIPT_WORD.sub(r"_{\\mathrm{\1}}", span)
+    out = OPERATORS.sub(r"\\operatorname{\1}", out)
+    # An operator reached as a subscript needs its own group, or the subscript
+    # takes only the first token of the command.
+    out = re.sub(r"_\{\\mathrm\{(supp|sig|Ref|Tr|RREF)\}\}",
+                 r"_{\\operatorname{\1}}", out)
+    for base, target in (("X̄", r"\bar{X}"), ("Z̄", r"\bar{Z}"), ("Ē", r"\overline{E}"),
+                         # \widetilde on the uppercase Greek: \tilde sets a
+                         # narrow accent that does not span \Lambda.
+                         ("Λ̃", r"\widetilde{\Lambda}"), ("σ̃", r"\tilde{\sigma}")):
         out = out.replace(base, target)
     out = out.replace("\u0304", "").replace("\u0303", "")
     for source, target in MATH.items():
         out = out.replace(source, target)
+    # A bar closed by a ket bracket opens a Dirac ket; it has no partner and
+    # must not enter the count below. Counting it is what made |0> and |X| an
+    # odd three bars, sending all of them to \mid -- including the two that
+    # genuinely paired.
+    out = re.sub(r"\|([^|]*?)\\rangle", r"\\lvert \1\\rangle", out)
     if out.count("|") % 2 == 0:
         out = re.sub(r"\|([^|]*)\|", r"\\lvert \1\\rvert", out)
     else:
@@ -252,7 +292,48 @@ def loosen(body: str) -> str:
         depth += len(re.findall(r"\\begin\{(?!document\})", stripped))
         depth -= len(re.findall(r"\\end\{(?!document\})", stripped))
     flush()
-    return "\n".join(out)
+    return _loosen_lists("\n".join(out))
+
+
+def _loosen_lists(text: str) -> str:
+    """Same policy inside itemize, where the paragraph rule cannot reach.
+
+    A list item is a paragraph, but it sits at depth 1, so the walk above skips
+    it -- and a list indents, leaving less room than the prose that qualified.
+    Measured: the 4.6 items overflowed by 1.4pt after the paragraph rule had
+    cleared the other four boxes. \\sloppy is scoped by the environment's own
+    group, so it stops at \\end{itemize}.
+    """
+    def fix(match: re.Match) -> str:
+        block = match.group(0)
+        spans = re.findall(r"\\texttt\{([^{}]*)\}", block)
+        if any(len(s) >= UNBREAKABLE for s in spans):
+            return block.replace(r"\begin{itemize}", "\\begin{itemize}\n\\sloppy", 1)
+        return block
+
+    return re.sub(r"\\begin\{itemize\}.*?\\end\{itemize\}", fix, text, flags=re.S)
+
+
+def display(fence: str, block: list[str]) -> list[str]:
+    """Render a fenced block standing in display position.
+
+    A ```latex fence is passed through untouched. The alternative -- deriving
+    the typeset form from hand-written pseudo-mathematics -- cannot be done by
+    rule: nothing turns "(a) / (b)" into \\frac{a}{b} that stays safe on the
+    other blocks, and nothing turns "for all rho with" into \\forall at all.
+    Those are editorial choices, so the source states them rather than the
+    generator guessing them.
+
+    The two older paths are kept for blocks that carry no such choice.
+    """
+    rows = [row for row in block if row.strip()]
+    if fence.strip() == "```latex":
+        return [r"\begin{equation*}"] + rows + [r"\end{equation*}"]
+    if any(set(row) & MATH_MARKERS for row in block):
+        return ([r"\begin{equation*}\begin{split}"]
+                + [to_math(row)[1:-1] + r" \\" for row in rows]
+                + [r"\end{split}\end{equation*}"])
+    return [r"\begin{verbatim}"] + block + [r"\end{verbatim}"]
 
 
 def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
@@ -287,12 +368,13 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
                 index += 1
             # A display block immediately after belongs to the statement.
             if index + 1 < len(lines) and lines[index + 1].startswith("```"):
+                fence = lines[index + 1]
                 index += 2
-                out.append(r"\begin{equation*}\begin{split}")
+                block = []
                 while index < len(lines) and not lines[index].startswith("```"):
-                    out.append(to_math(lines[index])[1:-1] + r" \\")
+                    block.append(lines[index])
                     index += 1
-                out.append(r"\end{split}\end{equation*}")
+                out += display(fence, block)
                 index += 1
             out.append(r"\end{" + ENV[kind] + "}")
             continue
@@ -303,12 +385,13 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
             index += 1
             while index < len(lines) and "\u220e" not in lines[index]:
                 if lines[index].startswith("```"):
+                    fence = lines[index]
                     index += 1
-                    out.append(r"\begin{equation*}\begin{split}")
+                    block = []
                     while index < len(lines) and not lines[index].startswith("```"):
-                        out.append(to_math(lines[index])[1:-1] + r" \\")
+                        block.append(lines[index])
                         index += 1
-                    out.append(r"\end{split}\end{equation*}")
+                    out += display(fence, block)
                     index += 1
                     continue
                 out.append(render(lines[index], judged))
@@ -326,22 +409,14 @@ def convert(markdown: str) -> tuple[str, list[dict[str, str]]]:
             index += 1
             continue
         if line.startswith("```"):
+            fence = line
             index += 1
-            block: list[str] = []
+            block = []
             while index < len(lines) and not lines[index].startswith("```"):
                 block.append(lines[index])
                 index += 1
             index += 1
-            # A display block carrying mathematical symbols is mathematics, and
-            # verbatim would hand those symbols straight to the typesetter.
-            if any(set(row) & MATH_MARKERS for row in block):
-                out.append(r"\begin{equation*}\begin{split}")
-                out += [to_math(row)[1:-1] + r" \\" for row in block if row.strip()]
-                out.append(r"\end{split}\end{equation*}")
-            else:
-                out.append(r"\begin{verbatim}")
-                out += block
-                out.append(r"\end{verbatim}")
+            out += display(fence, block)
             continue
         if line.startswith("| "):
             block = []
@@ -448,7 +523,8 @@ def main() -> int:
     latex, judged = convert(Path(arguments.source).read_text(encoding="utf-8"))
     Path(arguments.output).write_text(
         "% Generated by build_paper_tex.py from stabcert.md. Do not edit by hand.\n"
-        "% Never typeset by its generator -- no LaTeX toolchain was available.\n" + latex + "\n",
+        "% Typeset in CI by the paper job of .github/workflows/clean-clone.yml,\n"
+        "% which fails on an overfull box beyond docs/paper/overfull_budget.txt.\n" + latex + "\n",
         encoding="utf-8",
     )
     unique = {j["span"]: j["rendered"] for j in judged}
