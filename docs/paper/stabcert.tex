@@ -226,9 +226,9 @@ result reduced onto $O \cup  \operatorname{Ref}(X)$.
 
 The conjugation on the reference is not a convention of convenience. It is the
 same fact as the transpose appearing in the inversion of Theorem~\ref{thm:1}, seen from
-the other side: $\overline{E}$ on $\operatorname{Ref}(X)$ is what makes $\operatorname{Tr}_{\mathrm{\operatorname{Ref}}}[(\sigma ^T \otimes  I) J_\Pi (\Lambda )]$
-return $\widetilde{\Lambda}(\sigma )$ rather than $\widetilde{\Lambda}(\sigma ^T)$. Stating either without the other leaves
-the definition and the proof inconsistent with each other.
+the other side: $\overline{E}$ on $\operatorname{Ref}(X)$ is what makes the inversion formula of that
+proof return $\widetilde{\Lambda}(\sigma )$ rather than $\widetilde{\Lambda}(\sigma ^T)$. Stating either without the other
+leaves the definition and the proof inconsistent with each other.
 
 Three remarks, each of which a reader will otherwise have to reconstruct.
 
@@ -312,7 +312,8 @@ $\lvert 0\rangle ^{\lvert X\rvert-k}$ on the last $\lvert X\rvert - k$ wires ont
 subspace onto the joint $+1$ eigenspace of $S_X$, which is $\operatorname{supp}(\Pi )$; being
 Clifford it is unitary, hence a bijection between the two. Every $\rho $ with
 $\operatorname{supp}(\rho ) \subseteq  \operatorname{supp}(\tau _X)$ is therefore $E(\sigma  \otimes  \lvert 0\rangle \langle 0\mid )E^\dagger$ for a unique $\sigma $ on $k$
-qubits.
+qubits. Write $V$ for the isometry $\lvert \psi \rangle  \mapsto  E(\lvert \psi \rangle  \otimes  \lvert 0\rangle ^{\lvert X\rvert-k})$ from $k$
+qubits into $X$, so that this $\rho $ is $V\sigma V^\dagger$.
 
 Second, $J_\Pi (\Lambda )$ is the ordinary Choi state of the induced logical channel
 $\widetilde{\Lambda} : \sigma  \mapsto  \Lambda (E(\sigma  \otimes  \lvert 0\rangle \langle 0\mid )E^\dagger)$. The prepared state of Definition~\ref{def:2} is
@@ -328,12 +329,17 @@ inverts explicitly:
 \begin{equation*}
 \widetilde{\Lambda}(\sigma)
 = 2^k\,\operatorname{Tr}_{\operatorname{Ref}}\!\left[
-(\sigma^T \otimes I)\,J_{\Pi}(\Lambda)
+(\bar{V}\sigma^{T}V^{T} \otimes I)\,J_{\Pi}(\Lambda)
 \right].
 \end{equation*}
 
 where the transpose on the reference is the convention the construction
-applies, with $Y^T = -Y$. Equal Choi states therefore give $\widetilde{\Lambda} = \widetilde{\Lambda}'$, and by
+applies, with $Y^T = -Y$. The operator on the reference cannot be $\sigma ^T$
+itself: $\sigma $ acts on $k$ qubits and $\operatorname{Ref}(X)$ has $\lvert X\rvert$ wires. The reference
+half of the prepared state lives in the image of the conjugate isometry, and
+$\sigma ^T$ is carried there by it. Since $V^T$ is the adjoint of that conjugate,
+their product is the identity on $k$ qubits, and the expression reduces to
+the ordinary inversion applied to $(id \otimes  \widetilde{\Lambda})(\Phi _k)$. Equal Choi states therefore give $\widetilde{\Lambda} = \widetilde{\Lambda}'$, and by
 the first step $\Lambda  = \Lambda '$ on every state supported in $\operatorname{supp}(\tau _X)$.
 
 Equality of the induced logical channels determines $\Lambda $ only on the image of
@@ -360,8 +366,13 @@ is invariant under isometries acting on the traced factor alone.
 Consequently two circuits differing only in ancilla convention or Stinespring
 dilation receive the same verdict --- a property required for accepting output
 from compilers that do not share the reference implementation's conventions.
-Section 6.2 reports a family of artifacts that exercises this restriction
-rather than assuming it.
+
+The family singled out in Section 6.2 exercises a different property: its
+members act on the input side, inside the stabilizer group of $\tau _X$, and test
+the restriction to the code subspace. Invariance on the output side is
+exercised by a regression test of the implementation, which appends gates to
+accessible wires outside the requested output and checks that the verdict
+does not move.
 
 
 \section{Scope}
