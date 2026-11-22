@@ -172,19 +172,24 @@ def _metric(artifact: RecoveryArtifact, name: str) -> float | None:
 def _verifier_logical_action_signature(problem: RecoveryProblem, code, gates) -> tuple[str, ...]:
     """Reconstruct the signed logical-Pauli images claimed by the compiler.
 
-    The dilation uses the requested output wires first, followed by the
-    canonical prefix of accessible environment wires.  Remaining accessible
-    wires are idle after decoding and are deliberately excluded from the
-    compiler's logical-action signature.
+    The dilation acts on the requested output wires first, followed by the
+    canonical prefix of accessible environment wires.  Its width is fixed by
+    the problem alone: ``|channel_input| + |inaccessible_partition|``, the
+    output side of the Petz Choi state.  It equals ``code.logical_qubits``
+    only when recovery is exact; otherwise the dilation carries
+    ``environment_qubits`` further wires, and the signature must span them
+    too.  Remaining accessible wires are idle after decoding and are
+    deliberately excluded from the compiler's logical-action signature.
     """
     circuit = gate_specs_to_stim(gates, problem.accessible_partition)
-    environment_width = code.logical_qubits - len(problem.requested_output)
+    dilation_width = len(problem.channel_input) + len(problem.inaccessible_partition)
+    environment_width = dilation_width - len(problem.requested_output)
     environment_wires = tuple(
         wire for wire in problem.accessible_partition if wire not in problem.requested_output
     )[:environment_width]
     output_wires = (*problem.requested_output, *environment_wires)
-    if len(output_wires) != code.logical_qubits:
-        raise ValueError("logical signature output width is inconsistent with tau support")
+    if len(output_wires) != dilation_width or dilation_width < code.logical_qubits:
+        raise ValueError("logical signature output width is inconsistent with the Petz dilation")
     positions = tuple(problem.accessible_partition.index(wire) for wire in output_wires)
     result: list[str] = []
     for logical_x, logical_z in zip(code.logical_x_labels, code.logical_z_labels):
