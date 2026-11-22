@@ -687,8 +687,9 @@ section is most likely to be misread. \textbf{What does verification cost as
 instances grow?} is a question about a family. \textbf{What is the degree at fixed
 generator density?} is a question about the algorithm. The family we measure
 has a density that drifts with $n$, so the two answers differ. Both are
-stated; neither is the other. A proved bound is given in 7.4, and the measured
-exponents sit above it over the range measured, approaching it from above.
+stated; neither is the other. An upper bound is proved in 7.4 by counting
+calls. The measured exponents are compatible with it; they do not identify the
+asymptotic degree.
 
 \subsection{Counters, not seconds}
 
@@ -713,8 +714,20 @@ N_{\mathrm{sys}}(n) = 28n^2 - 232n + 598 \\
 \end{split}\end{equation*}
 
 with zero residual. Second differences are constant at 56; the reader can
-recompute this from the published CSV. This fixes the call structure of the
-nested elimination: the two nested loops compose to $n^2$ solves, not $n^3$.
+recompute this from the published CSV.
+
+The identity is not an accident of the sweep. Proposition~\ref{prop:2} (7.4) gives the
+number of affine systems solved as a closed form in the dimensions of the
+calls the verifier makes, with no dependence on the data beyond the ranks of
+the reduced groups. On this family the inaccessible register is empty,
+$k = n - 8$, and the source Choi tableau has width $2n - 8$; substituting gives
+the polynomial above, term for term.
+
+Affine solves are not the only eliminations. Testing whether a vector lies in
+a span costs two rank reductions, and the same sweep records them:
+\texttt{rank\_reductions} grows from 3 940 at $n = 9$ to 762 440 at $n = 40$, with
+exponents of 3.636 and 3.292 on the lower and upper windows. The solves are
+quadratic; the rank reductions are not.
 
 \subsection{A prediction, registered before measurement}
 
@@ -726,6 +739,9 @@ elimination against system size settles it --- exponents 1.98 for row operations
 and 2.96 for bit operations over sizes 16 to 128
 (\texttt{results/elimination\_cost.json}). So $\Theta (n^2)$ eliminations, each $O(n^2)$ row
 operations and $O(n^3)$ bit operations, predict degrees 2, \textbf{4} and \textbf{5}.
+That composition counts the affine solves and no other elimination. It is
+stated here as it was registered; 7.4 reports what the rank reductions of 7.2
+do to it.
 \end{sloppypar}
 
 Three lines of measurement decided what 32 swept points had not, because the
@@ -781,36 +797,98 @@ pre-registered threshold can only validate the prediction it is given, and it
 confirmed a wrong one with every appearance of rigour. The threshold did not
 fail. The hypothesis did.
 
-Rejection here does not mean the cost is worse than claimed. The bound below is
-tighter than what the section previously asserted, and the measurements are
-unchanged. It means the measured exponents have not reached their asymptote
-over $n = 9\dots 40$: both are falling steeply, by 1.38 and 1.54 across the range,
-which is the signature of a function approaching its degree \textbf{from above} ---
-consistent with an $n^4$ and an $n^5$ asymptote, and not with 5 and 6.
+The rejection stands, and its cause is identified. The composition of 7.3
+counted the affine solves and omitted the rank reductions of the
+span-membership tests, which Proposition~\ref{prop:2} below bounds by $O(W^3)$ and which
+the sweep records growing faster than the solves (7.2). Counting them gives
+degrees 5 and 6. Those are the figures the first reading of this table had
+used, and they are not vindicated by it: they had been obtained by a
+composition that mixed units, and a bound is owed to its derivation, not to
+its value.
+
+Proposition~\ref{prop:2} is a bound in the width $W$ of the source Choi tableau, and the
+measured exponents are exponents in $n$ of one family, on which $W = 2n - 8$.
+A monomial of degree $p$ in $W$ has local exponent $p\cdot n/(n - 4)$ in $n$: over
+the upper window $n = 25\dots 40$, between 5.56 and 5.95 for $p = 5$, and between
+6.67 and 7.14 for $p = 6$. The measured 4.907 and 6.106 sit below those
+values and are still falling. The range does not identify their limits, and
+we do not claim that it does.
 
 Single-step exponents are not reported --- at the top of the range they are
 unstable enough to be meaningless.
 
 \begin{proposition}[cost bound]\label{prop:2}
-\emph{Deciding signature equality for a
-specification of accessible width $n$ performs $\Theta (n^2)$ eliminations, each on a
-system of $O(n)$ rows and $O(n)$ columns, hence $O(n^4)$ row operations and
-$O(n^5)$ bit operations over $\mathbb{F}_2$, independently of generator density.}
+\emph{Let $W = \lvert M\rvert + \lvert X\rvert + \lvert C\rvert$ be the width of
+the source Choi tableau, $n = \lvert X\rvert$, and $k$ the number of logical qubits. The
+verifier reaches the elimination routines through $n + k + 6$ calls, on
+matrices of at most $4W$ rows and $2W + 1$ columns.}
 \end{proposition}
 
+\emph{(i) A kernel-image call on $v$ variables that returns $\rho $ generators solves
+exactly $1 + \rho (v + 2)$ affine systems and performs at most $1 + 2\rho (v + 1)^2$
+rank reductions. A lexicographic search on $v$ variables solves exactly
+$v + 2$ systems and performs at most $2(v + 1)^2$ rank reductions.}
+
+\emph{(ii) Hence the number of affine systems solved is exactly}
+
+\begin{equation*}
+N_{\mathrm{sys}}
+= (n + k)(2n + 2) + \sum_{j=1}^{6}\bigl(1 + \rho_j\,(v_j + 2)\bigr) ,
+\end{equation*}
+
+\emph{which is $O(W^2)$; there are $O(W^3)$ rank reductions; and the whole costs
+$O(W^5)$ row operations and $O(W^6)$ bit operations over $\mathbb{F}_2$. None of these
+counts depends on generator density or on the number of gates read.}
+
 \begin{proof}
-The elimination count is the exact identity of 7.2. One elimination
-performs at most $O(n)$ pivots, each exclusive-or of the pivot row into at most
-$O(n)$ rows, hence $O(n^2)$ row operations; each row spans $O(n)$ bits, hence
-$O(n^3)$ bit operations. Neither factor depends on how dense the systems are ---
-only on their dimensions, which are fixed by $n$. Multiplying gives the stated
-bounds.
+The counts of (i) are read off the routines. The kernel-image
+routine solves one system, reduces one matrix, then runs a span-avoiding
+search once per generator it returns. The search runs a feasibility test once,
+then once per variable, then solves once. A feasibility test solves one
+system and tests at most $v + 1$ vectors --- a particular solution and a basis
+of the kernel --- for membership in the span of the generators already chosen,
+each test being two rank reductions. The loop over the kernel may stop early,
+which is why the rank count is a bound and the solve count is not. The plain
+lexicographic search is the same without the membership tests.
+
+The calls are these. One kernel-image call reduces the source onto $X$.
+Definition~\ref{def:1} then takes $2k$ span-avoiding searches and $n - k$ plain
+searches, all on $2n$ variables, for the logical operators and the
+destabilizers. Five further kernel-image calls reduce the target, the
+candidate and the target the artifact declares, and compute the entanglement
+fidelity in two steps. The six $v_j$ are $W$, $W$, $2n$, $W$, $W$ and at most
+$4\lvert M\rvert$, and every $\rho _j$ is at most $2W$. Summing (i) gives the identity and
+the two orders of magnitude.
+
+One solve performs at most $2W$ pivots, each adding the pivot row to at most
+$4W$ rows, hence $O(W^2)$ row operations; $O(W^2)$ solves give $O(W^4)$. One
+rank reduction acts on $O(W)$ rows and columns, hence $O(W^2)$ row operations;
+$O(W^3)$ of them give $O(W^5)$. A row spans at most $2W + 1$ bits.
 \end{proof}
 
+Three things the proposition does not say.
+
+It is an upper bound, and we do not claim it is attained: the membership loop
+stops at the first vector found outside the span.
+
+It counts the elimination routines of 7.1 and nothing else. Reading the
+circuits is tableau propagation, delegated to Stim \cite{gidney2021stim}; at
+the standard cost of $O(W)$ per gate \cite{aaronson2004improved} it is linear
+in the number of gates read, so that two candidates of the same width and
+arbitrarily different lengths differ in cost by that term alone. The canonical
+signature of Definition~\ref{def:3}, like the construction of a tableau from
+generators, is one further elimination on $O(W)$ rows, below the bound.
+
+And $W$ is to be read as the larger of two widths, that of the source and that
+of the target the artifact declares, since the verifier reduces both.
+
+The test suite states (i) as code and checks it on every call of a set of
+instances --- the solve count for equality, the others as bounds --- together with
+the list of calls and its independence from the number of gates.
+
 This is what makes \emph{polynomial} in the abstract a proved claim rather than a
-measured one. The measurement of 7.4 is then a second, independent statement:
-that the bound is not grossly loose, since the exponents descend towards it
-rather than towards something far below.
+measured one. The measurements are a separate statement, about one family:
+they are compatible with the bound and do not show it to be tight.
 
 \subsection{Wall time is not the complexity}
 
@@ -870,6 +948,17 @@ fixed density of about \textbf{5.7} --- higher than the measured family exponent
 density falls with $n$ and cost rises with density. The relation that
 reconciles the two is $family exponent = b + c\cdot \delta $, with $\delta $ the density drift
 of the arm.
+
+Proposition~\ref{prop:2} makes a caveat on that figure unavoidable. 5.7 exceeds 5, the
+degree by which the proposition bounds row operations, and no correct estimate
+of an asymptotic degree can. The weak step is the subtraction: it removes from
+a quantity of degree near 5 the inflation measured on a calibrator of degree
+2. On this family the width of the source tableau is $2n - 8$, a monomial of
+degree $p$ in that width has local exponent $p\cdot n/(n - 4)$ in $n$, and the
+inflation is therefore proportional to the degree, not additive. Scaling
+rather than subtracting gives $2b/b_0 = 4.84$. We report both and rely on
+neither: the first is known to be too high, and the second assumes the cost
+is a single monomial in the width, which it is not.
 
 The figure quoted here was 5 in an earlier draft. That was not a measurement
 but the invalidated target of 7.3, left behind when the targets were corrected
