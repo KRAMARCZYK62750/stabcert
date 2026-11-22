@@ -28,7 +28,7 @@ Pour les six routes externes testées :
 5. une permutation finale falsifiée provoque un rejet ;
 6. deux exécutions identiques produisent exactement le même artefact.
 
-La suite complète contient <!-- TEST_COUNT:BEGIN fmt="**{passed} tests passants sur {passed}**" -->**124 tests passants sur 124**<!-- TEST_COUNT:END -->.
+La suite complète contient <!-- TEST_COUNT:BEGIN fmt="**{passed} tests passants sur {passed}**" -->**129 tests passants sur 129**<!-- TEST_COUNT:END -->.
 
 ## Comparaison observée
 
