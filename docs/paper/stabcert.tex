@@ -94,6 +94,9 @@ necessary and sufficient for equality of the channels on that subspace
 \item We show the verdict is invariant under any change of Stinespring dilation, so
 that circuits differing only in ancilla convention are correctly accepted
 (Section 3.4).
+\item We name the target a specification determines --- its Petz recovery map --- and
+prove that the recipe by which the verifier builds the target yields the
+signature of that map (Section 3.5).
 \item We implement the procedure in StabCert and certify routed circuits produced
 by SABRE and pytket, with adversarial campaigns reporting no false accepts
 and no false rejects (Sections 5--6).
@@ -234,7 +237,8 @@ Three remarks, each of which a reader will otherwise have to reconstruct.
 
 \emph{The reduction registers differ on the two sides.} The target is reduced onto
 $R \cup  X$; the candidate onto $O \cup  \operatorname{Ref}(X)$. They are comparable because
-$\lvert O\rvert = \lvert M\rvert$, which Definition~\ref{def:1} requires.
+$\lvert O\rvert = \lvert M\rvert$, which Definition~\ref{def:1} requires. Section 3.5 defines the target and
+proves that this comparison is the right one.
 
 \emph{Three distinct partial traces occur in the chain, and they must not be
 conflated.} $R$ and $C$ are traced to form $\tau _X$; $C$ is traced to form the
@@ -362,6 +366,132 @@ dilation receive the same verdict --- a property required for accepting output
 from compilers that do not share the reference implementation's conventions.
 Section 6.2 reports a family of artifacts that exercises this restriction
 rather than assuming it.
+
+\subsection{The target}
+
+Sections 3.2 to 3.4 compare a candidate with a target without saying which
+channel the target is. This section names it, states the recipe by which the
+verifier builds it, and proves that the two agree. The chain is then complete:
+the specification defines one channel, Lemma~\ref{lem:2} identifies its signature, and
+Theorem~\ref{thm:1} says what equality with that signature certifies.
+
+Let $N$ be the channel from $M$ to $X$ that the specification defines: the
+input is adjoined to the ancillas, $U$ is applied, and the inaccessible
+register $C$ is traced out. Write $d = 2^{\lvert M\rvert}$ and $r = 2^k$. The state
+$\tau _X$ of Section 3.1 is the image of the maximally mixed input, and it is flat
+on its support:
+
+\begin{equation*}
+\tau_X = N(I_M/d) = \Pi/r .
+\end{equation*}
+
+\begin{definition}[target channel]\label{def:4}
+The target $\Lambda _0$ is the Petz recovery map
+of $N$ with respect to the maximally mixed input
+\cite{khatri2020principles}, a channel from $X$ to $M$:
+\begin{equation*}
+\Lambda_0(A)
+= \frac{1}{d}\,N^{\dagger}\!\left(
+\tau_X^{-1/2}\,A\,\tau_X^{-1/2}\right) ,
+\end{equation*}
+\end{definition}
+
+where the inverse is taken on the support of $\tau _X$. Flatness removes the
+square roots: for every operator $A$ supported in $\operatorname{supp}(\tau _X)$,
+
+\begin{equation*}
+\Lambda_0(A) = \frac{r}{d}\,N^{\dagger}(A) .
+\end{equation*}
+
+\emph{The recipe of the verifier.} Take the signed generators of the Choi state of
+the source on the registers $R$, $X$ and $C$. Replace each by its complex
+conjugate in the computational basis: in a tableau, the sign of every
+generator containing an odd number of $Y$ is flipped, and nothing else
+changes. Trace out $C$. Read $R$ as $O$ and $X$ as $\operatorname{Ref}(X)$.
+
+\begin{lemma}[signature of the target]\label{lem:2}
+\emph{Let $J(N) = (id \otimes  N)(\Phi )$ be the
+normalised Choi state of $N$, written in the order $R$, $X$. The code-Choi
+state $J_\Pi (\Lambda _0)$ of the target, written in the order $O$, $\operatorname{Ref}(X)$, is the
+complex conjugate of $J(N)$ once $R$ is read as $O$ and $X$ as $\operatorname{Ref}(X)$.
+Consequently $\operatorname{sig}(J_\Pi (\Lambda _0))$ is the signature the recipe produces.}
+\end{lemma}
+
+\begin{proof}
+Let the $K_i$, from $M$ to $X$, be Kraus operators of $N$. Then
+
+\begin{equation*}
+\tau_X = \frac{1}{d}\sum_i K_i K_i^{\dagger} ,
+\end{equation*}
+
+so the range of every $K_i$ lies in $\operatorname{supp}(\tau _X)$ and $\Pi  K_i = K_i$. By the flat
+form of Definition~\ref{def:4}, Kraus operators of the target on $\operatorname{supp}(\tau _X)$ are
+
+\begin{equation*}
+\sqrt{r/d}\;K_i^{\dagger} ,
+\end{equation*}
+
+which sum to $\Pi $ there, as they must.
+
+Write $V$ for the isometry $\lvert \psi \rangle  \mapsto  E(\lvert \psi \rangle  \otimes  \lvert 0\rangle ^{\lvert X\rvert-k})$, so that $VV^\dagger = \Pi $.
+The state prepared in Definition~\ref{def:2} is
+
+\begin{equation*}
+\frac{1}{\sqrt r}\sum_{a}\bar{V}|a\rangle\otimes V|a\rangle
+= \frac{1}{\sqrt r}\,(I\otimes\Pi)
+\sum_{x}|x\rangle_{\operatorname{Ref}}|x\rangle_{X} ,
+\end{equation*}
+
+the canonical purification of $\tau _X$: the conjugate on the reference is what
+makes the right-hand side independent of the choice of $E$. Applying the
+target to $X$ gives
+
+\begin{equation*}
+J_{\Pi}(\Lambda_0)
+= \frac{1}{r}\cdot\frac{r}{d}\sum_i |\kappa_i\rangle\langle\kappa_i| ,
+\qquad
+|\kappa_i\rangle
+= \sum_{x,m}\overline{\langle x|K_i|m\rangle}\;
+|x\rangle_{\operatorname{Ref}}|m\rangle_{O} .
+\end{equation*}
+
+The factor $r/d$ of the target meets the normalisation $1/r$ of the code and
+leaves $1/d$, the normalisation of the source. On the other side,
+
+\begin{equation*}
+J(N) = \frac{1}{d}\sum_i |k_i\rangle\langle k_i| ,
+\qquad
+|k_i\rangle = \sum_{x,m}\langle x|K_i|m\rangle\;|m\rangle_{R}|x\rangle_{X} .
+\end{equation*}
+
+The two families of vectors have complex-conjugate coefficients once $R$ is
+read as $O$ and $X$ as $\operatorname{Ref}(X)$, which is the first claim.
+
+For the second, conjugation in the computational basis commutes with the
+partial trace over $C$, so conjugating the pure state on the three registers
+and then tracing out $C$ gives the conjugate of $J(N)$. And the conjugate of a
+stabilizer state is the stabilizer state whose generators are conjugated: $X$
+and $Z$ are real, $Y$ is imaginary, so a Pauli string changes sign exactly
+when it contains an odd number of $Y$.
+\end{proof}
+
+\textbf{Corollary 1 (what a verdict certifies).} \emph{A candidate $\Lambda $ is accepted --- its
+signature equals the one the recipe produces --- if and only if
+$\Lambda (\rho ) = \Lambda _0(\rho )$ for every $\rho $ supported in $\operatorname{supp}(\tau _X)$.}
+
+\begin{proof}
+Lemma~\ref{lem:2} identifies the signature of the recipe with $\operatorname{sig}(J_\Pi (\Lambda _0))$,
+and Theorem~\ref{thm:1} applies: its proof uses of the two channels only their code-Choi
+states, and that of the target is a stabilizer state by Lemma~\ref{lem:2}.
+\end{proof}
+
+The smallest instance on which the conjugation matters is a one-qubit message
+beside an ancilla prepared in $\lvert +i\rangle $, with $U$ the identity and both wires
+accessible. The source Choi state carries $+Y$ on the ancilla; the target
+carries $-Y$, and so does the reference of the candidate, which $\overline{E}$ prepares
+in $\lvert -i\rangle $. Returning the message and discarding the ancilla is accepted. A
+target compared without conjugation would carry $+Y$ and reject this correct
+recovery.
 
 
 \section{Scope}

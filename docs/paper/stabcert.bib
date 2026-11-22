@@ -147,14 +147,27 @@
 % Hayden--Preskill decoding  (Section 4.3)
 % ---------------------------------------------------------------------------
 %
+% Section 3.5 names the target: it is the Petz recovery map of the source with
+% respect to the maximally mixed input. The definition and the convention on
+% the support are cited from Khatri and Wilde below.
+%
 % The Petz recovery literature that the instance family comes from -- Burri,
-% Yoshida 2021, Hu and Zou, Beigi, Datta and Leditzky -- is not cited here.
-% The paper never mentions Petz: its contribution is the decision procedure,
-% and the recovery channel appears only as the source of fixtures. An uncited
-% entry is padding, so those four live in docs/notes/NOVELTY_AUDIT.md, where
-% they belong and where the reservation about the equation-by-equation
-% comparison with Burri belongs with them. Restore them here only if a section
-% of this paper discusses that literature.
+% Yoshida 2021, Hu and Zou, Beigi, Datta and Leditzky -- is still not cited.
+% Section 3.5 uses the definition of the map, not the results of that
+% literature on its fidelity, so those four stay in
+% docs/notes/NOVELTY_AUDIT.md, with the reservation about the
+% equation-by-equation comparison with Burri. Restore them here only if a
+% section of this paper discusses the fidelity of the map.
+
+% VERIFIED (record). arXiv listing: v1 of 2020-11-09, v2 of 2024-02-11.
+% Definition 4.21, "Petz Recovery Map", in v2.
+@misc{khatri2020principles,
+  author = {Sumeet Khatri and Mark M. Wilde},
+  title  = {Principles of Quantum Communication Theory: A Modern Approach},
+  year   = {2020},
+  eprint = {2011.04672},
+  archivePrefix = {arXiv}
+}
 
 % Decision taken: Section 4.3 means this work, not Yoshida 2021. It is the
 % decoder whose canonical form is measurement-based, and of which the circuits
