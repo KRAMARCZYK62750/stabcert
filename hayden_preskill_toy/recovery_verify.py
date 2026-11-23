@@ -60,16 +60,20 @@ def _maximum_interaction_distance(problem: RecoveryProblem, gates) -> int:
             continue
         source, destination = gate.qubits
         reached = {source}
-        frontier = [source]
+        # A set, not a list: a vertex reached along several shortest paths
+        # must enter the next layer once. Kept as a list, the repetitions
+        # multiplied at every layer and one nonlocal CNOT on a layered graph
+        # made this diagnostic exponential in the distance.
+        frontier = {source}
         distance = 0
         while destination not in reached:
             distance += 1
-            frontier = [
+            frontier = {
                 neighbour
                 for wire in frontier
                 for neighbour in neighbours[wire]
                 if neighbour not in reached
-            ]
+            }
             if not frontier:
                 raise ValueError("coupling graph does not connect a circuit interaction")
             reached.update(frontier)

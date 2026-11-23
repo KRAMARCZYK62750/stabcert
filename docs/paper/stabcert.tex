@@ -1055,14 +1055,13 @@ synthesized preparation circuits have additional polynomial cost in $W$
 also costs at least its length. These terms explain why elimination counts
 alone cannot bound elapsed verification time.
 
-The v0.1.1 implementation additionally reports the greatest graph distance
-of a routed interaction. On edge-conforming artifacts its traversal scans
-at most one adjacency list per CNOT. On rejected nonlocal interactions its
-frontier can contain repeated vertices reached by distinct shortest paths:
-visited vertices are marked after a complete layer. Thus Proposition~\ref{prop:2}
-bounds the channel decision; it supplies no polynomial worst-case bound
-for this diagnostic on arbitrary rejected routes. The topology verdict
-itself uses direct edge membership.
+The implementation additionally reports the greatest graph distance of a
+routed interaction, by a breadth-first search that visits each site of the
+coupling graph at most once per CNOT; the topology verdict itself uses direct
+edge membership. In v0.1.1 the frontier of that search could hold a site once
+per shortest path reaching it, which made the diagnostic exponential in the
+distance on some rejected routes. Version 0.1.2 removes the repetition, and
+the diagnostic is now linear in the size of the graph for each gate read.
 
 The tests compare the per-call formula with instrumented runs; the CSV
 provides a separate check on the measured family.

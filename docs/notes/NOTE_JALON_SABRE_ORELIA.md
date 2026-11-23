@@ -24,7 +24,7 @@ demandé.
 | Route SABRE avec phase `Z` ajoutée sur la sortie | rejetée | rejetée |
 | Route SABRE avec permutation finale falsifiée | rejetée | rejetée |
 
-La suite complète contient désormais <!-- TEST_COUNT:BEGIN fmt="**{passed} tests passants sur {passed}**" -->**161 tests passants sur 161**<!-- TEST_COUNT:END -->.
+La suite complète contient désormais <!-- TEST_COUNT:BEGIN fmt="**{passed} tests passants sur {passed}**" -->**168 tests passants sur 168**<!-- TEST_COUNT:END -->.
 
 ## Résultat technique
 
