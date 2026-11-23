@@ -147,19 +147,32 @@
 % Closest prior work  (Sections 1, 2, 4.3 and 8)
 % ---------------------------------------------------------------------------
 %
-% Added 2026-11-22. The three records below were checked against their arXiv
-% listings. The characterisations in Section 8 come from a machine-assisted
-% reading of the arXiv texts, not from a line-by-line reading by the author.
-% TODO before submission -- re-read against the PDFs, in this order:
-%   1. kliuchnikov2023stabilizer: deallocation is restricted to zero-state
-%      qubits (their Algorithm 5.3); the general form is not unique; the
+% Added 2026-11-22, revised 2026-11-23 after a reading of the three articles
+% against Section 8. The records below were checked against their arXiv
+% listings. Points to keep in step with the text of the paper:
+%   1. kliuchnikov2023stabilizer: the general form is not unique; the
 %      logical-action problem (their Problem 8.1) takes a circuit and two
-%      codes; no software is released (their Section 5.3 discusses data
-%      structures, their Appendix B cites benchmarks of a third-party
-%      GF(2) library).
-%   2. yashin2025streamlined: no normal form and no equality procedure is
-%      stated for channel tableaux; no restriction to an input subspace.
-%   3. yashin2025characterization: the class of Section 2 is exactly theirs.
+%      codes, and the comparison with a reference circuit is a separate
+%      problem (their Problem 8.3). Deallocation needs the zero state, but a
+%      destructive measurement is built from measure, correct, deallocate
+%      (note after their Definition 2.3): no claim of non-inclusion between
+%      their class and ours. Equivalence is equivalence of instruments: a
+%      bijection between outcomes AFTER grouping those whose maps are
+%      proportional, so raw outcome sets may differ in size (their
+%      Definitions 2.5 and 2.6). We found in the article no link to a
+%      published implementation.
+%   2. yashin2025streamlined: signed row operations on a channel tableau and
+%      its reduction to echelon form are described (their Section III.A),
+%      with cost. Not found there: an explicit statement of uniqueness for
+%      the reduced tableau of a channel, or a restriction to an input
+%      subspace. Worded in the paper as a bibliographic remark, with no claim
+%      of priority on canonicity.
+%   3. yashin2025characterization: their Theorem 1 gives the class of
+%      Section 2 (their dilation starts from |0...0>; a stabilizer ancilla is
+%      Clifford-equivalent to it). "Stabilizer state" includes the mixed case
+%      by their convention (Section II.C). Remark 1: Pauli control by affine
+%      Boolean functions rewrites without classical control. Theorem 7:
+%      normal form up to Clifford unitaries on input and output.
 
 % VERIFIED (record). arXiv v1 of 2023-09-15 is the only version listed; no
 % journal reference appears on the listing.

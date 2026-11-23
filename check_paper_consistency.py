@@ -47,7 +47,9 @@ FORBIDDEN_NAMES = ("code-Choi tableau", "canonical signed code-Choi")
 REQUIRED_PHRASES = {
     "abstract: support is specification-determined":
         "relative to a support determined by the specification",
-    "intro: the state is mixed": "a mixed stabilizer state",
+    # "Possibly": the code-Choi state is mixed in general and pure in special
+    # cases (identity channel, O = X, whole space as code: a Bell state).
+    "intro: the state is possibly mixed": "a possibly mixed stabilizer state",
     "intro: theorem separated from campaign":
         "no finite corpus could establish the former",
     "4.3: admits": "The class **admits** a symbolic treatment",
