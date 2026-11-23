@@ -64,6 +64,14 @@ specification calls for? The distinction matters because the reference circuit
 is itself an artifact. Comparing against it certifies faithfulness to a
 possibly wrong starting point.
 
+One line of work is closer than these three. Kliuchnikov, Beverland and
+Paetznick \cite{kliuchnikov2023stabilizer} verify stabilizer circuits
+containing measurements and outcome-conditioned Pauli corrections,
+exhaustively over outcomes, and compute the logical action of a circuit
+between two stabilizer codes. Their class and ours overlap without either
+containing the other, and their normal form is not canonical. Section 8 states
+both points, and states also where the two works do not differ.
+
 **Contribution.** We restrict attention to stabilizer channels, as defined in
 Section 2, and show that within this class the question is decidable in
 polynomial time. Specifically:
@@ -106,7 +114,10 @@ along. The word *tableau* is reserved for this representation throughout.
 A **Clifford unitary** maps Pauli operators to Pauli operators under
 conjugation, and is fully specified by the images of `2n` generators. A
 **stabilizer channel** is a Clifford unitary composed with stabilizer ancilla
-preparation and partial trace over a discarded register.
+preparation and partial trace over a discarded register. This is the class
+studied by Yashin and Elovenkova \cite{yashin2025characterization} under the
+name of non-adaptive Clifford channels, which they show to be the channels
+whose Choi state is a stabilizer state.
 
 By the **Gottesman–Knill theorem** \cite{gottesman1997,aaronson2004improved},
 stabilizer circuits admit efficient
@@ -358,6 +369,11 @@ a stabilizer formalism can verify once rather than per branch. The current
 implementation **contains no syndrome handling at all** — its recovery circuits
 are measurement-free, so no branch arises and no such matrix is constructed. We
 **claim nothing** about that path and report no results for it.
+
+That path is the subject of Kliuchnikov, Beverland and Paetznick
+\cite{kliuchnikov2023stabilizer}, whose algorithms verify circuits with Pauli
+corrections conditioned on parities of measurement outcomes, over all outcomes
+at once. Section 8 compares the two classes.
 
 Readers familiar with the Yoshida–Kitaev decoder \cite{yoshida2017efficient}
 should note that its canonical
@@ -814,9 +830,60 @@ reveals it.
 
 ## 8. Related work
 
-Three lines of work address adjacent problems. We have not executed any of the
-tools discussed below; the characterisations that follow are drawn from their
-published documentation and papers.
+Two bodies of work are close to ours, and three further lines address adjacent
+problems. We have not executed any of the tools discussed below; the
+characterisations that follow are drawn from their published documentation and
+papers.
+
+**Stabilizer circuit verification.** Kliuchnikov, Beverland and Paetznick
+\cite{kliuchnikov2023stabilizer} give classical algorithms that characterise
+and verify stabilizer circuits exhaustively over measurement outcomes. Their
+circuits allocate qubits in the zero state, measure Pauli operators, draw
+random bits, and apply Pauli unitaries conditioned on parities of earlier
+outcomes. A circuit is brought to a *general form*, two circuits are compared
+through their general forms, and a further algorithm computes the logical
+action of a circuit between an input and an output stabilizer code. This is
+the closest published work to Section 3, and three points are worth stating
+exactly.
+
+The classes overlap without either containing the other. Theirs includes
+measurement and outcome-conditioned Pauli corrections, which Section 4.3
+places outside ours. Ours takes partial trace over a discarded register as a
+primitive, so that the object compared is in general a mixed code-Choi state;
+their deallocation applies to a qubit known to be in the zero state. We have
+not examined whether discarding can be encoded in their setting by measuring
+and resetting, at the price of an outcome record that the comparison must then
+relate.
+
+The normal forms differ in kind. Their general form is not unique — equal
+circuits can have different general forms — so equivalence is decided by a
+comparison procedure that solves for the relation between the two outcome
+records. Lemma 1 gives a canonical signature instead: equality of two channels
+on the code subspace is equality of two tuples of signed generators.
+
+The input, lastly, does not separate the two works. Their logical-action
+algorithm takes a circuit and two codes, not a reference circuit, and to that
+extent it is driven by a specification as ours is. What we add on that axis is
+narrower: the support `Π` is derived from the specification alone
+(Hypothesis 1), the candidate is an artifact of unknown provenance, and the
+procedure is delivered as a tool whose implementation is tested adversarially
+(Section 6.2). Their article reports no implementation that we could find, and
+we make no comparison of running times.
+
+**Clifford channels.** Yashin and Elovenkova
+\cite{yashin2025characterization} characterise the class of Section 2:
+channels realised by stabilizer circuits without classical control,
+equivalently channels whose Choi state is a stabilizer state, equivalently
+channels admitting a Clifford Stinespring dilation. Yashin
+\cite{yashin2025streamlined} then represents such a channel by a tableau
+derived from its Choi state and reduces composition to Boolean linear algebra.
+Representing a stabilizer channel by the tableau of its Choi state is
+therefore not new here. That work is concerned with simulation: as far as we
+could read, it states neither a normal form for channel tableaux nor a
+decision procedure for their equality, and it does not restrict a channel to a
+subspace of inputs. Our contribution on this side is the restriction to a
+code subspace determined by the specification, the equality theorem relative
+to it, and its use to certify compiler output.
 
 **Compiler certification.** Proving the transformation itself, once and for
 all, is stronger where it applies — and it applies only to compilers whose
@@ -856,7 +923,11 @@ comparison: proof effort and verification time are not the same quantity, and
 tabulating them side by side would suggest a commensurability that does not
 exist.
 
-**Summary.** The axis that separates this work from all three is the input.
-Compiler certification takes a compiler; equivalence checking takes two
-circuits; deductive verification takes a program. We take an artifact of
-unknown provenance and a channel specification.
+**Summary.** The axis that separates this work from compiler certification,
+equivalence checking and deductive verification is the input. Compiler
+certification takes a compiler; equivalence checking takes two circuits;
+deductive verification takes a program. We take an artifact of unknown
+provenance and a channel specification. From stabilizer circuit verification
+the separation is narrower and of a different kind: a class that has partial
+trace and lacks measurement, a canonical form rather than a general one, and
+an implementation.
