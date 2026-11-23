@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stabcert"
-version = "0.1.1"
+version = "0.1.2"
 description = "Sound and complete translation validation for stabilizer channels"
 readme = "README.md"
 requires-python = ">=3.10"
