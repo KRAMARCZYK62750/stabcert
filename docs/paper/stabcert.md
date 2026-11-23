@@ -346,7 +346,7 @@ on its support:
 
 **Definition 4 (target channel).** The target `Λ₀` is the Petz recovery map
 of `N` with respect to the maximally mixed input
-\cite{khatri2020principles}, a channel from `X` to `M`:
+\cite{khatri2020principles}. Its input space for certification is the code subspace of `X`, and its output is `M`:
 
 ```latex
 \Lambda_0(A)
@@ -386,7 +386,16 @@ form of Definition 4, Kraus operators of the target on `supp(τ_X)` are
 \sqrt{r/d}\;K_i^{\dagger} ,
 ```
 
-which sum to `Π` there, as they must.
+writing these operators as `L_i` gives
+
+```latex
+\sum_i L_i^\dagger L_i=\frac{r}{d}\sum_i K_iK_i^\dagger
+=r\tau_X=\Pi .
+```
+
+Thus the map preserves trace on the code. With the support inverse its trace
+on a positive operator on the full register is the weight of that operator
+in the code.
 
 Write `V` for the isometry `|ψ⟩ ↦ E(|ψ⟩ ⊗ |0⟩^{|X|−k})`, so that `VV† = Π`.
 The state prepared in Definition 2 is
@@ -429,8 +438,8 @@ stabilizer state is the stabilizer state whose generators are conjugated: `X`
 and `Z` are real, `Y` is imaginary, so a Pauli string changes sign exactly
 when it contains an odd number of `Y`. ∎
 
-**Corollary 1 (what a verdict certifies).** *A candidate `Λ` is accepted — its
-signature equals the one the recipe produces — if and only if
+**Corollary 1 (semantic check).** *A candidate `Λ` passes the reduced-channel
+signature check if and only if
 `Λ(ρ) = Λ₀(ρ)` for every `ρ` supported in `supp(τ_X)`.*
 
 *Proof.* Lemma 2 identifies the signature of the recipe with `sig(J_Π(Λ₀))`,
