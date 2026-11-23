@@ -639,7 +639,12 @@ The identity is not an accident of the sweep. Proposition 2 (7.4) gives the
 number of affine systems solved as a closed form in the dimensions of the
 calls the verifier makes, with no dependence on the data beyond the ranks of
 the reduced groups. On this family the inaccessible register is empty,
-`k = n − 8`, and the source Choi tableau has width `2n − 8`; substituting gives
+`k = n − 8`, and the source Choi tableau has width `W = 2n − 8`. In verifier order, the six
+kernel-image ranks for the exact artifacts are `8, W, W, W, 2k, 2k`. The first
+counts the support constraints; the next three are the ranks of pure Choi
+states on the retained wires. The last two count the Bell stabilizers after
+recovery and their intersection with the Bell target. The respective numbers
+of variables are `W, W, 2n, W, W, 4k`; substituting gives
 the polynomial above, term for term.
 
 Affine solves are not the only eliminations. Testing whether a vector lies in
@@ -707,11 +712,11 @@ pre-registered threshold can only validate the prediction it is given, and it
 confirmed a wrong one with every appearance of rigour. The threshold did not
 fail. The hypothesis did.
 
-The rejection stands, and its cause is identified. The composition of 7.3
+The measured exponents fail the registered criterion. The composition of 7.3
 counted the affine solves and omitted the rank reductions of the
 span-membership tests, which Proposition 2 below bounds by `O(W³)` and which
 the sweep records growing faster than the solves (7.2). Counting them gives
-degrees 5 and 6. Those are the figures the first reading of this table had
+upper bounds of degrees 5 and 6. Those are the figures the first reading of this table had
 used, and they are not vindicated by it: they had been obtained by a
 composition that mixed units, and a bound is owed to its derivation, not to
 its value.
@@ -727,8 +732,10 @@ we do not claim that it does.
 Single-step exponents are not reported — at the top of the range they are
 unstable enough to be meaningless.
 
-**Proposition 2 (cost bound).** *Let `W = |M| + |X| + |C|` be the width of
-the source Choi tableau, `n = |X|`, and `k` the number of logical qubits. The
+**Proposition 2 (cost bound).** *Consider the completed semantic checks on
+well-formed v1 inputs with a full independent set of pure target generators
+in the prescribed registers. Write `W = |M| + |X| + |C|` for the source Choi
+width, `n = |X|`, and `k` for the number of logical qubits. The
 verifier reaches the elimination routines through `n + k + 6` calls, on
 matrices of at most `4W` rows and `2W + 1` columns.*
 
@@ -744,9 +751,8 @@ N_{\mathrm{sys}}
 = (n + k)(2n + 2) + \sum_{j=1}^{6}\bigl(1 + \rho_j\,(v_j + 2)\bigr) ,
 ```
 
-*which is `O(W²)`; there are `O(W³)` rank reductions; and the whole costs
-`O(W⁵)` row operations and `O(W^6)` bit operations over `F₂`. None of these
-counts depends on generator density or on the number of gates read.*
+*which is `O(W²)`; there are `O(W³)` rank reductions; and the instrumented eliminations cost
+`O(W⁵)` row operations and `O(W^6)` bit operations over `F₂`. These upper bounds are uniform in generator density and gate count. The actual work can depend on the data.*
 
 *Proof.* The counts of (i) are read off the routines. The kernel-image
 routine solves one system, reduces one matrix, then runs a span-avoiding
@@ -772,29 +778,34 @@ One solve performs at most `2W` pivots, each adding the pivot row to at most
 rank reduction acts on `O(W)` rows and columns, hence `O(W²)` row operations;
 `O(W³)` of them give `O(W⁵)`. A row spans at most `2W + 1` bits. ∎
 
-Three things the proposition does not say.
+The membership loop stops at its first witness, so tightness requires a
+separate argument. If the declared target has a different width or generator
+count, its reduction uses those actual dimensions; malformed inputs can
+return before completing the listed calls.
 
-It is an upper bound, and we do not claim it is attained: the membership loop
-stops at the first vector found outside the span.
+For gate-dependent work, let `G` be the combined length of the supplied
+source, logical and routed gate lists. Source propagation acts on `W` signed
+generators; the logical-action check propagates up to `2k` Paulis and the
+candidate and fidelity checks replay routed gates on tableaux of width at
+most `2W`. With elementary Clifford tableau updates these passes take
+`O(GW)` word or bit-position updates in the ordinary unpacked tableau model
+\cite{aaronson2004improved}. Conversions between generators, tableaux and
+synthesized preparation circuits have additional polynomial cost in `W`
+\cite{gidney2021stim}. Reading and hashing the explicitly serialized input
+also costs at least its length. These terms explain why elimination counts
+alone cannot bound elapsed verification time.
 
-It counts the elimination routines of 7.1 and nothing else. Reading the
-circuits is tableau propagation, delegated to Stim \cite{gidney2021stim}; at
-the standard cost of `O(W)` per gate \cite{aaronson2004improved} it is linear
-in the number of gates read, so that two candidates of the same width and
-arbitrarily different lengths differ in cost by that term alone. The canonical
-signature of Definition 3, like the construction of a tableau from
-generators, is one further elimination on `O(W)` rows, below the bound.
+The v0.1.1 implementation additionally reports the greatest graph distance
+of a routed interaction. On edge-conforming artifacts its traversal scans
+at most one adjacency list per CNOT. On rejected nonlocal interactions its
+frontier can contain repeated vertices reached by distinct shortest paths:
+visited vertices are marked after a complete layer. Thus Proposition 2
+bounds the channel decision; it supplies no polynomial worst-case bound
+for this diagnostic on arbitrary rejected routes. The topology verdict
+itself uses direct edge membership.
 
-And `W` is to be read as the larger of two widths, that of the source and that
-of the target the artifact declares, since the verifier reduces both.
-
-The test suite states (i) as code and checks it on every call of a set of
-instances — the solve count for equality, the others as bounds — together with
-the list of calls and its independence from the number of gates.
-
-This is what makes *polynomial* in the abstract a proved claim rather than a
-measured one. The measurements are a separate statement, about one family:
-they are compatible with the bound and do not show it to be tight.
+The tests compare the per-call formula with instrumented runs; the CSV
+provides a separate check on the measured family.
 
 ### 7.5 Wall time is not the complexity
 
@@ -805,16 +816,11 @@ construction-and-verification time. The agreement is a consistency check across
 harnesses, not a second measurement of the same quantity: the ranges, the
 parameters and the timed sections differ.
 
-Time grows **more slowly** than the operation counts (4.780 against 4.907 for
-row XORs), and its exponent *rises* with `n` — 4.711, then 4.780 — while every
-counter's falls. The cause is vectorisation: NumPy performs a row XOR in
-roughly constant time, so measured seconds track row operations rather than bit
-operations, and converge on that exponent from below.
-
-The two series therefore bracket the answer from opposite sides: counters
-descending from 6.285 to 4.907, time ascending from 4.711 to 4.780, meeting
-within 0.13. **Two independent series converging from above and below constrain
-more than a two-parameter fit to either one.**
+The fitted timing exponent rises from 4.711 to 4.780 across the two
+windows, while the row-XOR exponent falls from 6.285 to 4.907. Their
+upper-window difference is about 0.13. NumPy processes a row XOR as a
+vector operation, whose elapsed cost also depends on row length. The two
+finite-window fits do not determine a common limiting exponent.
 
 ### 7.6 Density, and what the exponent is an exponent of
 
