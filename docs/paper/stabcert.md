@@ -44,8 +44,9 @@ trusted on the strength of testing.
 Existing verification approaches address adjacent problems.
 
 Compiler certification — proving the transformation itself, once and for all —
-applies only where the compiler's source is available and under the verifier's
-control. SABRE and pytket are neither.
+requires a proof about the compiler's code, kept up as that code changes. The
+approach taken here needs none: an artifact is verified without inspecting
+the compiler that produced it.
 
 Equivalence checking, as implemented for example in QCEC
 \cite{burgholzer2021advanced}, compares a compiled circuit against a reference
@@ -68,15 +69,16 @@ One line of work is closer than these three. Kliuchnikov, Beverland and
 Paetznick \cite{kliuchnikov2023stabilizer} verify stabilizer circuits
 containing measurements and outcome-conditioned Pauli corrections,
 exhaustively over outcomes, and compute the logical action of a circuit
-between two stabilizer codes. Their class and ours overlap without either
-containing the other, and their normal form is not canonical. Section 8 states
-both points, and states also where the two works do not differ.
+between two stabilizer codes. They compare quantum instruments, outcome
+records included, where we compare one reduced channel on a code subspace, and
+their normal form is not unique. Section 8 states both points, and states also
+where the two works do not differ.
 
 **Contribution.** We restrict attention to stabilizer channels, as defined in
 Section 2, and show that within this class the question is decidable in
 polynomial time. Specifically:
 
-- We define the code-Choi state, a mixed stabilizer state — a state stabilized
+- We define the code-Choi state, a possibly mixed stabilizer state — a state stabilized
   by a signed subgroup — encoding a channel's action on a specified input
   subspace, and prove that equality of its canonical signed signature is
   necessary and sufficient for equality of the channels on that subspace
@@ -120,7 +122,7 @@ conjugation, and is fully specified by the images of `2n` generators. A
 preparation and partial trace over a discarded register. This is the class
 studied by Yashin and Elovenkova \cite{yashin2025characterization} under the
 name of non-adaptive Clifford channels, which they show to be the channels
-whose Choi state is a stabilizer state.
+whose Choi state is a possibly mixed stabilizer state.
 
 By the **Gottesman–Knill theorem** \cite{gottesman1997,aaronson2004improved},
 stabilizer circuits admit efficient
@@ -228,9 +230,11 @@ conflated.* `R` and `C` are traced to form `τ_X`; `C` is traced to form the
 reduced target; `X ∖ O` is traced to form the reduced candidate. Only the last
 belongs to Definition 2.
 
-*The state is mixed, on `|O| + |X|` wires.* It is not a purification and not a
-pure stabilizer state: tracing `X ∖ O` leaves a state stabilized by a proper
-subgroup. What the construction avoids is a product of projectors — it returns
+*The state is in general mixed, on `|O| + |X|` wires.* Tracing `X ∖ O`
+generally leaves fewer independent generators than wires. It is pure in
+special cases: for the identity channel on one qubit, with `O = X` and the
+whole space as code, it is a Bell state. What the construction avoids is a
+product of projectors — it returns
 an independent generating set directly, so no normalisation scalar propagates
 through the canonical form.
 
@@ -259,6 +263,11 @@ each echelon generator is the phase of the unique group element with that
 binary support — unique precisely because `−I ∉ S`, without which the group
 would contain both `P` and `−P` for the same support. Hence equality of
 signatures is equivalent to equality of the signed subgroups. ∎
+
+The reduction is not ours. Signed row operations on the tableau of a channel,
+and its reduction to echelon form, are described by Yashin
+\cite{yashin2025streamlined}. The lemma records what that reduction yields
+when the group is fixed: a canonical object, which Theorem 1 then compares.
 
 The hypothesis `−I ∉ S` is not incidental: the implementation rejects any
 specification whose generators fail it, together with commutation and
@@ -516,11 +525,12 @@ are measurement-free, so no branch arises and no such matrix is constructed. We
 That path is the subject of Kliuchnikov, Beverland and Paetznick
 \cite{kliuchnikov2023stabilizer}, whose algorithms verify circuits with Pauli
 corrections conditioned on parities of measurement outcomes, over all outcomes
-at once. Section 8 compares the two classes.
+at once. Section 8 compares the two works.
 
-Readers familiar with the Yoshida–Kitaev decoder \cite{yoshida2017efficient}
-should note that its canonical
-form is measurement-based; the circuits here are its coherent counterpart.
+Yoshida and Kitaev \cite{yoshida2017efficient} give two decoders for the same
+recovery task, one probabilistic, by post-selection, and one deterministic. We
+claim no correspondence between either construction and the circuits verified
+here.
 
 ### 4.4 What is verified and what is reported
 
@@ -1083,20 +1093,25 @@ action of a circuit between an input and an output stabilizer code. This is
 the closest published work to Section 3, and three points are worth stating
 exactly.
 
-The classes overlap without either containing the other. Theirs includes
-measurement and outcome-conditioned Pauli corrections, which Section 4.3
-places outside ours. Ours takes partial trace over a discarded register as a
-primitive, so that the object compared is in general a mixed code-Choi state;
-their deallocation applies to a qubit known to be in the zero state. We have
-not examined whether discarding can be encoded in their setting by measuring
-and resetting, at the price of an outcome record that the comparison must then
-relate.
+The difference is not one of classes. Their primitives include measurement
+and outcome-conditioned Pauli corrections, and ours include partial trace,
+but neither list excludes the channels of the other. A destructive
+measurement — measure, correct, deallocate — discards a qubit, and Pauli gates
+controlled by affine functions of outcomes can be rewritten without classical
+control \cite{yashin2025characterization}. What Section 4.3 places outside
+this work is an input format of the implementation, not a class of channels.
+
+The difference is the object compared. They compare quantum instruments:
+every outcome is retained, and two circuits are equivalent when a relabelling
+of outcomes matches their maps. We compare one channel — the candidate reduced
+onto the requested outputs — on the inputs of a code subspace, and nothing of
+the discarded register is retained.
 
 The normal forms differ in kind. Their general form is not unique — equal
 circuits can have different general forms — so equivalence is decided by a
 comparison procedure that solves for the relation between the two outcome
-records. Lemma 1 gives a canonical signature instead: equality of two channels
-on the code subspace is equality of two tuples of signed generators.
+records. The signature of Lemma 1 is canonical: equality of two channels on
+the code subspace is equality of two tuples of signed generators.
 
 The input, lastly, does not separate the two works. Their logical-action
 algorithm takes a circuit and two codes, not a reference circuit, and to that
@@ -1111,23 +1126,29 @@ make no comparison of running times.
 **Clifford channels.** Yashin and Elovenkova
 \cite{yashin2025characterization} characterise the class of Section 2:
 channels realised by stabilizer circuits without classical control,
-equivalently channels whose Choi state is a stabilizer state, equivalently
-channels admitting a Clifford Stinespring dilation. Yashin
-\cite{yashin2025streamlined} then represents such a channel by a tableau
-derived from its Choi state and reduces composition to Boolean linear algebra.
-Representing a stabilizer channel by the tableau of its Choi state is
-therefore not new here. That work is concerned with simulation: as far as we
-could read, it states neither a normal form for channel tableaux nor a
-decision procedure for their equality, and it does not restrict a channel to a
-subspace of inputs. Our contribution on this side is the restriction to a
-code subspace determined by the specification, the equality theorem relative
-to it, and its use to certify compiler output.
+equivalently channels whose Choi state is a possibly mixed stabilizer state,
+equivalently channels admitting a Clifford Stinespring dilation. They also
+give a normal form for such channels, up to Clifford unitaries on the input
+and on the output. That form classifies channels; we test the equality of two
+channels in registers the specification fixes, where no such freedom is left.
+
+Yashin \cite{yashin2025streamlined} represents a channel of this class by a
+signed tableau derived from its Choi state, reduces composition to Boolean
+linear algebra, and describes the reduction of such a tableau to echelon form
+by signed row operations, with its cost. Neither the representation nor its
+signed reduction is therefore new here. As far as we could read, that work
+does not state that the reduced form decides the equality of two channels,
+and it does not restrict a channel to a subspace of inputs. Our contribution
+on this side is the choice of the support from the specification, the
+reconstruction of the target, and the certificate for a circuit supplied from
+outside.
 
 **Compiler certification.** Proving the transformation itself, once and for
-all, is stronger where it applies — and it applies only to compilers whose
-source is available and under the verifier's control. SABRE and pytket are
-neither. Translation validation, certifying each output rather than the
-producer, is the classical answer to that situation, and it is the one we take.
+all, is stronger where it applies. It requires a proof about the compiler's
+code, kept up as that code changes. Translation validation certifies each
+output rather than the producer: the artifact is verified without inspecting
+the compiler that produced it. That is the route taken here, for the routing
+passes of Qiskit and pytket as for any other.
 
 **Equivalence checking.** QCEC \cite{burgholzer2021advanced} compares a
 compiled circuit against a reference circuit. Its decision-diagram engines provide exact equivalence checking by
@@ -1166,6 +1187,7 @@ equivalence checking and deductive verification is the input. Compiler
 certification takes a compiler; equivalence checking takes two circuits;
 deductive verification takes a program. We take an artifact of unknown
 provenance and a channel specification. From stabilizer circuit verification
-the separation is narrower and of a different kind: a class that has partial
-trace and lacks measurement, a canonical form rather than a general one, and
-an implementation.
+the separation is narrower and of a different kind: the object compared is one
+reduced channel on a code subspace rather than an instrument with its outcome
+record, the form is canonical rather than general, and the procedure is
+released as a tool.
