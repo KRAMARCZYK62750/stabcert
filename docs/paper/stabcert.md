@@ -64,6 +64,14 @@ specification calls for? The distinction matters because the reference circuit
 is itself an artifact. Comparing against it certifies faithfulness to a
 possibly wrong starting point.
 
+One line of work is closer than these three. Kliuchnikov, Beverland and
+Paetznick \cite{kliuchnikov2023stabilizer} verify stabilizer circuits
+containing measurements and outcome-conditioned Pauli corrections,
+exhaustively over outcomes, and compute the logical action of a circuit
+between two stabilizer codes. Their class and ours overlap without either
+containing the other, and their normal form is not canonical. Section 8 states
+both points, and states also where the two works do not differ.
+
 **Contribution.** We restrict attention to stabilizer channels, as defined in
 Section 2, and show that within this class the question is decidable in
 polynomial time. Specifically:
@@ -76,6 +84,9 @@ polynomial time. Specifically:
 - We show the verdict is invariant under any change of Stinespring dilation, so
   that circuits differing only in ancilla convention are correctly accepted
   (Section 3.4).
+- We name the target a specification determines — its Petz recovery map — and
+  prove that the recipe by which the verifier builds the target yields the
+  signature of that map (Section 3.5).
 - We implement the procedure in StabCert and certify routed circuits produced
   by SABRE and pytket, with adversarial campaigns reporting no false accepts
   and no false rejects (Sections 5–6).
@@ -106,7 +117,10 @@ along. The word *tableau* is reserved for this representation throughout.
 A **Clifford unitary** maps Pauli operators to Pauli operators under
 conjugation, and is fully specified by the images of `2n` generators. A
 **stabilizer channel** is a Clifford unitary composed with stabilizer ancilla
-preparation and partial trace over a discarded register.
+preparation and partial trace over a discarded register. This is the class
+studied by Yashin and Elovenkova \cite{yashin2025characterization} under the
+name of non-adaptive Clifford channels, which they show to be the channels
+whose Choi state is a stabilizer state.
 
 By the **Gottesman–Knill theorem** \cite{gottesman1997,aaronson2004improved},
 stabilizer circuits admit efficient
@@ -198,15 +212,16 @@ result reduced onto `O ∪ Ref(X)`.
 
 The conjugation on the reference is not a convention of convenience. It is the
 same fact as the transpose appearing in the inversion of Theorem 1, seen from
-the other side: `Ē` on `Ref(X)` is what makes `Tr_Ref[(σ^T ⊗ I) J_Π(Λ)]`
-return `Λ̃(σ)` rather than `Λ̃(σ^T)`. Stating either without the other leaves
-the definition and the proof inconsistent with each other.
+the other side: `Ē` on `Ref(X)` is what makes the inversion formula of that
+proof return `Λ̃(σ)` rather than `Λ̃(σ^T)`. Stating either without the other
+leaves the definition and the proof inconsistent with each other.
 
 Three remarks, each of which a reader will otherwise have to reconstruct.
 
 *The reduction registers differ on the two sides.* The target is reduced onto
 `R ∪ X`; the candidate onto `O ∪ Ref(X)`. They are comparable because
-`|O| = |M|`, which Definition 1 requires.
+`|O| = |M|`, which Definition 1 requires. Section 3.5 defines the target and
+proves that this comparison is the right one.
 
 *Three distinct partial traces occur in the chain, and they must not be
 conflated.* `R` and `C` are traced to form `τ_X`; `C` is traced to form the
@@ -276,7 +291,8 @@ and the code subspace. By Definition 1, `E` maps the stabilizer group of
 subspace onto the joint `+1` eigenspace of `S_X`, which is `supp(Π)`; being
 Clifford it is unitary, hence a bijection between the two. Every `ρ` with
 `supp(ρ) ⊆ supp(τ_X)` is therefore `E(σ ⊗ |0⟩⟨0|)E†` for a unique `σ` on `k`
-qubits.
+qubits. Write `V` for the isometry `|ψ⟩ ↦ E(|ψ⟩ ⊗ |0⟩^{|X|−k})` from `k`
+qubits into `X`, so that this `ρ` is `VσV†`.
 
 Second, `J_Π(Λ)` is the ordinary Choi state of the induced logical channel
 `Λ̃ : σ ↦ Λ(E(σ ⊗ |0⟩⟨0|)E†)`. The prepared state of Definition 2 is
@@ -292,12 +308,17 @@ inverts explicitly:
 ```latex
 \widetilde{\Lambda}(\sigma)
 = 2^k\,\operatorname{Tr}_{\operatorname{Ref}}\!\left[
-(\sigma^T \otimes I)\,J_{\Pi}(\Lambda)
+(\bar{V}\sigma^{T}V^{T} \otimes I)\,J_{\Pi}(\Lambda)
 \right].
 ```
 
 where the transpose on the reference is the convention the construction
-applies, with `Y^T = −Y`. Equal Choi states therefore give `Λ̃ = Λ̃′`, and by
+applies, with `Y^T = −Y`. The operator on the reference cannot be `σ^T`
+itself: `σ` acts on `k` qubits and `Ref(X)` has `|X|` wires. The reference
+half of the prepared state lives in the image of the conjugate isometry, and
+`σ^T` is carried there by it. Since `V^T` is the adjoint of that conjugate,
+their product is the identity on `k` qubits, and the expression reduces to
+the ordinary inversion applied to `(id ⊗ Λ̃)(Φ_k)`. Equal Choi states therefore give `Λ̃ = Λ̃′`, and by
 the first step `Λ = Λ′` on every state supported in `supp(τ_X)`.
 
 Equality of the induced logical channels determines `Λ` only on the image of
@@ -319,8 +340,141 @@ is invariant under isometries acting on the traced factor alone. ∎
 Consequently two circuits differing only in ancilla convention or Stinespring
 dilation receive the same verdict — a property required for accepting output
 from compilers that do not share the reference implementation's conventions.
-Section 6.2 reports a family of artifacts that exercises this restriction
-rather than assuming it.
+
+The family singled out in Section 6.2 exercises a different property: its
+members act on the input side, inside the stabilizer group of `τ_X`, and test
+the restriction to the code subspace. Invariance on the output side is
+exercised by a regression test of the implementation, which appends gates to
+accessible wires outside the requested output and checks that the verdict
+does not move.
+
+### 3.5 The target
+
+Sections 3.2 to 3.4 compare a candidate with a target without saying which
+channel the target is. This section names it, states the recipe by which the
+verifier builds it, and proves that the two agree. The chain is then complete:
+the specification defines one channel, Lemma 2 identifies its signature, and
+Theorem 1 says what equality with that signature certifies.
+
+Let `N` be the channel from `M` to `X` that the specification defines: the
+input is adjoined to the ancillas, `U` is applied, and the inaccessible
+register `C` is traced out. Write `d = 2^{|M|}` and `r = 2^k`. The state
+`τ_X` of Section 3.1 is the image of the maximally mixed input, and it is flat
+on its support:
+
+```latex
+\tau_X = N(I_M/d) = \Pi/r .
+```
+
+**Definition 4 (target channel).** The target `Λ₀` is the Petz recovery map
+of `N` with respect to the maximally mixed input
+\cite{khatri2020principles}. Its input space for certification is the code subspace of `X`, and its output is `M`:
+
+```latex
+\Lambda_0(A)
+= \frac{1}{d}\,N^{\dagger}\!\left(
+\tau_X^{-1/2}\,A\,\tau_X^{-1/2}\right) ,
+```
+
+where the inverse is taken on the support of `τ_X`. Flatness removes the
+square roots: for every operator `A` supported in `supp(τ_X)`,
+
+```latex
+\Lambda_0(A) = \frac{r}{d}\,N^{\dagger}(A) .
+```
+
+*The recipe of the verifier.* Take the signed generators of the Choi state of
+the source on the registers `R`, `X` and `C`. Replace each by its complex
+conjugate in the computational basis: in a tableau, the sign of every
+generator containing an odd number of `Y` is flipped, and nothing else
+changes. Trace out `C`. Read `R` as `O` and `X` as `Ref(X)`.
+
+**Lemma 2 (signature of the target).** *Let `J(N) = (id ⊗ N)(Φ)` be the
+normalised Choi state of `N`, written in the order `R`, `X`. The code-Choi
+state `J_Π(Λ₀)` of the target, written in the order `O`, `Ref(X)`, is the
+complex conjugate of `J(N)` once `R` is read as `O` and `X` as `Ref(X)`.
+Consequently `sig(J_Π(Λ₀))` is the signature the recipe produces.*
+
+*Proof.* Let the `K_i`, from `M` to `X`, be Kraus operators of `N`. Then
+
+```latex
+\tau_X = \frac{1}{d}\sum_i K_i K_i^{\dagger} ,
+```
+
+so the range of every `K_i` lies in `supp(τ_X)` and `Π K_i = K_i`. By the flat
+form of Definition 4, Kraus operators of the target on `supp(τ_X)` are
+
+```latex
+\sqrt{r/d}\;K_i^{\dagger} ,
+```
+
+writing these operators as `L_i` gives
+
+```latex
+\sum_i L_i^\dagger L_i=\frac{r}{d}\sum_i K_iK_i^\dagger
+=r\tau_X=\Pi .
+```
+
+Thus the map preserves trace on the code. With the support inverse its trace
+on a positive operator on the full register is the weight of that operator
+in the code.
+
+Write `V` for the isometry `|ψ⟩ ↦ E(|ψ⟩ ⊗ |0⟩^{|X|−k})`, so that `VV† = Π`.
+The state prepared in Definition 2 is
+
+```latex
+\frac{1}{\sqrt r}\sum_{a}\bar{V}|a\rangle\otimes V|a\rangle
+= \frac{1}{\sqrt r}\,(I\otimes\Pi)
+\sum_{x}|x\rangle_{\operatorname{Ref}}|x\rangle_{X} ,
+```
+
+the canonical purification of `τ_X`: the conjugate on the reference is what
+makes the right-hand side independent of the choice of `E`. Applying the
+target to `X` gives
+
+```latex
+J_{\Pi}(\Lambda_0)
+= \frac{1}{r}\cdot\frac{r}{d}\sum_i |\kappa_i\rangle\langle\kappa_i| ,
+\qquad
+|\kappa_i\rangle
+= \sum_{x,m}\overline{\langle x|K_i|m\rangle}\;
+|x\rangle_{\operatorname{Ref}}|m\rangle_{O} .
+```
+
+The factor `r/d` of the target meets the normalisation `1/r` of the code and
+leaves `1/d`, the normalisation of the source. On the other side,
+
+```latex
+J(N) = \frac{1}{d}\sum_i |k_i\rangle\langle k_i| ,
+\qquad
+|k_i\rangle = \sum_{x,m}\langle x|K_i|m\rangle\;|m\rangle_{R}|x\rangle_{X} .
+```
+
+The two families of vectors have complex-conjugate coefficients once `R` is
+read as `O` and `X` as `Ref(X)`, which is the first claim.
+
+For the second, conjugation in the computational basis commutes with the
+partial trace over `C`, so conjugating the pure state on the three registers
+and then tracing out `C` gives the conjugate of `J(N)`. And the conjugate of a
+stabilizer state is the stabilizer state whose generators are conjugated: `X`
+and `Z` are real, `Y` is imaginary, so a Pauli string changes sign exactly
+when it contains an odd number of `Y`. ∎
+
+**Corollary 1 (semantic check).** *A candidate `Λ` passes the reduced-channel
+signature check if and only if
+`Λ(ρ) = Λ₀(ρ)` for every `ρ` supported in `supp(τ_X)`.*
+
+*Proof.* Lemma 2 identifies the signature of the recipe with `sig(J_Π(Λ₀))`,
+and Theorem 1 applies: its proof uses of the two channels only their code-Choi
+states, and that of the target is a stabilizer state by Lemma 2. ∎
+
+The smallest instance on which the conjugation matters is a one-qubit message
+beside an ancilla prepared in `|+i⟩`, with `U` the identity and both wires
+accessible. The source Choi state carries `+Y` on the ancilla; the target
+carries `−Y`, and so does the reference of the candidate, which `Ē` prepares
+in `|−i⟩`. Returning the message and discarding the ancilla is accepted. A
+target compared without conjugation would carry `+Y` and reject this correct
+recovery.
 
 ---
 
@@ -358,6 +512,11 @@ a stabilizer formalism can verify once rather than per branch. The current
 implementation **contains no syndrome handling at all** — its recovery circuits
 are measurement-free, so no branch arises and no such matrix is constructed. We
 **claim nothing** about that path and report no results for it.
+
+That path is the subject of Kliuchnikov, Beverland and Paetznick
+\cite{kliuchnikov2023stabilizer}, whose algorithms verify circuits with Pauli
+corrections conditioned on parities of measurement outcomes, over all outcomes
+at once. Section 8 compares the two classes.
 
 Readers familiar with the Yoshida–Kitaev decoder \cite{yoshida2017efficient}
 should note that its canonical
@@ -909,9 +1068,60 @@ reveals it.
 
 ## 8. Related work
 
-Three lines of work address adjacent problems. We have not executed any of the
-tools discussed below; the characterisations that follow are drawn from their
-published documentation and papers.
+Two bodies of work are close to ours, and three further lines address adjacent
+problems. We have not executed any of the tools discussed below; the
+characterisations that follow are drawn from their published documentation and
+papers.
+
+**Stabilizer circuit verification.** Kliuchnikov, Beverland and Paetznick
+\cite{kliuchnikov2023stabilizer} give classical algorithms that characterise
+and verify stabilizer circuits exhaustively over measurement outcomes. Their
+circuits allocate qubits in the zero state, measure Pauli operators, draw
+random bits, and apply Pauli unitaries conditioned on parities of earlier
+outcomes. A circuit is brought to a *general form*, two circuits are compared
+through their general forms, and a further algorithm computes the logical
+action of a circuit between an input and an output stabilizer code. This is
+the closest published work to Section 3, and three points are worth stating
+exactly.
+
+The classes overlap without either containing the other. Theirs includes
+measurement and outcome-conditioned Pauli corrections, which Section 4.3
+places outside ours. Ours takes partial trace over a discarded register as a
+primitive, so that the object compared is in general a mixed code-Choi state;
+their deallocation applies to a qubit known to be in the zero state. We have
+not examined whether discarding can be encoded in their setting by measuring
+and resetting, at the price of an outcome record that the comparison must then
+relate.
+
+The normal forms differ in kind. Their general form is not unique — equal
+circuits can have different general forms — so equivalence is decided by a
+comparison procedure that solves for the relation between the two outcome
+records. Lemma 1 gives a canonical signature instead: equality of two channels
+on the code subspace is equality of two tuples of signed generators.
+
+The input, lastly, does not separate the two works. Their logical-action
+algorithm takes a circuit and two codes, not a reference circuit, and to that
+extent it is driven by a specification as ours is. What we add on that axis is
+narrower: the support `Π` is derived from the specification alone
+(Hypothesis 1), the candidate is an artifact of unknown provenance, and the
+procedure is delivered as a tool whose implementation is tested adversarially
+(Section 6.2). Their article reports no implementation that we could find, and
+we make no comparison of running times.
+
+**Clifford channels.** Yashin and Elovenkova
+\cite{yashin2025characterization} characterise the class of Section 2:
+channels realised by stabilizer circuits without classical control,
+equivalently channels whose Choi state is a stabilizer state, equivalently
+channels admitting a Clifford Stinespring dilation. Yashin
+\cite{yashin2025streamlined} then represents such a channel by a tableau
+derived from its Choi state and reduces composition to Boolean linear algebra.
+Representing a stabilizer channel by the tableau of its Choi state is
+therefore not new here. That work is concerned with simulation: as far as we
+could read, it states neither a normal form for channel tableaux nor a
+decision procedure for their equality, and it does not restrict a channel to a
+subspace of inputs. Our contribution on this side is the restriction to a
+code subspace determined by the specification, the equality theorem relative
+to it, and its use to certify compiler output.
 
 **Compiler certification.** Proving the transformation itself, once and for
 all, is stronger where it applies — and it applies only to compilers whose
@@ -951,7 +1161,11 @@ comparison: proof effort and verification time are not the same quantity, and
 tabulating them side by side would suggest a commensurability that does not
 exist.
 
-**Summary.** The axis that separates this work from all three is the input.
-Compiler certification takes a compiler; equivalence checking takes two
-circuits; deductive verification takes a program. We take an artifact of
-unknown provenance and a channel specification.
+**Summary.** The axis that separates this work from compiler certification,
+equivalence checking and deductive verification is the input. Compiler
+certification takes a compiler; equivalence checking takes two circuits;
+deductive verification takes a program. We take an artifact of unknown
+provenance and a channel specification. From stabilizer circuit verification
+the separation is narrower and of a different kind: a class that has partial
+trace and lacks measurement, a canonical form rather than a general one, and
+an implementation.

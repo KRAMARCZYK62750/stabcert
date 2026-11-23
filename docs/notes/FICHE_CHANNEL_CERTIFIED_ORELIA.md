@@ -51,7 +51,7 @@ transformation agissant uniquement sur l'environnement rejeté.
 
 État au 3 août 2026 :
 
-- suite automatique après régressions SABRE et pytket : <!-- TEST_COUNT:BEGIN fmt="**{passed}/{passed} tests passants**" -->**146/146 tests passants**<!-- TEST_COUNT:END --> ;
+- suite automatique après régressions SABRE et pytket : <!-- TEST_COUNT:BEGIN fmt="**{passed}/{passed} tests passants**" -->**161/161 tests passants**<!-- TEST_COUNT:END --> ;
 - fixtures immuables validées : `A=1`, `A=8`, `A=12` ;
 - artefacts adversariaux invalides : **1 300/1 300 rejetés** ;
 - représentations valides équivalentes : **800/800 acceptées** ;
