@@ -123,6 +123,37 @@ def expected() -> list[tuple[str, str, str]]:
                 f"N_sys(n) = {a}n² − {abs(b)}n + {c}"))
     out.append(("7.2 instance count", "gf2_scaling csv",
                 f"Over {len(scale)} instances"))
+    # The closed form of Proposition 2, evaluated on the swept family: the
+    # inaccessible register is empty, k is the message width, and the six
+    # kernel-image calls have ranks 8, W, W, W, 2k, 2k on W, W, 2n, W, W, 4k
+    # variables. A sentence of the paper asserts that this reproduces the
+    # identity; it is quoted only if it does, on every instance.
+    def closed_form(n: int, k: int) -> int:
+        width = n + k
+        calls = ((n - k, width), (width, width), (width, 2 * n), (width, width),
+                 (2 * k, width), (2 * k, 4 * k))
+        return (n + k) * (2 * n + 2) + sum(1 + rho * (v + 2) for rho, v in calls)
+
+    reproduced = all(
+        closed_form(n, int(row["message_qubits"])) == int(row["affine_systems_solved"])
+        == a * n * n + b * n + c
+        for n, row in scale.items()
+    )
+    out.append(("7.2 closed form on the family", "derived, against gf2_scaling csv",
+                "substituting gives the polynomial above, term for term"
+                if reproduced else "CLOSED FORM DOES NOT REPRODUCE THE SWEEP"))
+    out.append(("7.2 rank reductions, endpoints", "gf2_scaling csv",
+                f"grows from {thousands(int(scale[9]['rank_reductions']))} at `n = 9` to "
+                f"{thousands(int(scale[40]['rank_reductions']))} at `n = 40`"))
+    ranks = counters["rank_reductions"]
+    out.append(("7.2 rank reductions, windows", "gf2_scaling_n9_n40.json",
+                f"exponents of {ranks['log_log_exponent_lower_window']:.3f} and "
+                f"{ranks['log_log_exponent_upper_half']:.3f} on the lower and upper windows"))
+    # Local exponent in n of a monomial of degree p in W = 2n - 8, at the ends
+    # of the upper window.
+    out.append(("7.4 exponent of the bound on the family", "derived",
+                f"between {5*40/36:.2f} and {5*25/21:.2f} for `p = 5`, and between "
+                f"{6*40/36:.2f} and {6*25/21:.2f} for `p = 6`"))
     # Written as the paper writes it. The figure is still recomputed from the
     # identity above; only its rendering is quoted, and a display rewritten
     # without moving the number will fail here and say so.
@@ -144,6 +175,8 @@ def expected() -> list[tuple[str, str, str]]:
     out.append(("7.6 joint coefficients", "density_cost_comparison.json",
                 f"b = {joint['degree_at_fixed_density_b']:.3f},"
                 f"\\quad c = {joint['density_elasticity_c']:.3f}"))
+    out.append(("7.6 proportional correction", "density_cost_comparison.json",
+                f"`2b/b₀ = {2 * joint['degree_at_fixed_density_b'] / control['degree_at_fixed_density_b']:.2f}`"))
     out.append(("7.6 control elasticity", "density_cost_comparison.json",
                 f"it returns `c₀ = {control['density_elasticity_c']:.3f}`"))
     out.append(("7.6 contrast drift", "density_cost_comparison.json",
