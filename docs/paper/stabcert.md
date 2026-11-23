@@ -84,6 +84,9 @@ polynomial time. Specifically:
 - We show the verdict is invariant under any change of Stinespring dilation, so
   that circuits differing only in ancilla convention are correctly accepted
   (Section 3.4).
+- We name the target a specification determines — its Petz recovery map — and
+  prove that the recipe by which the verifier builds the target yields the
+  signature of that map (Section 3.5).
 - We implement the procedure in StabCert and certify routed circuits produced
   by SABRE and pytket, with adversarial campaigns reporting no false accepts
   and no false rejects (Sections 5–6).
@@ -217,7 +220,8 @@ Three remarks, each of which a reader will otherwise have to reconstruct.
 
 *The reduction registers differ on the two sides.* The target is reduced onto
 `R ∪ X`; the candidate onto `O ∪ Ref(X)`. They are comparable because
-`|O| = |M|`, which Definition 1 requires.
+`|O| = |M|`, which Definition 1 requires. Section 3.5 defines the target and
+proves that this comparison is the right one.
 
 *Three distinct partial traces occur in the chain, and they must not be
 conflated.* `R` and `C` are traced to form `τ_X`; `C` is traced to form the
@@ -343,6 +347,134 @@ the restriction to the code subspace. Invariance on the output side is
 exercised by a regression test of the implementation, which appends gates to
 accessible wires outside the requested output and checks that the verdict
 does not move.
+
+### 3.5 The target
+
+Sections 3.2 to 3.4 compare a candidate with a target without saying which
+channel the target is. This section names it, states the recipe by which the
+verifier builds it, and proves that the two agree. The chain is then complete:
+the specification defines one channel, Lemma 2 identifies its signature, and
+Theorem 1 says what equality with that signature certifies.
+
+Let `N` be the channel from `M` to `X` that the specification defines: the
+input is adjoined to the ancillas, `U` is applied, and the inaccessible
+register `C` is traced out. Write `d = 2^{|M|}` and `r = 2^k`. The state
+`τ_X` of Section 3.1 is the image of the maximally mixed input, and it is flat
+on its support:
+
+```latex
+\tau_X = N(I_M/d) = \Pi/r .
+```
+
+**Definition 4 (target channel).** The target `Λ₀` is the Petz recovery map
+of `N` with respect to the maximally mixed input
+\cite{khatri2020principles}. Its input space for certification is the code subspace of `X`, and its output is `M`:
+
+```latex
+\Lambda_0(A)
+= \frac{1}{d}\,N^{\dagger}\!\left(
+\tau_X^{-1/2}\,A\,\tau_X^{-1/2}\right) ,
+```
+
+where the inverse is taken on the support of `τ_X`. Flatness removes the
+square roots: for every operator `A` supported in `supp(τ_X)`,
+
+```latex
+\Lambda_0(A) = \frac{r}{d}\,N^{\dagger}(A) .
+```
+
+*The recipe of the verifier.* Take the signed generators of the Choi state of
+the source on the registers `R`, `X` and `C`. Replace each by its complex
+conjugate in the computational basis: in a tableau, the sign of every
+generator containing an odd number of `Y` is flipped, and nothing else
+changes. Trace out `C`. Read `R` as `O` and `X` as `Ref(X)`.
+
+**Lemma 2 (signature of the target).** *Let `J(N) = (id ⊗ N)(Φ)` be the
+normalised Choi state of `N`, written in the order `R`, `X`. The code-Choi
+state `J_Π(Λ₀)` of the target, written in the order `O`, `Ref(X)`, is the
+complex conjugate of `J(N)` once `R` is read as `O` and `X` as `Ref(X)`.
+Consequently `sig(J_Π(Λ₀))` is the signature the recipe produces.*
+
+*Proof.* Let the `K_i`, from `M` to `X`, be Kraus operators of `N`. Then
+
+```latex
+\tau_X = \frac{1}{d}\sum_i K_i K_i^{\dagger} ,
+```
+
+so the range of every `K_i` lies in `supp(τ_X)` and `Π K_i = K_i`. By the flat
+form of Definition 4, Kraus operators of the target on `supp(τ_X)` are
+
+```latex
+\sqrt{r/d}\;K_i^{\dagger} ,
+```
+
+writing these operators as `L_i` gives
+
+```latex
+\sum_i L_i^\dagger L_i=\frac{r}{d}\sum_i K_iK_i^\dagger
+=r\tau_X=\Pi .
+```
+
+Thus the map preserves trace on the code. With the support inverse its trace
+on a positive operator on the full register is the weight of that operator
+in the code.
+
+Write `V` for the isometry `|ψ⟩ ↦ E(|ψ⟩ ⊗ |0⟩^{|X|−k})`, so that `VV† = Π`.
+The state prepared in Definition 2 is
+
+```latex
+\frac{1}{\sqrt r}\sum_{a}\bar{V}|a\rangle\otimes V|a\rangle
+= \frac{1}{\sqrt r}\,(I\otimes\Pi)
+\sum_{x}|x\rangle_{\operatorname{Ref}}|x\rangle_{X} ,
+```
+
+the canonical purification of `τ_X`: the conjugate on the reference is what
+makes the right-hand side independent of the choice of `E`. Applying the
+target to `X` gives
+
+```latex
+J_{\Pi}(\Lambda_0)
+= \frac{1}{r}\cdot\frac{r}{d}\sum_i |\kappa_i\rangle\langle\kappa_i| ,
+\qquad
+|\kappa_i\rangle
+= \sum_{x,m}\overline{\langle x|K_i|m\rangle}\;
+|x\rangle_{\operatorname{Ref}}|m\rangle_{O} .
+```
+
+The factor `r/d` of the target meets the normalisation `1/r` of the code and
+leaves `1/d`, the normalisation of the source. On the other side,
+
+```latex
+J(N) = \frac{1}{d}\sum_i |k_i\rangle\langle k_i| ,
+\qquad
+|k_i\rangle = \sum_{x,m}\langle x|K_i|m\rangle\;|m\rangle_{R}|x\rangle_{X} .
+```
+
+The two families of vectors have complex-conjugate coefficients once `R` is
+read as `O` and `X` as `Ref(X)`, which is the first claim.
+
+For the second, conjugation in the computational basis commutes with the
+partial trace over `C`, so conjugating the pure state on the three registers
+and then tracing out `C` gives the conjugate of `J(N)`. And the conjugate of a
+stabilizer state is the stabilizer state whose generators are conjugated: `X`
+and `Z` are real, `Y` is imaginary, so a Pauli string changes sign exactly
+when it contains an odd number of `Y`. ∎
+
+**Corollary 1 (semantic check).** *A candidate `Λ` passes the reduced-channel
+signature check if and only if
+`Λ(ρ) = Λ₀(ρ)` for every `ρ` supported in `supp(τ_X)`.*
+
+*Proof.* Lemma 2 identifies the signature of the recipe with `sig(J_Π(Λ₀))`,
+and Theorem 1 applies: its proof uses of the two channels only their code-Choi
+states, and that of the target is a stabilizer state by Lemma 2. ∎
+
+The smallest instance on which the conjugation matters is a one-qubit message
+beside an ancilla prepared in `|+i⟩`, with `U` the identity and both wires
+accessible. The source Choi state carries `+Y` on the ancilla; the target
+carries `−Y`, and so does the reference of the candidate, which `Ē` prepares
+in `|−i⟩`. Returning the message and discarding the ancilla is accepted. A
+target compared without conjugation would carry `+Y` and reject this correct
+recovery.
 
 ---
 
