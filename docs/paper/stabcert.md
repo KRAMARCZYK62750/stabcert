@@ -266,8 +266,8 @@ signatures is equivalent to equality of the signed subgroups. ∎
 
 The reduction is not ours. Signed row operations on the tableau of a channel,
 and its reduction to echelon form, are described by Yashin
-\cite{yashin2025streamlined}. The lemma records what that reduction yields
-when the group is fixed: a canonical object, which Theorem 1 then compares.
+\cite{yashin2025streamlined}. The lemma states the uniqueness that Theorem 1
+relies on; we claim no priority on it.
 
 The hypothesis `−I ∉ S` is not incidental: the implementation rejects any
 specification whose generators fail it, together with commutation and
@@ -1101,9 +1101,12 @@ controlled by affine functions of outcomes can be rewritten without classical
 control \cite{yashin2025characterization}. What Section 4.3 places outside
 this work is an input format of the implementation, not a class of channels.
 
-The difference is the object compared. They compare quantum instruments:
-every outcome is retained, and two circuits are equivalent when a relabelling
-of outcomes matches their maps. We compare one channel — the candidate reduced
+The difference is the object compared. They compare quantum instruments, of
+which the outcomes are part. Two instruments are equivalent when, after the
+outcomes whose maps are proportional have been grouped, a bijection between
+the groups matches the maps; the grouping comes first, so that equivalent
+instruments may have raw outcome sets of different sizes. We compare one
+channel — the candidate reduced
 onto the requested outputs — on the inputs of a code subspace, and nothing of
 the discarded register is retained.
 
@@ -1136,12 +1139,12 @@ Yashin \cite{yashin2025streamlined} represents a channel of this class by a
 signed tableau derived from its Choi state, reduces composition to Boolean
 linear algebra, and describes the reduction of such a tableau to echelon form
 by signed row operations, with its cost. Neither the representation nor its
-signed reduction is therefore new here. As far as we could read, that work
-does not state that the reduced form decides the equality of two channels,
-and it does not restrict a channel to a subspace of inputs. Our contribution
-on this side is the choice of the support from the specification, the
-reconstruction of the target, and the certificate for a circuit supplied from
-outside.
+signed reduction is therefore new here. We found there no explicit statement
+of uniqueness for the reduced tableau of a channel, and no restriction of a
+channel to a subspace of inputs; this is a remark on what we read, not a
+claim of priority on canonicity. Our contribution on this side is the
+certificate of equality with the target channel, on the support derived from
+the specification.
 
 **Compiler certification.** Proving the transformation itself, once and for
 all, is stronger where it applies. It requires a proof about the compiler's
