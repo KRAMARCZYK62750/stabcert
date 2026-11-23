@@ -1104,8 +1104,9 @@ extent it is driven by a specification as ours is. What we add on that axis is
 narrower: the support `Π` is derived from the specification alone
 (Hypothesis 1), the candidate is an artifact of unknown provenance, and the
 procedure is delivered as a tool whose implementation is tested adversarially
-(Section 6.2). Their article reports no implementation that we could find, and
-we make no comparison of running times.
+(Section 6.2). Their article discusses data structures for an implementation
+and analyses running times, but releases no software that we could find; we
+make no comparison of running times.
 
 **Clifford channels.** Yashin and Elovenkova
 \cite{yashin2025characterization} characterise the class of Section 2:
