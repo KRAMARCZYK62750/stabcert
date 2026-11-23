@@ -209,9 +209,9 @@ result reduced onto `O ∪ Ref(X)`.
 
 The conjugation on the reference is not a convention of convenience. It is the
 same fact as the transpose appearing in the inversion of Theorem 1, seen from
-the other side: `Ē` on `Ref(X)` is what makes `Tr_Ref[(σ^T ⊗ I) J_Π(Λ)]`
-return `Λ̃(σ)` rather than `Λ̃(σ^T)`. Stating either without the other leaves
-the definition and the proof inconsistent with each other.
+the other side: `Ē` on `Ref(X)` is what makes the inversion formula of that
+proof return `Λ̃(σ)` rather than `Λ̃(σ^T)`. Stating either without the other
+leaves the definition and the proof inconsistent with each other.
 
 Three remarks, each of which a reader will otherwise have to reconstruct.
 
@@ -287,7 +287,8 @@ and the code subspace. By Definition 1, `E` maps the stabilizer group of
 subspace onto the joint `+1` eigenspace of `S_X`, which is `supp(Π)`; being
 Clifford it is unitary, hence a bijection between the two. Every `ρ` with
 `supp(ρ) ⊆ supp(τ_X)` is therefore `E(σ ⊗ |0⟩⟨0|)E†` for a unique `σ` on `k`
-qubits.
+qubits. Write `V` for the isometry `|ψ⟩ ↦ E(|ψ⟩ ⊗ |0⟩^{|X|−k})` from `k`
+qubits into `X`, so that this `ρ` is `VσV†`.
 
 Second, `J_Π(Λ)` is the ordinary Choi state of the induced logical channel
 `Λ̃ : σ ↦ Λ(E(σ ⊗ |0⟩⟨0|)E†)`. The prepared state of Definition 2 is
@@ -303,12 +304,17 @@ inverts explicitly:
 ```latex
 \widetilde{\Lambda}(\sigma)
 = 2^k\,\operatorname{Tr}_{\operatorname{Ref}}\!\left[
-(\sigma^T \otimes I)\,J_{\Pi}(\Lambda)
+(\bar{V}\sigma^{T}V^{T} \otimes I)\,J_{\Pi}(\Lambda)
 \right].
 ```
 
 where the transpose on the reference is the convention the construction
-applies, with `Y^T = −Y`. Equal Choi states therefore give `Λ̃ = Λ̃′`, and by
+applies, with `Y^T = −Y`. The operator on the reference cannot be `σ^T`
+itself: `σ` acts on `k` qubits and `Ref(X)` has `|X|` wires. The reference
+half of the prepared state lives in the image of the conjugate isometry, and
+`σ^T` is carried there by it. Since `V^T` is the adjoint of that conjugate,
+their product is the identity on `k` qubits, and the expression reduces to
+the ordinary inversion applied to `(id ⊗ Λ̃)(Φ_k)`. Equal Choi states therefore give `Λ̃ = Λ̃′`, and by
 the first step `Λ = Λ′` on every state supported in `supp(τ_X)`.
 
 Equality of the induced logical channels determines `Λ` only on the image of
@@ -330,8 +336,13 @@ is invariant under isometries acting on the traced factor alone. ∎
 Consequently two circuits differing only in ancilla convention or Stinespring
 dilation receive the same verdict — a property required for accepting output
 from compilers that do not share the reference implementation's conventions.
-Section 6.2 reports a family of artifacts that exercises this restriction
-rather than assuming it.
+
+The family singled out in Section 6.2 exercises a different property: its
+members act on the input side, inside the stabilizer group of `τ_X`, and test
+the restriction to the code subspace. Invariance on the output side is
+exercised by a regression test of the implementation, which appends gates to
+accessible wires outside the requested output and checks that the verdict
+does not move.
 
 ---
 
